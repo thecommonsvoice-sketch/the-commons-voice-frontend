@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { FileText, Eye, Edit, Clock, Search, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import type { Article } from "@/lib/types";
+import Link from "next/link";
 
 type ArticlesResponse = {
   data: Article[];
@@ -194,10 +195,10 @@ export default function EditorDashboard() {
                         Delete
                       </Button>
                       <Button variant="outline" size="sm" asChild>
-                        <a href={`/articles/${article.slug}`} target="_blank" rel="noopener noreferrer">
+                        <Link href={`/articles/special-access/${article.id}`} target="_blank" rel="noopener noreferrer">
                           <Eye className="h-4 w-4 mr-1" />
                           Preview
-                        </a>
+                        </Link>
                       </Button>
                     </div>
                   </div>

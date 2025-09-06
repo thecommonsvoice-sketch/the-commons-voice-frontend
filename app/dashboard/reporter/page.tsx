@@ -40,7 +40,6 @@ export default function ReporterDashboard() {
         setArticles(res.data?.data || []);
         setPublishedToday(res.data?.updatedTodayCount || 0);
          setDraftCount(res.data?.draftCount || 0);
-         console.log(res.data);
       })
       .catch(() => {
         setArticles([]);
@@ -168,10 +167,10 @@ export default function ReporterDashboard() {
                   </div>
                   <div className="flex gap-2 mt-2">
                     <Button asChild size="sm" variant="outline">
-                      <Link href={`/articles/${article.slug}`}>View</Link>
+                      <Link href={`/articles/special-access/${article.id}`}>View</Link>
                     </Button>
                     <Button asChild size="sm" variant="secondary">
-                      <Link href={`/articles/${article.slug}/edit`}>Edit</Link>
+                      <Link href={`/articles/special-access/${article.slug}/edit`}>Edit</Link>
                     </Button>
                   </div>
                 </div>

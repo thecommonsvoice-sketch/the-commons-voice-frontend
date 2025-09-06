@@ -1,12 +1,13 @@
 "use client";
+
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useUserStore } from "@/store/useUserStore";
-import { api } from "@/lib/api";
+import { useCategoryStore } from "@/store/useCategoryStore";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ThemeToggle";
-import { Menu, X, User, Settings, LogOut, ChevronDown } from "lucide-react";
+import { Menu, X, User, Settings, LogOut, ChevronDown, MoreHorizontal } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,26 +18,55 @@ import {
 
 export default function Navbar() {
   const { user, clearUser } = useUserStore();
+  const { categories, setCategories } = useCategoryStore();
   const router = useRouter();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const logout = async () => {
     try {
-      await api.post("/auth/logout");
+      await fetch("/api/auth/logout", { method: "POST" });
     } finally {
       clearUser();
       router.replace("/");
     }
   };
 
-  const categories = [
-    { name: "World", href: "/categories/world" },
-    { name: "Politics", href: "/categories/politics" },
-    { name: "Business", href: "/categories/business" },
-    { name: "Technology", href: "/categories/tech" },
-    { name: "Sports", href: "/categories/sports" },
-    { name: "Entertainment", href: "/categories/entertainment" },
-  ];
+  // Fetch categories only if not already available
+  useEffect(() => {
+    const fetchCategories = async () => {
+      if (categories.length > 0) {
+        return; // Categories are already cached
+      }
+      try {
+        const base = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000/api";
+        const res = await fetch(`${base}/categories`, {
+          next: { revalidate: 600 }, // Cache and revalidate every 600 seconds
+        });
+
+        if (!res.ok) {
+          throw new Error(`Failed to fetch categories: ${res.statusText}`);
+        }
+
+        const data = await res.json();
+
+        const fetchedCategories = data?.categories.map((cat: { name: string; slug: string }) => ({
+          name: cat.name,
+          href: `/categories/${cat.slug}`,
+        })) || [];
+
+        setCategories(fetchedCategories); // Store categories in global state
+      } catch (error) {
+        console.error("Failed to fetch categories:", error);
+      }
+    };
+
+    fetchCategories();
+  }, [categories, setCategories]);
+
+  // Memoize visible and hidden categories
+  const maxVisible = 5;
+  const visibleCategories = useMemo(() => categories.slice(0, maxVisible), [categories]);
+  const hiddenCategories = useMemo(() => categories.slice(maxVisible), [categories]);
 
   return (
     <>
@@ -48,19 +78,19 @@ export default function Navbar() {
               🔴 BREAKING: Latest news updates • Stay informed with real-time reporting
             </div>
           </div>
-          
+
           <nav className="flex h-16 items-center justify-between">
             {/* Logo */}
             <Link href="/" className="flex items-center space-x-2">
               <div className="h-8 w-8 bg-primary rounded-md flex items-center justify-center text-primary-foreground font-bold text-sm">
                 TCV
               </div>
-              <span className="font-bold text-xl">The Common Voice</span>
+              <span className="font-bold text-md sm:text-xl">The Commons Voice</span>
             </Link>
 
             {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center space-x-6">
-              {categories.map((category) => (
+            <div className="hidden lg:flex items-center space-x-6">
+              {visibleCategories.map((category) => (
                 <Link
                   key={category.name}
                   href={category.href}
@@ -69,12 +99,29 @@ export default function Navbar() {
                   {category.name}
                 </Link>
               ))}
+              {hiddenCategories.length > 0 && (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" className="flex items-center space-x-1">
+                      <MoreHorizontal className="h-4 w-4" />
+                      <span>More</span>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent>
+                    {hiddenCategories.map((category) => (
+                      <DropdownMenuItem asChild key={category.name}>
+                        <Link href={category.href}>{category.name}</Link>
+                      </DropdownMenuItem>
+                    ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              )}
             </div>
 
             {/* Right side */}
             <div className="flex items-center space-x-2">
               <ThemeToggle />
-              
+
               {user ? (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
@@ -121,7 +168,7 @@ export default function Navbar() {
               <Button
                 variant="ghost"
                 size="icon"
-                className="md:hidden"
+                className="lg:hidden"
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               >
                 {mobileMenuOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
@@ -132,7 +179,7 @@ export default function Navbar() {
 
         {/* Mobile menu */}
         {mobileMenuOpen && (
-          <div className="md:hidden border-t bg-background">
+          <div className="lg:hidden border-t bg-background">
             <div className="container mx-auto px-4 py-4 space-y-2">
               {categories.map((category) => (
                 <Link

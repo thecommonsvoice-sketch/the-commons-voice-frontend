@@ -1,23 +1,23 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Terms of Service | The Common Voice",
+  title: "Terms of Service | The Commons Voice",
   description:
-    "Review The Common Voice's terms of service for news readers, contributors, and community members.",
+    "Review The Commons Voice's terms of service for news readers, contributors, and community members.",
   keywords: [
     "terms of service",
     "news portal",
     "user agreement",
-    "The Common Voice",
+    "The Commons Voice",
     "editorial policy",
     "community guidelines",
   ],
   openGraph: {
-    title: "Terms of Service | The Common Voice",
+    title: "Terms of Service | The Commons Voice",
     description:
-      "Understand your rights and responsibilities as a reader or contributor to The Common Voice.",
+      "Understand your rights and responsibilities as a reader or contributor to The Commons Voice.",
     url: "/terms",
-    siteName: "The Common Voice",
+    siteName: "The Commons Voice",
     locale: "en_US",
     type: "article",
   },
@@ -33,7 +33,7 @@ export default function TermsPage() {
       <h1 className="text-3xl font-bold mb-6">Terms of Service</h1>
       <section className="space-y-6 text-base leading-relaxed">
         <p>
-          Welcome to The Common Voice, your independent source for news, analysis,
+          Welcome to The Commons Voice, your independent source for news, analysis,
           and reporting. By accessing or using our website, you agree to comply
           with and be bound by these Terms of Service.
         </p>
@@ -56,12 +56,12 @@ export default function TermsPage() {
         </h2>
         <ul className="list-disc ml-6 space-y-2">
           <li>
-            The Common Voice maintains editorial independence and strives for
+            The Commons Voice maintains editorial independence and strives for
             accuracy, fairness, and transparency in all published content.
           </li>
           <li>
             Opinions expressed by contributors do not necessarily reflect those
-            of The Common Voice.
+            of The Commons Voice.
           </li>
         </ul>
 
@@ -106,7 +106,7 @@ export default function TermsPage() {
           6. Limitation of Liability
         </h2>
         <p>
-          The Common Voice is not liable for any damages arising from your use of
+          The Commons Voice is not liable for any damages arising from your use of
           the website, reliance on published information, or interactions with
           other users.
         </p>

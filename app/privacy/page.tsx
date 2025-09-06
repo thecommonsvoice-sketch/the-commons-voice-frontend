@@ -1,14 +1,14 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Privacy Policy | The Common Voice",
-  description: "Read The Common Voice's privacy policy to learn how we collect, use, and protect your information.",
-  keywords: ["privacy policy", "data protection", "user information", "The Common Voice", "news portal"],
+  title: "Privacy Policy | The Commons Voice",
+  description: "Read The Commons Voice's privacy policy to learn how we collect, use, and protect your information.",
+  keywords: ["privacy policy", "data protection", "user information", "The Commons Voice", "news portal"],
   openGraph: {
-    title: "Privacy Policy | The Common Voice",
-    description: "Learn how The Common Voice collects, uses, and protects your personal information.",
+    title: "Privacy Policy | The Commons Voice",
+    description: "Learn how The Commons Voice collects, uses, and protects your personal information.",
     url: "/privacy",
-    siteName: "The Common Voice",
+    siteName: "The Commons Voice",
     locale: "en_US",
     type: "article",
   },
@@ -24,7 +24,7 @@ export default function PrivacyPage() {
       <h1 className="text-3xl font-bold mb-6">Privacy Policy</h1>
       <section className="space-y-6 text-base leading-relaxed">
         <p>
-          At The Common Voice, we are committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our news portal.
+          At The Commons Voice, we are committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our news portal.
         </p>
 
         <h2 className="text-xl font-semibold mt-8 mb-2">1. Information We Collect</h2>

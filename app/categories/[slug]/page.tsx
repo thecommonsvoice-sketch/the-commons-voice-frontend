@@ -1,37 +1,46 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { ArticleCard } from "@/components/ArticleCard";
+import CategoryClient from "./CategoryClient";
 import type { Article, Category } from "@/lib/types";
 
-async function getCategoryWithArticles(slug: string): Promise<{ category: Category; articles: Article[] } | null> {
+async function getCategoryWithArticles(
+  slug: string,
+  page: number
+): Promise<{
+  category: Category;
+  articles: Article[];
+  pagination: { total: number; totalPages: number };
+} | null> {
   try {
-    const base = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000/api";
     const [categoryRes, articlesRes] = await Promise.all([
-      fetch(`${base}/categories/${slug}`, { cache: "no-store" }),
-      fetch(`${base}/articles?category=${slug}&limit=20`, { cache: "no-store" })
+      fetch(`${process.env.NEXT_PUBLIC_API_URL}/categories/${slug}`, { cache: "no-store" }),
+      fetch(`${process.env.NEXT_PUBLIC_API_URL}/articles?category=${slug}&page=${page}&limit=9`, { cache: "no-store" }),
     ]);
-    
-    if (!categoryRes.ok) return null;
-    
+
+    if (!categoryRes.ok || !articlesRes.ok) throw new Error("Failed to fetch data");
+
     const categoryData = await categoryRes.json();
-    const articlesData = articlesRes.ok ? await articlesRes.json() : { articles: [] };
-    
+    const articlesData = await articlesRes.json();
+
     return {
-      category: categoryData?.category,
-      articles: Array.isArray(articlesData?.articles) ? articlesData.articles : []
+      category: categoryData.category,
+      articles: articlesData.data,
+      pagination: articlesData.pagination,
     };
-  } catch {
+  } catch (error) {
+    console.error("Error in getCategoryWithArticles:", error);
     return null;
   }
 }
 
-export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
-  const data = await getCategoryWithArticles(params.slug);
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params;
+  const data = await getCategoryWithArticles(slug, 1);
   if (!data) return { title: "Category Not Found" };
-  
+
   const { category } = data;
-  const title = `${category.name} News`;
-  const description = category.description || `Latest ${category.name.toLowerCase()} news and analysis from The Common Voice`;
+  const title = `${category.name} - Latest News & Updates`;
+  const description = category.description || `Stay updated with the latest ${category.name.toLowerCase()} news from The Commons Voice`;
 
   return {
     title,
@@ -40,45 +49,33 @@ export async function generateMetadata({ params }: { params: { slug: string } })
       title,
       description,
       type: "website",
+      url: `${process.env.NEXT_PUBLIC_SITE_URL}/category/${slug}`,
+    },
+    twitter: {
+      card: "summary",
+      title,
+      description,
     },
   };
 }
 
-const validCategories = ["world", "politics", "business"];
+export default async function CategoryPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
+  const data = await getCategoryWithArticles(slug, 1);
 
-export default async function CategoryPage({ params }: { params: { slug: string } }) {
-  if (!validCategories.includes(params.slug)) {
-    notFound();
-  }
+  if (!data) notFound();
 
-  const data = await getCategoryWithArticles(params.slug);
-  
-  if (!data) {
-    notFound();
-  }
-
-  const { category, articles } = data;
+  const { category, articles, pagination } = data;
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">{category.name}</h1>
-        {category.description && (
-          <p className="text-lg text-muted-foreground">{category.description}</p>
-        )}
-      </div>
-
-      {articles.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {articles.map((article) => (
-            <ArticleCard key={article.id} article={article} />
-          ))}
-        </div>
-      ) : (
-        <div className="text-center py-12">
-          <p className="text-muted-foreground">No articles found in this category.</p>
-        </div>
-      )}
-    </div>
+    <CategoryClient
+      category={category}
+      initialArticles={articles}
+      initialPagination={pagination}
+    />
   );
 }

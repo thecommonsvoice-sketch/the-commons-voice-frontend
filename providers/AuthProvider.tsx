@@ -1,4 +1,6 @@
+// src/providers/AuthProvider.tsx
 "use client";
+
 import { ReactNode, useEffect, useState } from "react";
 import { api } from "@/lib/api";
 import { useUserStore } from "@/store/useUserStore";
@@ -8,24 +10,34 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    let cancelled = false;
-    (async () => {
+    // let cancelled = false;
+
+    async function hydrate() {
       try {
         const { data } = await api.get("/auth/me");
-        if (!cancelled) setUser(data.user ?? null);
+        // if (!cancelled)
+        setUser(data.user);
       } catch {
         try {
-          await api.post("/auth/refresh");
+          // await api.post("/auth/refresh");
           const { data } = await api.get("/auth/me");
-          if (!cancelled) setUser(data.user ?? null);
+          // if (!cancelled)
+          setUser(data.user);
         } catch {
-          if (!cancelled) clearUser();
+          // if (!cancelled)
+          clearUser();
         }
       } finally {
-        if (!cancelled) setReady(true);
+        // if (!cancelled)
+
+        setReady(true);
       }
-    })();
-    return () => { cancelled = true; };
+    }
+
+    hydrate();
+    // return () => {
+    //   cancelled = true;
+    // };
   }, [setUser, clearUser]);
 
   if (!ready) {
@@ -35,5 +47,6 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
       </div>
     );
   }
+
   return <>{children}</>;
 }

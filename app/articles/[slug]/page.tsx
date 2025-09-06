@@ -4,13 +4,15 @@ import { formatDistanceToNow } from "date-fns";
 import type { Article } from "@/lib/types";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { AdSlot } from "@/components/AdSlot";
+import Link from "next/link";
 
+// --- Fetch Single Article ---
 async function getArticle(slug: string): Promise<Article | null> {
   try {
     const base = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000/api";
-    const res = await fetch(`${base}/articles/${slug}`, { 
-      cache: "no-store",
-      next: { revalidate: 300 }
+    const res = await fetch(`${base}/articles/${slug}`, {
+      next: { revalidate: 600 },
     });
     if (!res.ok) return null;
     const data = await res.json();
@@ -20,45 +22,86 @@ async function getArticle(slug: string): Promise<Article | null> {
   }
 }
 
-export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
-  const article = await getArticle(params.slug);
+// --- Fetch Related Articles ---
+async function getRelatedArticles(categorySlug: string, excludeSlug: string) {
+  try {
+    const base = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000/api";
+    const res = await fetch(
+      `${base}/articles?category=${categorySlug}&limit=4&exclude=${excludeSlug}`,
+      { next: { revalidate: 600 } }
+    );
+    if (!res.ok) return [];
+    const data = await res.json();
+    return Array.isArray(data?.data) ? data.data : [];
+  } catch {
+    return [];
+  }
+}
+
+// --- Fetch Next & Previous Articles ---
+async function getAdjacentArticles(slug: string) {
+  try {
+    const base = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000/api";
+    const res = await fetch(`${base}/articles/adjacent/${slug}`, {
+      next: { revalidate: 600 },
+    });
+    if (!res.ok) return { next: null, prev: null };
+    const data = await res.json();
+    return {
+      next: data?.next ?? null,
+      prev: data?.prev ?? null,
+    };
+  } catch {
+    return { next: null, prev: null };
+  }
+}
+
+// --- SEO Metadata ---
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const article = await getArticle(slug);
   if (!article) return { title: "Article Not Found" };
 
   const title = article.metaTitle || article.title;
-  const description = article.metaDescription || article.excerpt || `Read ${article.title} on The Common Voice`;
+  const description =
+    article.metaDescription ||
+    article.excerpt ||
+    `Read ${article.title} on The Commons Voice`;
 
   return {
     title,
     description,
-    keywords: [article.category?.name, "news", "journalism"].filter((k): k is string => typeof k === "string"),
-    authors: article.author?.name ? [{ name: article.author.name }] : undefined,
     openGraph: {
       title,
       description,
-      images: article.ogImage || article.coverImage ? [{ 
-        url: article.ogImage || article.coverImage!,
-        alt: article.title 
-      }] : undefined,
       type: "article",
       publishedTime: article.createdAt,
       modifiedTime: article.updatedAt,
-      authors: article.author?.name ? [article.author.name] : undefined,
-    },
-    twitter: {
-      card: "summary_large_image",
-      title,
-      description,
-      images: article.ogImage || article.coverImage ? [article.ogImage || article.coverImage!] : undefined,
     },
   };
 }
 
-export default async function ArticlePage({ params }: { params: { slug: string } }) {
-  const article = await getArticle(params.slug);
-  
+// --- Page Component ---
+export default async function ArticlePage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
+  const article = await getArticle(slug);
+
   if (!article) {
     notFound();
   }
+
+  const relatedArticles = article?.category?.slug
+    ? await getRelatedArticles(article.category.slug, slug)
+    : [];
+  const { next, prev } = await getAdjacentArticles(slug);
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -74,66 +117,151 @@ export default async function ArticlePage({ params }: { params: { slug: string }
     },
     publisher: {
       "@type": "Organization",
-      name: "The Common Voice",
+      name: "The Commons Voice",
+      logo: {
+        "@type": "ImageObject",
+        url: `${process.env.NEXT_PUBLIC_SITE_URL}/logo.png`,
+      },
     },
+    mainEntityOfPage: `${process.env.NEXT_PUBLIC_SITE_URL}/articles/${article.slug}`,
   };
 
   return (
     <>
+      {/* Structured Data */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      
+
       <div className="container mx-auto px-4 py-8 max-w-4xl">
         <article className="space-y-6">
-          {/* Article header */}
+          {/* Ad: Leaderboard */}
+          <AdSlot slot="article-top" width={970} height={250} className="mx-auto mb-6" />
+
+          {/* Header */}
           <header className="space-y-4">
             {article.category && (
-              <Badge variant="secondary" className="mb-2">
-                {article.category.name}
-              </Badge>
+              <Link href={`/category/${article.category.slug}`}>
+                <Badge variant="secondary" className="mb-2 cursor-pointer">
+                  {article.category.name}
+                </Badge>
+              </Link>
             )}
-            
+
             <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold leading-tight">
               {article.title}
             </h1>
-            
+
             {article.excerpt && (
               <p className="text-lg text-muted-foreground leading-relaxed">
                 {article.excerpt}
               </p>
             )}
-            
-            <div className="flex items-center space-x-4 text-sm text-muted-foreground">
+
+            <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
               {article.author?.name && (
-                <span>By <span className="font-medium">{article.author.name}</span></span>
+                <span>
+                  By{" "}
+                  <span className="font-medium">{article.author.name}</span>
+                </span>
               )}
               {article.createdAt && (
                 <>
                   <Separator orientation="vertical" className="h-4" />
-                  <span>{formatDistanceToNow(new Date(article.createdAt), { addSuffix: true })}</span>
+                  <time dateTime={article.createdAt}>
+                    {formatDistanceToNow(new Date(article.createdAt), {
+                      addSuffix: true,
+                    })}
+                  </time>
                 </>
               )}
             </div>
           </header>
 
-          {/* Featured image */}
+          {/* Featured Image */}
           {article.coverImage && (
             <div className="relative aspect-video overflow-hidden rounded-xl">
               <img
                 src={article.coverImage}
                 alt={article.title}
                 className="h-full w-full object-cover"
+                loading="lazy"
               />
             </div>
           )}
 
-          {/* Article content */}
-          <div 
+          {/* Content */}
+          <div
             className="prose prose-lg prose-neutral max-w-none dark:prose-invert prose-headings:font-semibold prose-a:text-primary prose-a:no-underline hover:prose-a:underline"
             dangerouslySetInnerHTML={{ __html: article.content }}
           />
+
+          {/* Inline Ad */}
+          <AdSlot slot="article-inline" width={728} height={90} className="mx-auto my-8" />
+
+          {/* Next & Previous Navigation */}
+          {(next || prev) && (
+            <div className="flex justify-between mt-10 border-t pt-6">
+              {prev ? (
+                <Link href={`/articles/${prev.slug}`} className="text-primary hover:underline">
+                  ← {prev.title}
+                </Link>
+              ) : <span />}
+              {next ? (
+                <Link href={`/articles/${next.slug}`} className="text-primary hover:underline">
+                  {next.title} →
+                </Link>
+              ) : <span />}
+            </div>
+          )}
+
+          {/* Related Articles */}
+          {relatedArticles.length > 0 && (
+            <section className="mt-12">
+              <h2 className="text-2xl font-semibold mb-4">Related Articles</h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                {relatedArticles.map((related: Article) => (
+                  <Link
+                    key={related.id}
+                    href={`/articles/${related.slug}`}
+                    className="group block rounded-lg border hover:shadow-md transition p-4"
+                  >
+                    <h3 className="text-lg font-medium group-hover:text-primary">
+                      {related.title}
+                    </h3>
+                    {related.excerpt && (
+                      <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
+                        {related.excerpt}
+                      </p>
+                    )}
+                  </Link>
+                ))}
+              </div>
+            </section>
+          )}
+
+          {/* Comments Section (Disqus Embed Placeholder) */}
+          {/* <section className="mt-12">
+            <h2 className="text-2xl font-semibold mb-4">Comments</h2>
+            <div id="disqus_thread"></div>
+            <script
+              dangerouslySetInnerHTML={{
+                __html: `
+                  var disqus_config = function () {
+                    this.page.url = '${process.env.NEXT_PUBLIC_SITE_URL}/articles/${article.slug}';
+                    this.page.identifier = '${article.id}';
+                  };
+                  (function() {
+                    var d = document, s = d.createElement('script');
+                    s.src = 'https://YOUR_DISQUS_SHORTNAME.disqus.com/embed.js';
+                    s.setAttribute('data-timestamp', +new Date());
+                    (d.head || d.body).appendChild(s);
+                  })();
+                `,
+              }}
+            />
+          </section> */}
         </article>
       </div>
     </>

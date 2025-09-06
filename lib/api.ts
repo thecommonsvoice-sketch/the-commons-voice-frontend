@@ -27,7 +27,7 @@ api.interceptors.response.use(
 
       isRefreshing = true;
       try {
-        await api.post("/auth/refresh");
+        await api.post("/auth/me");
         processQueue();
         return api(original);
       } catch (e) {

@@ -1,6 +1,7 @@
 "use client";
+
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import { api } from "@/lib/api";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -9,12 +10,12 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { toast } from "sonner";
 import { Category } from "@/lib/types";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
-import { useUserStore } from "@/store/useUserStore";
 
 const CLOUDINARY_UPLOAD_URL = `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/upload`;
 
-export default function NewArticlePage() {
+export default function EditSpecialAccessArticlePage() {
   const router = useRouter();
+  const params = useParams(); // Get the slug from the URL
   const [title, setTitle] = useState<string>("");
   const [content, setContent] = useState<string>("");
   const [categoryId, setCategoryId] = useState<string>("");
@@ -24,13 +25,41 @@ export default function NewArticlePage() {
   const [loading, setLoading] = useState<boolean>(false);
   const [categories, setCategories] = useState<Category[]>([]);
   const [imageUploading, setImageUploading] = useState<boolean>(false);
- const { user } = useUserStore();
-  useEffect(() => {
-    api.get("/categories?limit=100").then((res) => {
-      setCategories(res.data?.categories || []);
-    });
-  }, []);
 
+  // Fetch categories and article details
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // Fetch categories
+        const categoryRes = await api.get("/categories?limit=100");
+        setCategories(categoryRes.data?.categories || []);
+
+        // Fetch article details
+        const articleRes = await api.get(`/articles/role-check/${params.slug}`);
+        const article = articleRes.data?.article;
+
+        if (article) {
+          setTitle(article.title);
+          setContent(article.content);
+          setCategoryId(article.categoryId);
+          setCoverImage(article.coverImage);
+          setMetaTitle(article.metaTitle);
+          setMetaDescription(article.metaDescription);
+        } else {
+          toast.error("Article not found.");
+          router.push("/dashboard");
+        }
+      } catch (error) {
+        console.error("Failed to fetch data:", error);
+        toast.error("Failed to load article details.");
+        router.push("/dashboard");
+      }
+    };
+
+    fetchData();
+  }, [params.slug, router]);
+
+  // Handle image upload
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -58,11 +87,12 @@ export default function NewArticlePage() {
     }
   };
 
+  // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     try {
-      await api.post("/articles", {
+      await api.put(`/articles/${params.slug}`, {
         title,
         content,
         categoryId,
@@ -70,10 +100,10 @@ export default function NewArticlePage() {
         metaTitle,
         metaDescription,
       });
-      toast.success("Article created!");
-      router.push(`/dashboard/${(user?.role)?.toLocaleLowerCase() || ''}`);
+      toast.success("Article updated!");
+      router.push(`/dashboard`);
     } catch (err: any) {
-      toast.error(err?.response?.data?.message || "Failed to create article");
+      toast.error(err?.response?.data?.message || "Failed to update article");
     } finally {
       setLoading(false);
     }
@@ -82,7 +112,7 @@ export default function NewArticlePage() {
   return (
     <ProtectedRoute>
       <div className="max-w-3xl mx-auto py-10 px-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg">
-        <h1 className="text-3xl font-semibold text-center mb-8 text-gray-800 dark:text-white">Create New Article</h1>
+        <h1 className="text-3xl font-semibold text-center mb-8 text-gray-800 dark:text-white">Edit Article</h1>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Title Section */}
@@ -197,7 +227,7 @@ export default function NewArticlePage() {
               loading ? "bg-indigo-400" : "bg-indigo-600 hover:bg-indigo-700"
             }`}
           >
-            {loading ? "Creating..." : "Create Article"}
+            {loading ? "Updating..." : "Update Article"}
           </Button>
         </form>
       </div>

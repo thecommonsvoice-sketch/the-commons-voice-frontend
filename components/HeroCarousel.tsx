@@ -42,7 +42,7 @@ export function HeroCarousel({ articles }: HeroCarouselProps) {
         >
           {featuredArticles.map((article, index) => (
             <div key={article.id} className="w-full flex-shrink-0">
-              <ArticleCard article={article} variant="featured" />
+              <ArticleCard article={article} variant="featured" show={false} />
             </div>
           ))}
         </div>

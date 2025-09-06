@@ -4,14 +4,14 @@ import { Users, Target, Award, Globe } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "About Us",
-  description: "Learn more about The Common Voice - our mission, values, and commitment to independent journalism.",
+  description: "Learn more about The Commons Voice - our mission, values, and commitment to independent journalism.",
 };
 
 export default function AboutPage() {
   return (
     <div className="container mx-auto px-4 py-12 max-w-4xl">
       <div className="text-center space-y-4 mb-12">
-        <h1 className="text-4xl font-bold">About The Common Voice</h1>
+        <h1 className="text-4xl font-bold">About The Commons Voice</h1>
         <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
           Independent journalism for the modern world. We believe in the power of truth, transparency, and thoughtful reporting.
         </p>
@@ -62,7 +62,7 @@ export default function AboutPage() {
       <div className="prose prose-lg prose-neutral max-w-none dark:prose-invert">
         <h2>Our Story</h2>
         <p>
-          Founded in 2025, The Common Voice emerged from a simple belief: that quality journalism should be accessible to everyone. In an era of information overload and polarization, we strive to cut through the noise and deliver news that matters.
+          Founded in 2025, The Commons Voice emerged from a simple belief: that quality journalism should be accessible to everyone. In an era of information overload and polarization, we strive to cut through the noise and deliver news that matters.
         </p>
         
         <p>

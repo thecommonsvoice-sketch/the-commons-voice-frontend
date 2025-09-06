@@ -1,10 +1,10 @@
 "use client";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+// import { useRouter } from "next/navigation";
 import RequireAuth from "@/components/auth/RequiredAuth";
 import { useUserStore } from "@/store/useUserStore";
 import { api } from "@/lib/api";
-import { Article, User } from "@/lib/types";
+import { Article } from "@/lib/types";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -26,17 +26,17 @@ type ArticlesResponse = {
 
 export default function Dashboard() {
   const { user } = useUserStore();
-  const router = useRouter();
+  // const router = useRouter();
   const [userArticles, setUserArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);
   const [articleType, setArticleType] = useState<"ALL" | "DRAFT" | "PUBLISHED" | "ARCHIVED">("ALL");
   const [publishedToday, setPublishedToday] = useState(0);
   const [draftCount, setDraftCount] = useState(0);
+  const [bookmarkCount, setBookmarkCount] = useState(0);
 
   useEffect(() => {
     if (!user) return;
     setLoading(true);
-    console.log(`/articles?author=${user.name}&limit=10`)
     api
       .get<ArticlesResponse>(`/articles?author=${user.name}&limit=10`)
       .then((res) => {
@@ -51,6 +51,20 @@ export default function Dashboard() {
       .finally(() => setLoading(false));
   }, [user]);
 
+  useEffect(() => {
+    if (!user) return;
+    api
+      .get(`/bookmarks`)
+      .then((res) => {
+        setBookmarkCount(res.data.bookmarkCount || 0);
+      })
+      .catch(() => {
+        setBookmarkCount(0);
+      });
+
+      
+  }, [user]);
+
   // Filter articles by type
   const filteredArticles =
     articleType === "ALL"
@@ -58,7 +72,7 @@ export default function Dashboard() {
       : userArticles.filter((a) => a.status === articleType);
 
   return (
-    <RequireAuth allowedRoles={["ADMIN", "EDITOR", "REPORTER", "USER"]}>
+    <RequireAuth allowedRoles={["ADMIN","EDITOR" ,"REPORTER" ,"USER"]}>
       <div className="container mx-auto px-4 py-8 space-y-8">
         {/* User Info */}
         <Card>
@@ -78,7 +92,11 @@ export default function Dashboard() {
 
         {/* Stats */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <Card>
+
+{
+          (user?.role === "REPORTER" || user?.role === "EDITOR" || user?.role === "ADMIN") && (
+            <>
+                      <Card>
             <CardHeader>
               <CardTitle className="text-sm font-medium">Published Today</CardTitle>
             </CardHeader>
@@ -91,7 +109,7 @@ export default function Dashboard() {
           </Card>
           <Card>
             <CardHeader>
-              <CardTitle className="text-sm font-medium">Total Articles</CardTitle>
+              <CardTitle className="text-sm font-medium">Total Published Articles</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{userArticles.length}</div>
@@ -113,6 +131,37 @@ export default function Dashboard() {
               </p>
             </CardContent>
           </Card>
+            </>
+          )      
+}
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-sm font-medium">Bookmarks</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">
+                {bookmarkCount}
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Total Bookmarked Articles
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-sm font-medium">Comments</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">
+                {draftCount}
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Total Comments Made
+              </p>
+            </CardContent>
+          </Card>
         </div>
 
         {/* New Article Button and Article Type Selector */}
@@ -127,7 +176,7 @@ export default function Dashboard() {
             <select
               value={articleType}
               onChange={e => setArticleType(e.target.value as typeof articleType)}
-              className="w-40 border rounded px-2 py-1"
+              className="w-40 border rounded px-2 py-1 dark:bg-black"
             >
               <option value="ALL">All</option>
               <option value="DRAFT">Draft</option>
