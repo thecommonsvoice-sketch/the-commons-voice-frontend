@@ -74,18 +74,18 @@ export default function SignupPage() {
   }
 
   return (
-    <div className="container mx-auto max-w-md px-4 py-12">
+    <div className="container mx-auto max-w-md px-4 sm:px-6 py-8 sm:py-12">
       <Card>
         <CardHeader className="space-y-1">
-          <CardTitle className="text-2xl font-semibold tracking-tight">
+          <CardTitle className="text-xl sm:text-2xl font-semibold tracking-tight">
             Create an account
           </CardTitle>
-          <CardDescription>
+          <CardDescription className="text-sm">
             Enter your details below to create your account
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-3 sm:space-y-4">
             <div className="space-y-2">
               <Label htmlFor="name">Name</Label>
               <Input
@@ -153,7 +153,7 @@ export default function SignupPage() {
             </Button>
           </form>
 
-          <div className="mt-6 text-center text-sm">
+          <div className="mt-4 sm:mt-6 text-center text-xs sm:text-sm">
             <span className="text-muted-foreground">Already have an account? </span>
             <Link href="/login" className="text-primary hover:underline font-medium">
               Sign in

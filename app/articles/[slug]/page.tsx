@@ -134,13 +134,13 @@ export default async function ArticlePage({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      <div className="container mx-auto px-4 py-8 max-w-4xl">
-        <article className="space-y-6">
+      <div className="container mx-auto px-4 sm:px-6 py-6 sm:py-8 max-w-4xl">
+        <article className="space-y-4 sm:space-y-6">
           {/* Ad: Leaderboard */}
-          <AdSlot slot="article-top" width={970} height={250} className="mx-auto mb-6" />
+          <AdSlot slot="article-top" width={970} height={250} className="mx-auto mb-4 sm:mb-6 hidden md:block" />
 
           {/* Header */}
-          <header className="space-y-4">
+          <header className="space-y-3 sm:space-y-4">
             {article.category && (
               <Link href={`/category/${article.category.slug}`}>
                 <Badge variant="secondary" className="mb-2 cursor-pointer">
@@ -149,17 +149,17 @@ export default async function ArticlePage({
               </Link>
             )}
 
-            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold leading-tight">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold leading-tight">
               {article.title}
             </h1>
 
             {article.excerpt && (
-              <p className="text-lg text-muted-foreground leading-relaxed">
+              <p className="text-base sm:text-lg text-muted-foreground leading-relaxed">
                 {article.excerpt}
               </p>
             )}
 
-            <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
+            <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-xs sm:text-sm text-muted-foreground">
               {article.author?.name && (
                 <span>
                   By{" "}
@@ -193,7 +193,7 @@ export default async function ArticlePage({
 
           {/* Content */}
           <div
-            className="prose prose-lg prose-neutral max-w-none dark:prose-invert prose-headings:font-semibold prose-a:text-primary prose-a:no-underline hover:prose-a:underline"
+            className="prose prose-sm sm:prose-base md:prose-lg prose-neutral max-w-none dark:prose-invert prose-headings:font-semibold prose-a:text-primary prose-a:no-underline hover:prose-a:underline"
             dangerouslySetInnerHTML={{ __html: article.content }}
           />
 

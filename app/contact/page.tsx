@@ -51,27 +51,27 @@ export default function ContactPage() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-12 max-w-6xl">
-      <div className="text-center space-y-4 mb-12">
-        <h1 className="text-4xl font-bold">Contact Us</h1>
-        <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+    <div className="container mx-auto px-4 sm:px-6 py-8 sm:py-12 max-w-6xl">
+      <div className="text-center space-y-3 sm:space-y-4 mb-8 sm:mb-12">
+        <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold">Contact Us</h1>
+        <p className="text-sm sm:text-base md:text-lg text-muted-foreground max-w-2xl mx-auto px-2">
           Have a story tip, feedback, or question? We'd love to hear from you. Get in touch with our team.
         </p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
         {/* Contact Form */}
         <div className="lg:col-span-2">
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Send className="h-5 w-5" />
+              <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
+                <Send className="h-4 w-4 sm:h-5 sm:w-5" />
                 Send us a message
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <form onSubmit={handleSubmit(onSubmit)} className="space-y-3 sm:space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="name">Name</Label>
                     <Input
@@ -100,7 +100,7 @@ export default function ContactPage() {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="subject">Subject</Label>
                     <Input
@@ -140,7 +140,7 @@ export default function ContactPage() {
                   <Textarea
                     id="message"
                     placeholder="Tell us more about your inquiry..."
-                    className={`min-h-32 ${errors.message ? "border-red-500" : ""}`}
+                    className={`min-h-24 sm:min-h-32 ${errors.message ? "border-red-500" : ""}`}
                     {...register("message")}
                   />
                   {errors.message && (
@@ -157,33 +157,33 @@ export default function ContactPage() {
         </div>
 
         {/* Contact Info */}
-        <div className="space-y-6">
+        <div className="space-y-4 sm:space-y-6">
           <Card>
             <CardHeader>
-              <CardTitle>Get in Touch</CardTitle>
+              <CardTitle className="text-base sm:text-lg">Get in Touch</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex items-center space-x-3">
-                <Mail className="h-5 w-5 text-primary" />
+            <CardContent className="space-y-3 sm:space-y-4">
+              <div className="flex items-start sm:items-center space-x-3">
+                <Mail className="h-4 w-4 sm:h-5 sm:w-5 text-primary mt-1 sm:mt-0 flex-shrink-0" />
                 <div>
-                  <p className="font-medium">Email</p>
-                  <p className="text-sm text-muted-foreground">contact@thecommonvoice.com</p>
+                  <p className="font-medium text-sm sm:text-base">Email</p>
+                  <p className="text-xs sm:text-sm text-muted-foreground break-all">contact@thecommonvoice.com</p>
                 </div>
               </div>
 
-              <div className="flex items-center space-x-3">
-                <Phone className="h-5 w-5 text-primary" />
+              <div className="flex items-start sm:items-center space-x-3">
+                <Phone className="h-4 w-4 sm:h-5 sm:w-5 text-primary mt-1 sm:mt-0 flex-shrink-0" />
                 <div>
-                  <p className="font-medium">Phone</p>
-                  <p className="text-sm text-muted-foreground">+1 (555) 123-4567</p>
+                  <p className="font-medium text-sm sm:text-base">Phone</p>
+                  <p className="text-xs sm:text-sm text-muted-foreground">+1 (555) 123-4567</p>
                 </div>
               </div>
 
-              <div className="flex items-center space-x-3">
-                <MapPin className="h-5 w-5 text-primary" />
+              <div className="flex items-start space-x-3">
+                <MapPin className="h-4 w-4 sm:h-5 sm:w-5 text-primary mt-1 flex-shrink-0" />
                 <div>
-                  <p className="font-medium">Address</p>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="font-medium text-sm sm:text-base">Address</p>
+                  <p className="text-xs sm:text-sm text-muted-foreground">
                     123 News Avenue<br />
                     New York, NY 10001
                   </p>
@@ -194,20 +194,20 @@ export default function ContactPage() {
 
           <Card>
             <CardHeader>
-              <CardTitle>Newsroom</CardTitle>
+              <CardTitle className="text-base sm:text-lg">Newsroom</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-3">
+            <CardContent className="space-y-2 sm:space-y-3">
               <div>
-                <p className="font-medium">Editorial</p>
-                <p className="text-sm text-muted-foreground">editorial@thecommonvoice.com</p>
+                <p className="font-medium text-sm sm:text-base">Editorial</p>
+                <p className="text-xs sm:text-sm text-muted-foreground break-all">editorial@thecommonvoice.com</p>
               </div>
               <div>
-                <p className="font-medium">Tips & Leads</p>
-                <p className="text-sm text-muted-foreground">tips@thecommonvoice.com</p>
+                <p className="font-medium text-sm sm:text-base">Tips & Leads</p>
+                <p className="text-xs sm:text-sm text-muted-foreground break-all">tips@thecommonvoice.com</p>
               </div>
               <div>
-                <p className="font-medium">Press Inquiries</p>
-                <p className="text-sm text-muted-foreground">press@thecommonvoice.com</p>
+                <p className="font-medium text-sm sm:text-base">Press Inquiries</p>
+                <p className="text-xs sm:text-sm text-muted-foreground break-all">press@thecommonvoice.com</p>
               </div>
             </CardContent>
           </Card>

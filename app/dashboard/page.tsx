@@ -73,57 +73,59 @@ export default function Dashboard() {
 
   return (
     <RequireAuth allowedRoles={["ADMIN","EDITOR" ,"REPORTER" ,"USER"]}>
-      <div className="container mx-auto px-4 py-8 space-y-8">
+      <div className="container mx-auto px-4 sm:px-6 py-6 sm:py-8 space-y-6 sm:space-y-8">
         {/* User Info */}
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Edit className="h-5 w-5" />
-              Welcome, {user?.name || user?.email || "User"}
-              <Badge variant="secondary" className="ml-2">{user?.role}</Badge>
+            <CardTitle className="flex flex-col sm:flex-row sm:items-center gap-2 text-lg sm:text-xl">
+              <div className="flex items-center gap-2">
+                <Edit className="h-4 w-4 sm:h-5 sm:w-5" />
+                <span className="break-words">Welcome, {user?.name || user?.email || "User"}</span>
+              </div>
+              <Badge variant="secondary" className="self-start sm:ml-2 text-xs">{user?.role}</Badge>
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-muted-foreground">
-              Email: {user?.email}
+            <div className="text-sm sm:text-base text-muted-foreground break-all">
+              Email: <span className="break-all">{user?.email}</span>
             </div>
           </CardContent>
         </Card>
 
         {/* Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
 
 {
           (user?.role === "REPORTER" || user?.role === "EDITOR" || user?.role === "ADMIN") && (
             <>
                       <Card>
             <CardHeader>
-              <CardTitle className="text-sm font-medium">Published Today</CardTitle>
+              <CardTitle className="text-xs sm:text-sm font-medium">Published Today</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{publishedToday}</div>
-              <p className="text-xs text-muted-foreground">
+              <div className="text-xl sm:text-2xl font-bold">{publishedToday}</div>
+              <p className="text-xs sm:text-xs text-muted-foreground">
                 Articles published today
               </p>
             </CardContent>
           </Card>
           <Card>
             <CardHeader>
-              <CardTitle className="text-sm font-medium">Total Published Articles</CardTitle>
+              <CardTitle className="text-xs sm:text-sm font-medium">Total Published Articles</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{userArticles.length}</div>
-              <p className="text-xs text-muted-foreground">
+              <div className="text-xl sm:text-2xl font-bold">{userArticles.length}</div>
+              <p className="text-xs sm:text-xs text-muted-foreground">
                 Your articles
               </p>
             </CardContent>
           </Card>
           <Card>
             <CardHeader>
-              <CardTitle className="text-sm font-medium">Drafts</CardTitle>
+              <CardTitle className="text-xs sm:text-sm font-medium">Drafts</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">
+              <div className="text-xl sm:text-2xl font-bold">
                 {draftCount}
               </div>
               <p className="text-xs text-muted-foreground">
@@ -137,10 +139,10 @@ export default function Dashboard() {
 
           <Card>
             <CardHeader>
-              <CardTitle className="text-sm font-medium">Bookmarks</CardTitle>
+              <CardTitle className="text-xs sm:text-sm font-medium">Bookmarks</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">
+              <div className="text-xl sm:text-2xl font-bold">
                 {bookmarkCount}
               </div>
               <p className="text-xs text-muted-foreground">
@@ -151,10 +153,10 @@ export default function Dashboard() {
 
           <Card>
             <CardHeader>
-              <CardTitle className="text-sm font-medium">Comments</CardTitle>
+              <CardTitle className="text-xs sm:text-sm font-medium">Comments</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">
+              <div className="text-xl sm:text-2xl font-bold">
                 {draftCount}
               </div>
               <p className="text-xs text-muted-foreground">
@@ -166,8 +168,8 @@ export default function Dashboard() {
 
         {/* New Article Button and Article Type Selector */}
         {(user?.role === "REPORTER" || user?.role === "EDITOR" || user?.role === "ADMIN") && (
-          <div className="flex items-center justify-between mb-4">
-            <Button asChild>
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 sm:gap-4 mb-4">
+            <Button asChild className="w-full sm:w-auto">
               <Link href="/articles/new">
                 <Plus className="mr-2 h-4 w-4" />
                 New Article
@@ -176,7 +178,7 @@ export default function Dashboard() {
             <select
               value={articleType}
               onChange={e => setArticleType(e.target.value as typeof articleType)}
-              className="w-40 border rounded px-2 py-1 dark:bg-black"
+              className="w-full sm:w-40 border rounded px-2 py-2 sm:py-1 text-sm dark:bg-black"
             >
               <option value="ALL">All</option>
               <option value="DRAFT">Draft</option>
@@ -189,8 +191,8 @@ export default function Dashboard() {
         {/* Recent Articles */}
         <Card>
           <CardHeader>
-            <CardTitle>
-              <FileText className="h-5 w-5 mr-2" />
+            <CardTitle className="flex items-center text-lg sm:text-xl">
+              <FileText className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
               Recent Articles
             </CardTitle>
           </CardHeader>
@@ -198,22 +200,26 @@ export default function Dashboard() {
             {loading ? (
               <Skeleton className="h-24 w-full" />
             ) : filteredArticles.length > 0 ? (
-              <div className="space-y-4">
+              <div className="space-y-3 sm:space-y-4">
                 {filteredArticles.map((article) => (
-                  <div key={article.id} className="p-4 border rounded-lg flex flex-col gap-2">
-                    <div className="flex items-center gap-2">
-                      {article.coverImage && (
-                        <img
-                          src={article.coverImage}
-                          alt="cover"
-                          className="h-10 w-16 object-cover rounded mr-2"
-                        />
-                      )}
-                      <span className="font-semibold">{article.title}</span>
-                      <Badge variant="outline">{article.status}</Badge>
-                      {article.category && (
-                        <Badge variant="secondary">{article.category.name}</Badge>
-                      )}
+                  <div key={article.id} className="p-3 sm:p-4 border rounded-lg flex flex-col gap-2">
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        {article.coverImage && (
+                          <img
+                            src={article.coverImage}
+                            alt="cover"
+                            className="h-10 w-16 object-cover rounded flex-shrink-0"
+                          />
+                        )}
+                        <span className="font-semibold text-sm sm:text-base break-words flex-1 min-w-0">{article.title}</span>
+                      </div>
+                      <div className="flex gap-2 flex-wrap">
+                        <Badge variant="outline" className="text-xs">{article.status}</Badge>
+                        {article.category && (
+                          <Badge variant="secondary" className="text-xs">{article.category.name}</Badge>
+                        )}
+                      </div>
                     </div>
                     <div className="text-sm text-muted-foreground">
                       By {article.author?.name} &middot;{" "}
@@ -221,7 +227,7 @@ export default function Dashboard() {
                         ? new Date(article.createdAt).toLocaleDateString()
                         : ""}
                     </div>
-                    <div className="flex gap-2 mt-2">
+                    <div className="flex flex-col sm:flex-row gap-2 mt-2">
                       <Button asChild size="sm" variant="outline">
                         <Link href={`/articles/${article.slug}`}>View</Link>
                       </Button>

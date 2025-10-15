@@ -57,8 +57,8 @@ export default async function HomePage() {
   }));
 
   return (
-    <div className="container mx-auto px-4 py-6 space-y-8">
-      <AdSlot slot="leaderboard" width={970} height={250} className="mx-auto mb-6" />
+    <div className="container mx-auto px-2 sm:px-4 py-4 sm:py-6 space-y-6 sm:space-y-8">
+      <AdSlot slot="leaderboard" width={970} height={250} className="mx-auto mb-4 sm:mb-6 hidden md:block" />
 
       {featuredArticles.length > 0 && (
         <BreakingNewsTicker headlines={featuredArticles.map(a => a.title)} />
@@ -68,24 +68,24 @@ export default async function HomePage() {
         <HeroCarousel articles={featuredArticles} />
       )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 mt-6">
-        {/* Left Sidebar */}
-        <div >
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 sm:gap-6 lg:gap-8 mt-4 sm:mt-6">
+        {/* Left Sidebar - Hidden on mobile */}
+        <div className="hidden lg:block">
           <LeftPortalNav />
         </div>
 
         {/* Main content */}
-        <div className="lg:col-span-3 space-y-8">
+        <div className="lg:col-span-3 space-y-6 sm:space-y-8">
           <section>
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-bold border-b-2 border-primary pb-2">
+            <div className="flex items-center justify-between mb-4 sm:mb-6">
+              <h2 className="text-xl sm:text-2xl font-bold border-b-2 border-primary pb-2">
                 Latest News
               </h2>
-              <Link href="/articles" className="text-sm text-primary hover:underline">
+              <Link href="/articles" className="text-xs sm:text-sm text-primary hover:underline">
                 View all
               </Link>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6">
               {recentArticles.length > 0 ? (
                 recentArticles.map((article, index) => (
                   <div key={article.id}>
@@ -115,11 +115,11 @@ export default async function HomePage() {
           </section>
         </div>
 
-        {/* Right Sidebar */}
-        <aside className="space-y-6">
+        {/* Right Sidebar - Hidden on mobile, shown on lg+ */}
+        <aside className="hidden lg:block space-y-6">
           <Card>
             <CardHeader>
-              <CardTitle className="text-lg">Trending Topics</CardTitle>
+              <CardTitle className="text-base sm:text-lg">Trending Topics</CardTitle>
             </CardHeader>
             <CardContent className="space-y-2">
               {trendingCategories.map(category => (
@@ -130,7 +130,7 @@ export default async function HomePage() {
                 >
                   <Badge
                     variant="outline"
-                    className="w-full justify-start dark:hover:text-black hover:bg-primary hover:text-primary-foreground transition-colors"
+                    className="w-full justify-start dark:hover:text-black hover:bg-primary hover:text-primary-foreground transition-colors text-xs sm:text-sm"
                   >
                     {category.name}
                   </Badge>
@@ -139,24 +139,24 @@ export default async function HomePage() {
             </CardContent>
           </Card>
 
-          <AdSlot slot="sidebar-top" width={300} height={600} />
+          <AdSlot slot="sidebar-top" width={300} height={600} className="hidden xl:block" />
           <RecommendedWidget items={recommendedItems} />
 
           <Card>
             <CardHeader>
-              <CardTitle className="text-lg">Stay Updated</CardTitle>
+              <CardTitle className="text-base sm:text-lg">Stay Updated</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-sm text-muted-foreground mb-4">
+              <p className="text-xs sm:text-sm text-muted-foreground mb-4">
                 Get the latest news delivered to your inbox.
               </p>
               <div className="space-y-2">
                 <input
                   type="email"
                   placeholder="Enter your email"
-                  className="w-full px-3 py-2 text-sm border rounded-md"
+                  className="w-full px-3 py-2 text-xs sm:text-sm border rounded-md"
                 />
-                <button className="w-full bg-primary text-primary-foreground px-3 py-2 text-sm rounded-md hover:bg-primary/90 transition-colors">
+                <button className="w-full bg-primary text-primary-foreground px-3 py-2 text-xs sm:text-sm rounded-md hover:bg-primary/90 transition-colors">
                   Subscribe
                 </button>
               </div>

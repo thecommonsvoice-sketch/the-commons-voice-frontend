@@ -75,14 +75,14 @@ export function ArticleCard({ article, variant = "default", show = true }: Artic
   return (
     <>
       <Card
-        className={`group overflow-hidden transition-all duration-300 hover:shadow-xl ${
-          isFeatured ? "lg:col-span-2" : ""
+        className={`group overflow-hidden transition-all duration-300 hover:shadow-lg sm:hover:shadow-xl ${
+          isFeatured ? "sm:col-span-2 lg:col-span-2" : ""
         }`}
       >
         <Link href={`/articles/${article.slug}`} className="block">
           <div
             className={`relative overflow-hidden ${
-              isFeatured ? "aspect-[2/1]" : isCompact ? "aspect-[4/3]" : "aspect-video"
+              isFeatured ? "aspect-video sm:aspect-[2/1]" : isCompact ? "aspect-[4/3]" : "aspect-video"
             }`}
           >
             {article.coverImage ? (
@@ -102,57 +102,57 @@ export function ArticleCard({ article, variant = "default", show = true }: Artic
             {article.category && (
               <Badge
                 variant="secondary"
-                className="absolute top-2 left-2 bg-white/95 dark:bg-black/70 text-black dark:text-white shadow px-2 py-1 text-xs"
+                className="absolute top-1 left-1 sm:top-2 sm:left-2 bg-white/95 dark:bg-black/70 text-black dark:text-white shadow px-1.5 py-0.5 sm:px-2 sm:py-1 text-[10px] sm:text-xs"
               >
                 {article.category.name}
               </Badge>
             )}
           </div>
 
-          <CardContent className={`space-y-2 ${isCompact ? "p-3" : "p-4"}`}>
+          <CardContent className={`space-y-1.5 sm:space-y-2 ${isCompact ? "p-2 sm:p-3" : "p-3 sm:p-4"}`}>
             <h3
               className={`font-bold leading-snug group-hover:text-primary transition-colors line-clamp-2 ${
-                isFeatured ? "text-xl sm:text-2xl" : isCompact ? "text-sm" : "text-base sm:text-lg"
+                isFeatured ? "text-lg sm:text-xl md:text-2xl" : isCompact ? "text-xs sm:text-sm" : "text-sm sm:text-base md:text-lg"
               }`}
             >
               {article.title}
             </h3>
 
             {!isCompact && article.excerpt && (
-              <p className="text-sm text-muted-foreground line-clamp-2">
+              <p className="text-xs sm:text-sm text-muted-foreground line-clamp-2">
                 {article.excerpt}
               </p>
             )}
 
             <div
-              className={`flex items-center justify-between text-xs text-muted-foreground ${
-                isCompact ? "mt-1" : "mt-3"
+              className={`flex items-center justify-between text-[10px] sm:text-xs text-muted-foreground ${
+                isCompact ? "mt-0.5 sm:mt-1" : "mt-2 sm:mt-3"
               }`}
             >
-              <span className="truncate">{article.author?.name || "Staff Reporter"}</span>
+              <span className="truncate max-w-[60%] sm:max-w-none">{article.author?.name || "Staff Reporter"}</span>
               {publishedDate && <span>{publishedDate}</span>}
             </div>
           </CardContent>
         </Link>
 
-        <CardFooter className={`${show ? "p-2" : "hidden"}`}>
+        <CardFooter className={`${show ? "p-1.5 sm:p-2" : "hidden"}`}>
           <div className="flex items-center justify-between w-full">
-            <div className="flex items-center space-x-4 text-sm text-muted-foreground">
+            <div className="flex items-center space-x-2 sm:space-x-4 text-xs sm:text-sm text-muted-foreground">
               <Button
               disabled={disable}
                 onClick={() => setIsCommentsOpen(true)}
-                className="flex items-center hover:text-white bg-transparent dark:bg-transparent p-1 rounded text-black dark:hover:text-black dark:text-white"
+                className="flex items-center hover:text-white bg-transparent dark:bg-transparent p-0.5 sm:p-1 rounded text-black dark:hover:text-black dark:text-white h-auto"
               >
-                <MessageSquareMore size={16} />
+                <MessageSquareMore size={14} className="sm:w-4 sm:h-4" />
               </Button>
             </div>
             {user && (
               <Button
                 onClick={changeBookmarkStatus}
                 aria-label={isBookmarked ? "Remove Bookmark" : "Add Bookmark"}
-                className="p-1 rounded hover:text-white bg-transparent dark:bg-transparent text-black dark:hover:text-black dark:text-white"
+                className="p-0.5 sm:p-1 rounded hover:text-white bg-transparent dark:bg-transparent text-black dark:hover:text-black dark:text-white h-auto"
               >
-                {isBookmarked ? <BookmarkCheck size={16} /> : <Bookmark size={16} />}
+                {isBookmarked ? <BookmarkCheck size={14} className="sm:w-4 sm:h-4" /> : <Bookmark size={14} className="sm:w-4 sm:h-4" />}
               </Button>
             )}
           </div>

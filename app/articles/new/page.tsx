@@ -101,64 +101,64 @@ export default function NewArticlePage() {
 
   return (
     <ProtectedRoute>
-      <div className="max-w-3xl mx-auto py-10 px-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg">
-        <h1 className="text-3xl font-semibold text-center mb-8 text-gray-800 dark:text-white">Create New Article</h1>
+      <div className="max-w-3xl mx-auto py-6 sm:py-10 px-4 sm:px-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg">
+        <h1 className="text-2xl sm:text-3xl font-semibold text-center mb-6 sm:mb-8 text-gray-800 dark:text-white">Create New Article</h1>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
           {/* Title Section */}
           <div>
-            <label className="block text-lg font-medium text-gray-700 dark:text-gray-300">Title</label>
+            <label className="block text-base sm:text-lg font-medium text-gray-700 dark:text-gray-300">Title</label>
             <Input
               placeholder="Enter article title"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               required
-              className="mt-2 p-4 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="mt-2 p-3 sm:p-4 text-sm sm:text-base rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
           </div>
 
           {/* Content Section */}
           <div>
-            <label className="block text-lg font-medium text-gray-700 dark:text-gray-300">Content</label>
+            <label className="block text-base sm:text-lg font-medium text-gray-700 dark:text-gray-300">Content</label>
             <Textarea
               placeholder="Write your article content here"
               value={content}
               onChange={(e) => setContent(e.target.value)}
-              rows={8}
+              rows={6}
               required
-              className="mt-2 p-4 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="mt-2 p-3 sm:p-4 text-sm sm:text-base rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
           </div>
 
           {/* Meta Title & Description Section */}
-          <div className="flex gap-4">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
             <div className="flex-1">
-              <label className="block text-lg font-medium text-gray-700 dark:text-gray-300">Meta Title</label>
+              <label className="block text-base sm:text-lg font-medium text-gray-700 dark:text-gray-300">Meta Title</label>
               <Input
                 placeholder="SEO Title (max 60 characters)"
                 value={metaTitle}
                 onChange={(e) => setMetaTitle(e.target.value)}
                 maxLength={60}
-                className="mt-2 p-4 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="mt-2 p-3 sm:p-4 text-sm sm:text-base rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
               />
             </div>
             <div className="flex-1">
-              <label className="block text-lg font-medium text-gray-700 dark:text-gray-300">Meta Description</label>
+              <label className="block text-base sm:text-lg font-medium text-gray-700 dark:text-gray-300">Meta Description</label>
               <Input
                 placeholder="SEO Description (max 160 characters)"
                 value={metaDescription}
                 onChange={(e) => setMetaDescription(e.target.value)}
                 maxLength={160}
-                className="mt-2 p-4 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="mt-2 p-3 sm:p-4 text-sm sm:text-base rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
               />
             </div>
           </div>
 
           {/* Category Selection */}
           <div>
-            <label className="block text-lg font-medium text-gray-700 dark:text-gray-300">Category</label>
+            <label className="block text-base sm:text-lg font-medium text-gray-700 dark:text-gray-300">Category</label>
             <Select value={categoryId} onValueChange={setCategoryId}>
-              <SelectTrigger className="mt-2 w-full p-4 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+              <SelectTrigger className="mt-2 w-full p-3 sm:p-4 text-sm sm:text-base rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
                 <SelectValue placeholder="Select Category" />
               </SelectTrigger>
               <SelectContent>
@@ -173,12 +173,12 @@ export default function NewArticlePage() {
 
           {/* Cover Image Section */}
           <div>
-            <label className="block text-lg font-medium text-gray-700 dark:text-gray-300">Cover Image</label>
+            <label className="block text-base sm:text-lg font-medium text-gray-700 dark:text-gray-300">Cover Image</label>
             <div
-              className="mt-2 p-4 border-dashed border-2 border-gray-300 dark:border-gray-600 rounded-md text-center cursor-pointer"
+              className="mt-2 p-3 sm:p-4 border-dashed border-2 border-gray-300 dark:border-gray-600 rounded-md text-center cursor-pointer"
               onClick={() => document.getElementById("image-upload")?.click()}
             >
-              <span className="text-gray-500 dark:text-gray-400">
+              <span className="text-sm sm:text-base text-gray-500 dark:text-gray-400">
                 {imageUploading ? "Uploading..." : "Click or Drag & Drop Image"}
               </span>
               <input
@@ -191,17 +191,17 @@ export default function NewArticlePage() {
               />
             </div>
             {coverImage && (
-              <div className="mt-4 flex items-center gap-4">
+              <div className="mt-4 flex flex-col sm:flex-row items-center gap-3 sm:gap-4">
                 <img
                   src={coverImage}
                   alt="Cover"
-                  className="h-40 object-cover rounded-md shadow-md"
+                  className="h-32 sm:h-40 w-full sm:w-auto object-cover rounded-md shadow-md"
                 />
                 <Button
                   type="button"
                   variant="destructive"
                   onClick={() => setCoverImage(null)}
-                  className="h-10"
+                  className="h-10 w-full sm:w-auto"
                 >
                   Remove
                 </Button>
@@ -219,7 +219,7 @@ export default function NewArticlePage() {
           <Button
             type="submit"
             disabled={loading || imageUploading || !title || !content || !categoryId}
-            className={`w-full py-3 text-white font-semibold rounded-md transition-all duration-300 ${
+            className={`w-full py-2 sm:py-3 text-sm sm:text-base text-white font-semibold rounded-md transition-all duration-300 ${
               loading ? "bg-indigo-400" : "bg-indigo-600 hover:bg-indigo-700"
             }`}
           >
