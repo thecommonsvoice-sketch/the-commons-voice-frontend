@@ -8,8 +8,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
-import { Category } from "@/lib/types";
+import { Category, VideoData } from "@/lib/types";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
+import { VideoSection } from '@/components/VideoSection';
 
 const CLOUDINARY_UPLOAD_URL = `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/upload`;
 
@@ -25,6 +26,7 @@ export default function EditSpecialAccessArticlePage() {
   const [loading, setLoading] = useState<boolean>(false);
   const [categories, setCategories] = useState<Category[]>([]);
   const [imageUploading, setImageUploading] = useState<boolean>(false);
+  const [videos, setVideos] = useState<VideoData[]>([]);
 
   // Fetch categories and article details
   useEffect(() => {
@@ -38,13 +40,20 @@ export default function EditSpecialAccessArticlePage() {
         const articleRes = await api.get(`/articles/role-check/${params.slug}`);
         const article = articleRes.data?.article;
 
+        console.log('Fetched article data:', article);
+        console.log('Article videos:', article?.videos);
+
         if (article) {
           setTitle(article.title);
           setContent(article.content);
           setCategoryId(article.categoryId);
           setCoverImage(article.coverImage);
-          setMetaTitle(article.metaTitle);
-          setMetaDescription(article.metaDescription);
+          setMetaTitle(article.metaTitle || "");
+          setMetaDescription(article.metaDescription || "");
+          
+          const articleVideos = article.videos || [];
+          console.log('Setting videos to state:', articleVideos);
+          setVideos(articleVideos);
         } else {
           toast.error("Article not found.");
           router.push("/dashboard");
@@ -92,17 +101,22 @@ export default function EditSpecialAccessArticlePage() {
     e.preventDefault();
     setLoading(true);
     try {
-      await api.put(`/articles/${params.slug}`, {
+      // Filter out incomplete videos (those without URLs)
+      const validVideos = videos.filter(v => v.url && v.url.trim() !== '');
+      
+      await api.put(`/articles/role-check/${params.slug}`, {
         title,
         content,
         categoryId,
-        coverImage,
-        metaTitle,
-        metaDescription,
+        coverImage: coverImage || undefined,
+        metaTitle: metaTitle || undefined,
+        metaDescription: metaDescription || undefined,
+        videos: validVideos.length > 0 ? validVideos : undefined,
       });
       toast.success("Article updated!");
       router.push(`/dashboard`);
     } catch (err: any) {
+      console.error('Update error details:', err.response?.data);
       toast.error(err?.response?.data?.message || "Failed to update article");
     } finally {
       setLoading(false);
@@ -218,6 +232,12 @@ export default function EditSpecialAccessArticlePage() {
               </div>
             )}
           </div>
+
+          {/* Videos */}
+          <VideoSection 
+            videos={videos}
+            onChange={setVideos}
+          />
 
           {/* Submit Button */}
           <Button

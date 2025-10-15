@@ -200,6 +200,41 @@ export default async function ArticlePage({
           {/* Inline Ad */}
           <AdSlot slot="article-inline" width={728} height={90} className="mx-auto my-8" />
 
+          {/* Videos */}
+          {Array.isArray(article.videos) && article.videos.length > 0 && (
+            <section className="space-y-6">
+              <h2 className="text-2xl font-semibold">Videos</h2>
+              {article.videos.map((vid, idx) => (
+                <div key={idx} className="rounded-lg overflow-hidden border">
+                  {vid.type === "embed" ? (
+                    <div className="aspect-video">
+                      <iframe
+                        src={vid.url.replace('youtu.be/', 'www.youtube.com/embed/').replace('watch?v=', 'embed/')}
+                        title={vid.title || `Video ${idx + 1}`}
+                        className="w-full h-full"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                      />
+                    </div>
+                  ) : (
+                    <video controls className="w-full">
+                      <source src={vid.url} />
+                      Your browser does not support the video tag.
+                    </video>
+                  )}
+                  {(vid.title || vid.description) && (
+                    <div className="p-4 space-y-1 bg-gray-50 dark:bg-gray-800">
+                      {vid.title && <h3 className="text-lg font-medium">{vid.title}</h3>}
+                      {vid.description && (
+                        <p className="text-sm text-muted-foreground">{vid.description}</p>
+                      )}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </section>
+          )}
+
           {/* Next & Previous Navigation */}
           {(next || prev) && (
             <div className="flex justify-between mt-10 border-t pt-6">

@@ -22,6 +22,13 @@ export interface Category {
   updatedAt?: string;
 }
 
+export interface VideoData {
+  type: "upload" | "embed";
+  url: string;
+  title?: string;
+  description?: string;
+}
+
 export interface Article {
   id: string;
   title: string;
@@ -39,8 +46,9 @@ export interface Article {
   createdAt?: string;
   updatedAt?: string;
 
-  author?: Pick<User, "id"|"name">;
-  category?: Pick<Category, "id"|"name"|"slug">;
+  author?: Pick<User, "id" | "name">;
+  category?: Pick<Category, "id" | "name" | "slug">;
+  videos?: VideoData[];
 }
 
 export interface ApiResponse<T = any> {

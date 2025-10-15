@@ -7,9 +7,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
-import { Category } from "@/lib/types";
+import { Category, VideoData } from "@/lib/types";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import { useUserStore } from "@/store/useUserStore";
+import { VideoSection } from '@/components/VideoSection';
 
 const CLOUDINARY_UPLOAD_URL = `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/upload`;
 
@@ -24,12 +25,21 @@ export default function NewArticlePage() {
   const [loading, setLoading] = useState<boolean>(false);
   const [categories, setCategories] = useState<Category[]>([]);
   const [imageUploading, setImageUploading] = useState<boolean>(false);
- const { user } = useUserStore();
+  const [videos, setVideos] = useState<VideoData[]>([]);
+  const { user } = useUserStore();
+
   useEffect(() => {
     api.get("/categories?limit=100").then((res) => {
       setCategories(res.data?.categories || []);
     });
   }, []);
+
+  useEffect(() => {
+    if (!user) {
+      router.push('/login');
+      return;
+    }
+  }, [user, router]);
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -62,17 +72,23 @@ export default function NewArticlePage() {
     e.preventDefault();
     setLoading(true);
     try {
+      // Filter out incomplete videos (those without URLs)
+      const validVideos = videos.filter(v => v.url && v.url.trim() !== '');
+      
       await api.post("/articles", {
         title,
         content,
         categoryId,
-        coverImage,
-        metaTitle,
-        metaDescription,
+        coverImage: coverImage || undefined,
+        metaTitle: metaTitle || undefined,
+        metaDescription: metaDescription || undefined,
+        videos: validVideos.length > 0 ? validVideos : undefined,
       });
+      
       toast.success("Article created!");
-      router.push(`/dashboard/${(user?.role)?.toLocaleLowerCase() || ''}`);
+      router.push(`/dashboard/${user?.role?.toLowerCase() || ''}`);
     } catch (err: any) {
+      console.error('Error details:', err.response?.data); // Debug error response
       toast.error(err?.response?.data?.message || "Failed to create article");
     } finally {
       setLoading(false);
@@ -188,6 +204,12 @@ export default function NewArticlePage() {
               </div>
             )}
           </div>
+
+          {/* Video Section */}
+          <VideoSection 
+            videos={videos}
+            onChange={setVideos}
+          />
 
           {/* Submit Button */}
           <Button

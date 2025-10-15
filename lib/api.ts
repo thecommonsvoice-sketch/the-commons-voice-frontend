@@ -1,42 +1,44 @@
 import axios from "axios";
+import { toast } from "sonner";
 
 export const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000/api",
-  withCredentials: true, // send httpOnly cookies
+  withCredentials: true,
+  headers: {
+    "Content-Type": "application/json",
+  },
 });
 
-let isRefreshing = false;
-let queue: Array<() => void> = [];
+// Add request interceptor for debugging
+api.interceptors.request.use(
+  (config) => {
+    console.log("Request:", {
+      url: config.url,
+      method: config.method,
+      withCredentials: config.withCredentials,
+      headers: config.headers,
+      cookies: document.cookie,
+    });
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
 
-function processQueue() {
-  queue.forEach((resolve) => resolve());
-  queue = [];
-}
-
+// Add response interceptor for error handling
 api.interceptors.response.use(
-  (res) => res,
+  (response) => response,
   async (error) => {
-    const original = error.config as any;
-    if (error?.response?.status === 401 && !original?._retry) {
-      original._retry = true;
-
-      if (isRefreshing) {
-        await new Promise<void>((resolve) => queue.push(resolve));
-        return api(original);
-      }
-
-      isRefreshing = true;
+    if (error.response?.status === 401) {
+      // Try to refresh token
       try {
-        await api.post("/auth/me");
-        processQueue();
-        return api(original);
-      } catch (e) {
-        processQueue();
-        throw e;
-      } finally {
-        isRefreshing = false;
+        await api.post("/auth/refresh");
+        // Retry the original request
+        return api(error.config);
+      } catch (refreshError) {
+        toast.error("Session expired. Please log in again.");
+        window.location.href = "/login";
       }
     }
-    throw error;
+    return Promise.reject(error);
   }
 );
