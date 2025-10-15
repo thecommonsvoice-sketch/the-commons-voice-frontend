@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
+import { isAxiosError } from "axios";
 import { Category, VideoData } from "@/lib/types";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import { VideoSection } from '@/components/VideoSection';
@@ -115,9 +116,12 @@ export default function EditSpecialAccessArticlePage() {
       });
       toast.success("Article updated!");
       router.push(`/dashboard`);
-    } catch (err: any) {
-      console.error('Update error details:', err.response?.data);
-      toast.error(err?.response?.data?.message || "Failed to update article");
+    } catch (err) {
+      console.error('Update error details:', err);
+      const errorMessage = isAxiosError(err) && err.response?.data?.message 
+        ? err.response.data.message 
+        : 'Failed to update article';
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }

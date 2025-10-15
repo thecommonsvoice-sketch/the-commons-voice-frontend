@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
+import { isAxiosError } from "axios";
 import { Category, VideoData } from "@/lib/types";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import { useUserStore } from "@/store/useUserStore";
@@ -87,9 +88,12 @@ export default function NewArticlePage() {
       
       toast.success("Article created!");
       router.push(`/dashboard/${user?.role?.toLowerCase() || ''}`);
-    } catch (err: any) {
-      console.error('Error details:', err.response?.data); // Debug error response
-      toast.error(err?.response?.data?.message || "Failed to create article");
+    } catch (err) {
+      console.error('Error details:', err); // Debug error response
+      const errorMessage = isAxiosError(err) && err.response?.data?.message 
+        ? err.response.data.message 
+        : 'Failed to create article';
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }

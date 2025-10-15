@@ -8,6 +8,8 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Menu, X, User, Settings, LogOut, ChevronDown, MoreHorizontal } from "lucide-react";
+import { api } from "@/lib/api";
+import { toast } from "sonner";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -24,7 +26,11 @@ export default function Navbar() {
 
   const logout = async () => {
     try {
-      await fetch("/api/auth/logout", { method: "POST" });
+      await api.post("/auth/logout");
+      toast.success("Logged out successfully");
+    } catch (error) {
+      console.error("Logout error:", error);
+      toast.error("Failed to logout");
     } finally {
       clearUser();
       router.replace("/");

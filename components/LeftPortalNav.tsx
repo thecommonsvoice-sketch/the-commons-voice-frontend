@@ -3,9 +3,16 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { portalNav } from "@/lib/portalNav";
-import { ChevronDown, ChevronUp, SquareChevronLeft, X } from "lucide-react";
+import { ChevronDown, ChevronUp, SquareChevronLeft, X, type LucideIcon } from "lucide-react";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+
+interface NavItem {
+  label: string;
+  href: string;
+  icon?: LucideIcon;
+  children?: Array<{ label: string; href: string }>;
+}
 
 export function LeftPortalNav() {
   const pathname = usePathname();
@@ -83,7 +90,7 @@ function NavItem({
   setOpen,
   onClose,
 }: {
-  item: any;
+  item: NavItem;
   pathname: string;
   open: string | null;
   setOpen: (v: string | null) => void;
@@ -115,7 +122,7 @@ function NavItem({
                 exit={{ height: 0, opacity: 0 }}
                 className="pl-4 mt-1 space-y-1"
               >
-                {item.children.map((sub: any) => (
+                {item.children?.map((sub) => (
                   <Link
                     key={sub.label}
                     href={sub.href}

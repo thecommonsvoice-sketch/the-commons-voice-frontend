@@ -9,6 +9,7 @@ import { Separator } from "@/components/ui/separator";
 import { api } from "@/lib/api";
 import SpecialRoutes from "@/components/specialRoutes";
 import { toast } from "sonner";
+import { isAxiosError } from "axios";
 
 export default function ArticlePage() {
   const params = useParams();
@@ -22,14 +23,19 @@ export default function ArticlePage() {
       try {
         const { data } = await api.get(`/articles/role-check/${slug}`);
         setArticle(data?.article ?? null);
-      } catch (error: any) {
+      } catch (error) {
         console.error("Failed to fetch article:", error);
-        if (error.response?.status === 403) {
-          toast.error("Access denied: You don't have permission to view this article");
-          router.push("/dashboard");
-        } else if (error.response?.status === 401) {
-          toast.error("Please log in to view this article");
-          router.push("/login");
+        if (isAxiosError(error)) {
+          if (error.response?.status === 403) {
+            toast.error("Access denied: You don't have permission to view this article");
+            router.push("/dashboard");
+          } else if (error.response?.status === 401) {
+            toast.error("Please log in to view this article");
+            router.push("/login");
+          } else {
+            toast.error("Article not found");
+            router.push("/dashboard");
+          }
         } else {
           toast.error("Article not found");
           router.push("/dashboard");
