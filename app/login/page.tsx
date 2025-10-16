@@ -34,10 +34,10 @@ export default function LoginPage() {
     }
   }, [user, pathname, router]);
 
-  const { 
-    register, 
-    handleSubmit, 
-    formState: { errors, isSubmitting } 
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting }
   } = useForm<FormSchema>({
     resolver: zodResolver(schema),
   });
@@ -119,7 +119,7 @@ export default function LoginPage() {
           </form>
 
           <div className="mt-4 sm:mt-6 text-center text-xs sm:text-sm">
-            <span className="text-muted-foreground">Don't have an account? </span>
+            <span className="text-muted-foreground">Don&rsquo;t have an account? </span>
             <Link href="/signup" className="text-primary hover:underline font-medium">
               Sign up
             </Link>

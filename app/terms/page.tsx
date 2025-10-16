@@ -69,7 +69,7 @@ export default function TermsPage() {
         <ul className="list-disc ml-6 space-y-2">
           <li>
             All articles, images, and other content are the property of The
-            Common Voice or its licensors and are protected by copyright laws.
+            Commons Voice or its licensors and are protected by copyright laws.
           </li>
           <li>
             You may not reproduce, distribute, or create derivative works from
@@ -97,7 +97,7 @@ export default function TermsPage() {
 
         <h2 className="text-xl font-semibold mt-8 mb-2">5. Disclaimers</h2>
         <p>
-          The website is provided "as is" without warranties of any kind. While
+          The website is provided &ldquo;as is&rdquo; without warranties of any kind. While
           we strive for accuracy, we do not guarantee the completeness or
           reliability of any content.
         </p>

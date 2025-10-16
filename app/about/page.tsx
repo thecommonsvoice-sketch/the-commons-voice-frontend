@@ -64,7 +64,7 @@ export default function AboutPage() {
         <p>
           Founded in 2025, The Commons Voice emerged from a simple belief: that quality journalism should be accessible to everyone. In an era of information overload and polarization, we strive to cut through the noise and deliver news that matters.
         </p>
-        
+
         <p>
           Our editorial philosophy centers on thorough research, multiple source verification, and presenting complex issues with clarity and context. We believe that informed citizens are the foundation of a healthy democracy.
         </p>
@@ -79,7 +79,8 @@ export default function AboutPage() {
 
         <h2>Contact Our Editorial Team</h2>
         <p>
-          Have a story tip or feedback? We'd love to hear from you. Reach out to our editorial team at <a href="mailto:editorial@thecommonvoice.com">editorial@thecommonvoice.com</a>.
+          Have a story tip or feedback? We&rsquo;d love to hear from you. Reach out to our editorial team at{" "}
+          <a href="mailto:editorial@thecommonvoice.com">editorial@thecommonvoice.com</a>.
         </p>
       </div>
     </div>
