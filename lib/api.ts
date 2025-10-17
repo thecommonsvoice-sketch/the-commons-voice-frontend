@@ -25,21 +25,21 @@ api.interceptors.request.use(
 );
 
 // Add response interceptor for error handling
-api.interceptors.response.use(
-  (response) => response,
-  async (error) => {
-    if (error.response?.status === 401) {
-      // Try to refresh token
-      try {
-        await api.post("/auth/refresh");
-        // await api.get("auth/me")
-        // Retry the original request
-        return api(error.config);
-      } catch (refreshError) {
-        toast.error("Session expired. Please log in again.");
-        window.location.href = "/login";
-      }
-    }
-    return Promise.reject(error);
-  }
-);
+// api.interceptors.response.use(
+//   (response) => response,
+//   async (error) => {
+//     if (error.response?.status === 401) {
+//       // Try to refresh token
+//       try {
+//         // await api.post("/auth/refresh");
+//         // await api.get("auth/me")
+//         // Retry the original request
+//         // return api(error.config);
+//       } catch (refreshError) {
+//         toast.error("Session expired. Please log in again.");
+//         window.location.href = "/login";
+//       }
+//     }
+//     return Promise.reject(error);
+//   }
+// );

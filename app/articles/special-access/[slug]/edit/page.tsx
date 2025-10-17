@@ -41,8 +41,6 @@ export default function EditSpecialAccessArticlePage() {
         const articleRes = await api.get(`/articles/role-check/${params.slug}`);
         const article = articleRes.data?.article;
 
-        console.log('Fetched article data:', article);
-        console.log('Article videos:', article?.videos);
 
         if (article) {
           setTitle(article.title);
@@ -53,7 +51,6 @@ export default function EditSpecialAccessArticlePage() {
           setMetaDescription(article.metaDescription || "");
           
           const articleVideos = article.videos || [];
-          console.log('Setting videos to state:', articleVideos);
           setVideos(articleVideos);
         } else {
           toast.error("Article not found.");

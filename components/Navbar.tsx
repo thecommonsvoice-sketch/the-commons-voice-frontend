@@ -20,7 +20,7 @@ import {
 
 export default function Navbar() {
   const { user, clearUser } = useUserStore();
-  const { categories, setCategories } = useCategoryStore();
+  const { categories, setCategories, hasFetched } = useCategoryStore();
   const router = useRouter();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -38,36 +38,35 @@ export default function Navbar() {
   };
 
   // Fetch categories only if not already available
-  useEffect(() => {
-    const fetchCategories = async () => {
-      if (categories.length > 0) {
-        return; // Categories are already cached
-      }
-      try {
-        const base = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000/api";
-        const res = await fetch(`${base}/categories`, {
-          next: { revalidate: 600 }, // Cache and revalidate every 600 seconds
-        });
+useEffect(() => {
+  if (hasFetched) return;
 
-        if (!res.ok) {
-          throw new Error(`Failed to fetch categories: ${res.statusText}`);
-        }
+  const fetchCategories = async () => {
+    try {
+      const base = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000/api";
+      const res = await fetch(`${base}/categories`, {
+        next: { revalidate: 600 },
+      });
 
-        const data = await res.json();
+      if (!res.ok) throw new Error(`Failed to fetch categories: ${res.statusText}`);
 
-        const fetchedCategories = data?.categories.map((cat: { name: string; slug: string }) => ({
-          name: cat.name,
-          href: `/categories/${cat.slug}`,
-        })) || [];
+      const data = await res.json();
 
-        setCategories(fetchedCategories); // Store categories in global state
-      } catch (error) {
-        console.error("Failed to fetch categories:", error);
-      }
-    };
+      const fetchedCategories = data?.categories.map((cat: { name: string; slug: string }) => ({
+        name: cat.name,
+        href: `/categories/${cat.slug}`,
+      })) || [];
 
-    fetchCategories();
-  }, [categories, setCategories]);
+      setCategories(fetchedCategories); // ✅ This also sets hasFetched to true
+    } catch (error) {
+      console.error("Failed to fetch categories:", error);
+      useCategoryStore.getState().markFetched(); // ✅ Still mark as fetched to avoid retry loop
+    }
+  };
+
+  fetchCategories();
+}, [hasFetched, setCategories]);
+
 
   // Memoize visible and hidden categories
   const maxVisible = 5;
