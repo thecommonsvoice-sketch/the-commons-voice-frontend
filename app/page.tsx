@@ -60,9 +60,9 @@ export default async function HomePage() {
     <div className="container mx-auto px-2 sm:px-4 py-4 sm:py-6 space-y-6 sm:space-y-8">
       <AdSlot slot="leaderboard" width={970} height={250} className="mx-auto mb-4 sm:mb-6 hidden md:block" />
 
-      {featuredArticles.length > 0 && (
-        <BreakingNewsTicker headlines={featuredArticles.map(a => a.title)} />
-      )}
+
+        <BreakingNewsTicker />
+
 
       {featuredArticles.length > 0 && (
         <HeroCarousel articles={featuredArticles} />
