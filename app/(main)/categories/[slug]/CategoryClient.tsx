@@ -60,13 +60,6 @@ export default function CategoryClient({
         )}
       </div>
 
-      {/* Top Ad Section */}
-      <div className="mb-8 flex justify-center">
-        <div className="w-full max-w-3xl h-24 bg-gray-100 flex items-center justify-center text-gray-500 text-sm">
-          Advertisement
-        </div>
-      </div>
-
       {/* Search Bar */}
       <div className="mb-8 flex flex-col sm:flex-row items-center gap-4 justify-center">
         <input
@@ -102,13 +95,6 @@ export default function CategoryClient({
           No articles found.
         </div>
       ) : null}
-
-      {/* Bottom Ad Section */}
-      <div className="my-8 flex justify-center">
-        <div className="w-full max-w-3xl h-24 bg-gray-100 flex items-center justify-center text-gray-500 text-sm">
-          Advertisement
-        </div>
-      </div>
 
       {/* Pagination */}
       {!loading && pagination.totalPages > 1 && (

@@ -6,6 +6,7 @@ import { ThemeProvider } from "@/components/ThemeProvider";
 import Navbar from "@/components/Navbar";
 import { Toaster } from "@/components/ui/sonner";
 import Footer from "@/components/Footer";
+import Script from "next/script";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -40,6 +41,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className="overflow-x-hidden" suppressHydrationWarning>
       <body className={`${inter.className} h-screen bg-background text-foreground antialiased overflow-x-hidden`}>
+        <Script async src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${process.env.NEXT_PUBLIC_GOOGLE_ADSENSE_CLIENT_ID}`}
+     crossOrigin="anonymous"></Script>
         <ThemeProvider defaultTheme="system">
           <AuthProvider>
             <div className="relative flex min-h-screen flex-col">

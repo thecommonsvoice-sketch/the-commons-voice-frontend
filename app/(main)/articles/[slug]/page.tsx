@@ -4,7 +4,7 @@ import { formatDistanceToNow } from "date-fns";
 import type { Article } from "@/lib/types";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { AdSlot } from "@/components/AdSlot";
+// import { AdSlot } from "@/components/AdSlot";
 import Link from "next/link";
 
 // --- Fetch Single Article ---
@@ -137,7 +137,7 @@ export default async function ArticlePage({
       <div className="container mx-auto px-4 sm:px-6 py-6 sm:py-8 max-w-4xl">
         <article className="space-y-4 sm:space-y-6">
           {/* Ad: Leaderboard */}
-          <AdSlot slot="article-top" width={970} height={250} className="mx-auto mb-4 sm:mb-6 hidden md:block" />
+          {/* <AdSlot slot="article-top" width={970} height={250} className="mx-auto mb-4 sm:mb-6 hidden md:block" /> */}
 
           {/* Header */}
           <header className="space-y-3 sm:space-y-4">
@@ -198,7 +198,7 @@ export default async function ArticlePage({
           />
 
           {/* Inline Ad */}
-          <AdSlot slot="article-inline" width={728} height={90} className="mx-auto my-8" />
+          {/* <AdSlot slot="article-inline" width={728} height={90} className="mx-auto my-8" /> */}
 
           {/* Videos */}
           {Array.isArray(article.videos) && article.videos.length > 0 && (

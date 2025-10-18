@@ -4,7 +4,7 @@ import { Metadata } from "next";
 import { ArticleCard } from "@/components/ArticleCard";
 import { Skeleton } from "@/components/ui/loading-skeleton";
 import { Card, CardContent } from "@/components/ui/card";
-import { AdSlot } from "@/components/AdSlot";
+// import { AdSlot } from "@/components/AdSlot";
 import { SearchBar } from "@/components/SearchBar"; // New reusable search bar
 import type { Article } from "@/lib/types";
 
@@ -70,7 +70,7 @@ export default async function ArticlesPage({
   return (
     <div className="container mx-auto px-4 sm:px-6 py-6 sm:py-8 space-y-6 sm:space-y-8">
       {/* Leaderboard Ad */}
-      <AdSlot slot="leaderboard" width={970} height={250} className="mx-auto mb-4 sm:mb-6 hidden md:block" />
+      {/* <AdSlot slot="leaderboard" width={970} height={250} className="mx-auto mb-4 sm:mb-6 hidden md:block" /> */}
 
       <div className="mb-6 sm:mb-8">
         <h1 className="text-2xl sm:text-3xl font-bold mb-2">All Articles</h1>
@@ -87,7 +87,7 @@ export default async function ArticlesPage({
       </Suspense>
 
       {/* Bottom Ad */}
-      <AdSlot slot="footer-inline" width={728} height={90} className="mx-auto my-8" />
+      {/* <AdSlot slot="footer-inline" width={728} height={90} className="mx-auto my-8" /> */}
     </div>
   );
 }
@@ -112,9 +112,9 @@ async function ArticlesList({ page, search }: { page: number; search: string }) 
         {articles.map((article, index) => (
           <div key={article.id}>
             {/* Insert inline ads after every 6 articles */}
-            {index > 0 && index % 6 === 0 && (
+            {/* {index > 0 && index % 6 === 0 && (
               <AdSlot slot={`inline-${index}`} width={300} height={250} className="my-4" />
-            )}
+            )} */}
             <ArticleCard article={article} variant="default" />
           </div>
         ))}

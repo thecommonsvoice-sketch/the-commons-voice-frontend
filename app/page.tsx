@@ -5,7 +5,7 @@ import { Skeleton } from "@/components/ui/loading-skeleton";
 import type { Article, Category } from "@/lib/types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { AdSlot } from "@/components/AdSlot";
+// import { AdSlot } from "@/components/AdSlot";
 import { BreakingNewsTicker } from "@/components/BreakingNewsTicker";
 import { RecommendedWidget } from "@/components/RecommendedWidget";
 import { LeftPortalNav } from "@/components/LeftPortalNav";
@@ -58,7 +58,7 @@ export default async function HomePage() {
 
   return (
     <div className="container mx-auto px-2 sm:px-4 py-4 sm:py-6 space-y-6 sm:space-y-8">
-      <AdSlot slot="leaderboard" width={970} height={250} className="mx-auto mb-4 sm:mb-6 hidden md:block" />
+      {/* <AdSlot slot="leaderboard" width={970} height={250} className="mx-auto mb-4 sm:mb-6 hidden md:block" /> */}
 
 
         <BreakingNewsTicker />
@@ -89,14 +89,14 @@ export default async function HomePage() {
               {recentArticles.length > 0 ? (
                 recentArticles.map((article, index) => (
                   <div key={article.id}>
-                    {index > 0 && index % 4 === 0 && (
+                    {/* {index > 0 && index % 4 === 0 && (
                       <AdSlot
                         slot={`inline-${index}`}
                         width={300}
                         height={250}
                         className="my-4"
                       />
-                    )}
+                    )} */}
                     <ArticleCard article={article} />
                   </div>
                 ))
@@ -139,7 +139,7 @@ export default async function HomePage() {
             </CardContent>
           </Card>
 
-          <AdSlot slot="sidebar-top" width={300} height={600} className="hidden xl:block" />
+          {/* <AdSlot slot="sidebar-top" width={300} height={600} className="hidden xl:block" /> */}
           <RecommendedWidget items={recommendedItems} />
 
           <Card>

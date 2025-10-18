@@ -1,68 +1,89 @@
 "use client";
-import { useEffect, useState } from "react";
-import { Open_Sans } from "next/font/google";
+import { useEffect, useRef, useState } from "react";
+import { Oxanium } from "next/font/google";
 
-const openSans = Open_Sans({
-  subsets: ['latin'],
-  weight: ['400', '500', '600'], // You can adjust weights
-  display: 'swap',
+const oxanium = Oxanium({
+  subsets: ["latin"],
+  weight: ["400", "500", "600"],
+  display: "swap",
 });
 
 type IArticle = {
-   
-        id: string,
-        title: string,
-        photoUrl: string,
-        link: string,
-        description: string,
-    
-}
+  id: string;
+  title: string;
+  photoUrl: string;
+  link: string;
+  description: string;
+};
 
 export function BreakingNewsTicker() {
   const [headlines, setHeadlines] = useState<string[]>([]);
+  const marqueeRef = useRef<HTMLDivElement>(null);
+  const [duration, setDuration] = useState(60); // default fallback
 
   useEffect(() => {
-    // const controller = new AbortController();
-
     const fetchHeadlines = async () => {
       try {
         const base = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000/api";
         const res = await fetch(`${base}/news`);
         if (!res.ok) return [];
         const data = await res.json();
-        return Array.isArray(data) ? data.map((a:IArticle) => a.description) : [];
-   
+        return Array.isArray(data)
+          ? data.map((a: IArticle) => `${a.title} ${a.description || ""}`)
+          : [];
       } catch (err) {
-        if (err) return [];
+        console.error(err);
         return [];
       }
     };
 
     fetchHeadlines().then(setHeadlines);
-
-    // return () => controller.abort();
   }, []);
+
+  useEffect(() => {
+    if (!marqueeRef.current) return;
+
+    // Wait for browser to render text width
+    const el = marqueeRef.current;
+    const totalWidth = el.scrollWidth; // how wide the full text is
+    const speed = 300; // pixels per second (adjust this)
+    const newDuration = totalWidth / speed;
+
+    setDuration(newDuration);
+  }, [headlines]);
 
   if (!headlines.length) return null;
 
-  // duplicate headlines so the marquee appears continuous
   const repeated = [...headlines, ...headlines];
 
   return (
-    <div className={`bg-red-600 text-white py-2 px-4 overflow-hidden whitespace-nowrap ${openSans.className} `}>
+    <div
+      className={`bg-red-600 text-white py-2 px-4 overflow-hidden whitespace-nowrap ${oxanium.className}`}
+    >
       <strong className="mr-4">Breaking:</strong>
       <div
+        ref={marqueeRef}
         className="inline-block"
-        style={{ display: "inline-block", animation: "marquee 600s linear infinite" }}
+        style={{
+          display: "inline-block",
+          animation: `marquee ${duration}s linear infinite`,
+        }}
       >
         {repeated.map((h, i) => (
-          <span key={i} className="mx-6 inline-block">{h}</span>
+          <span key={i} className="mx-6 inline-block">
+            {h}
+          </span>
         ))}
       </div>
+
       <style jsx>{`
         @keyframes marquee {
-          from { transform: translateX(0%); }
-          to { transform: translateX(-50%); }
+          from {
+            transform: translateX(0%);
+          }
+          to {
+            transform: translateX(-50%);
+          }
         }
       `}</style>
     </div>
