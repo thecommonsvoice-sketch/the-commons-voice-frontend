@@ -1,4 +1,5 @@
-import type { Metadata } from "next";
+// app/layout.tsx
+import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import AuthProvider from "@/providers/AuthProvider";
@@ -6,7 +7,6 @@ import { ThemeProvider } from "@/components/ThemeProvider";
 import Navbar from "@/components/Navbar";
 import { Toaster } from "@/components/ui/sonner";
 import Footer from "@/components/Footer";
-import Script from "next/script";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -28,7 +28,6 @@ export const metadata: Metadata = {
   publisher: "The Commons Voice",
   applicationName: "The Commons Voice",
   referrer: "origin-when-cross-origin",
-  viewport: { width: "device-width", initialScale: 1, maximumScale: 1 },
   icons: [
     { rel: "icon", url: "/favicon.ico" },
     { rel: "apple-touch-icon", sizes: "180x180", url: "/apple-touch-icon.png" },
@@ -67,6 +66,12 @@ export const metadata: Metadata = {
   verification: { google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION },
 };
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+};
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   const adsenseClient = process.env.NEXT_PUBLIC_GOOGLE_ADSENSE_CLIENT_ID;
 
@@ -75,14 +80,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body
         className={`${inter.className} h-screen bg-background text-foreground antialiased overflow-x-hidden`}
       >
-        {/* Google AdSense Script */}
+        {/* Load AdSense script without data-nscript */}
         {adsenseClient && (
-          <Script
-            id="adsense"
-            strategy="afterInteractive"
+          <script
             async
             src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsenseClient}`}
             crossOrigin="anonymous"
+            dangerouslySetInnerHTML={{
+              __html: '',
+            }}
           />
         )}
 
@@ -91,7 +97,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <div className="relative flex min-h-screen flex-col">
               <Navbar />
 
-              {/* Optional top AdSense slot */}
+              {/* Top AdSense ad slot */}
               {adsenseClient && (
                 <div className="w-full flex justify-center my-4">
                   <ins
@@ -102,9 +108,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                     data-ad-format="auto"
                     data-full-width-responsive="true"
                   />
-                  <Script id="ads-init" strategy="afterInteractive">
-                    {`(adsbygoogle = window.adsbygoogle || []).push({});`}
-                  </Script>
+                  <script
+                    async
+                    dangerouslySetInnerHTML={{
+                      __html: `(adsbygoogle = window.adsbygoogle || []).push({});`,
+                    }}
+                  />
                 </div>
               )}
 
@@ -117,4 +126,4 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </body>
     </html>
   );
-}
+}   
