@@ -21,6 +21,7 @@ async function getArticles(): Promise<Article[]> {
     return Array.isArray(data?.data) ? data.data : [];
   } catch {
     return [];
+    
   }
 }
 

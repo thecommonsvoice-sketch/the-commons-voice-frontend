@@ -3,8 +3,14 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Users, Target, Award, Globe } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "About Us",
+  title: "About",
   description: "Learn more about The Commons Voice - our mission, values, and commitment to independent journalism.",
+};
+
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
 };
 
 export default function AboutPage() {

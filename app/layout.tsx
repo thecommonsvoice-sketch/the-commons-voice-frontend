@@ -14,24 +14,21 @@ export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"),
   title: { 
     default: "The Commons Voice - Independent News & Analysis",
-    template: "%s | The Commons Voice"
+    template: "%s | The Commons Voice",
   },
-  description: "Independent news, analysis, and reporting from around the world. Stay informed with breaking news, in-depth analysis, and expert coverage on politics, business, health, lifestyle, and more.",
+  description:
+    "Independent news, analysis, and reporting from around the world. Stay informed with breaking news, in-depth analysis, and expert coverage on politics, business, health, lifestyle, and more.",
   keywords: [
-    "news", "journalism", "politics", "world news", "analysis", "reporting",
-    "breaking news", "current events", "business news", "health news",
-    "lifestyle", "sports coverage", "television", "media", "investigative journalism"
+    "news","journalism","politics","world news","analysis","reporting",
+    "breaking news","current events","business news","health news",
+    "lifestyle","sports coverage","television","media","investigative journalism"
   ],
   authors: [{ name: "The Commons Voice Team" }],
   creator: "The Commons Voice",
   publisher: "The Commons Voice",
   applicationName: "The Commons Voice",
   referrer: "origin-when-cross-origin",
-  viewport: {
-    width: "device-width",
-    initialScale: 1,
-    maximumScale: 1,
-  },
+  viewport: { width: "device-width", initialScale: 1, maximumScale: 1 },
   icons: [
     { rel: "icon", url: "/favicon.ico" },
     { rel: "apple-touch-icon", sizes: "180x180", url: "/apple-touch-icon.png" },
@@ -42,20 +39,15 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     title: "The Commons Voice - Independent News & Analysis",
-    description: "Independent news, analysis, and reporting from around the world. Stay informed with breaking news, in-depth analysis, and expert coverage.",
+    description:
+      "Independent news, analysis, and reporting from around the world. Stay informed with breaking news, in-depth analysis, and expert coverage.",
     siteName: "The Commons Voice",
-    locale: "en_US",
-    images: [{
-      url: "/og-image.jpg",
-      width: 1200,
-      height: 630,
-      alt: "The Commons Voice - Independent News & Analysis",
-    }],
+    locale: "en_IN",
   },
   twitter: {
     card: "summary_large_image",
     title: "The Commons Voice",
-    description: "Independent news, analysis, and reporting from around the world. Stay informed with breaking news and expert coverage.",
+    description: "Independent news, analysis, and reporting from around the world.",
     site: "@TheCommonsVoice",
     creator: "@TheCommonsVoice",
     images: ["/twitter-image.jpg"],
@@ -71,27 +63,52 @@ export const metadata: Metadata = {
       "max-snippet": -1,
     },
   },
-  alternates: {
-    canonical: process.env.NEXT_PUBLIC_SITE_URL,
-  },
-  verification: {
-    google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION,
-  },
+  alternates: { canonical: process.env.NEXT_PUBLIC_SITE_URL },
+  verification: { google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
+  const adsenseClient = process.env.NEXT_PUBLIC_GOOGLE_ADSENSE_CLIENT_ID;
+
   return (
     <html lang="en" className="overflow-x-hidden" suppressHydrationWarning>
-      <body className={`${inter.className} h-screen bg-background text-foreground antialiased overflow-x-hidden`}>
-        <Script async src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${process.env.NEXT_PUBLIC_GOOGLE_ADSENSE_CLIENT_ID}`}
-     crossOrigin="anonymous"></Script>
+      <body
+        className={`${inter.className} h-screen bg-background text-foreground antialiased overflow-x-hidden`}
+      >
+        {/* Google AdSense Script */}
+        {adsenseClient && (
+          <Script
+            id="adsense"
+            strategy="afterInteractive"
+            async
+            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsenseClient}`}
+            crossOrigin="anonymous"
+          />
+        )}
+
         <ThemeProvider defaultTheme="system">
           <AuthProvider>
             <div className="relative flex min-h-screen flex-col">
               <Navbar />
-              <main className="w-full h-full overflow-y-auto flex-1">
-                {children}
-              </main>
+
+              {/* Optional top AdSense slot */}
+              {adsenseClient && (
+                <div className="w-full flex justify-center my-4">
+                  <ins
+                    className="adsbygoogle"
+                    style={{ display: "block" }}
+                    data-ad-client={adsenseClient}
+                    data-ad-slot="1234567890"
+                    data-ad-format="auto"
+                    data-full-width-responsive="true"
+                  />
+                  <Script id="ads-init" strategy="afterInteractive">
+                    {`(adsbygoogle = window.adsbygoogle || []).push({});`}
+                  </Script>
+                </div>
+              )}
+
+              <main className="w-full h-full overflow-y-auto flex-1">{children}</main>
               <Footer />
             </div>
             <Toaster />

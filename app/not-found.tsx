@@ -3,6 +3,12 @@ import { Button } from "@/components/ui/button";
 import { FileQuestion, ArrowLeft, Search } from "lucide-react";
 import Link from "next/link";
 
+      export const viewport = {
+          width: "device-width",
+          initialScale: 1,
+          maximumScale: 1,
+        };
+
 export default function NotFound() {
   return (
     <div className="container mx-auto px-4 py-12 max-w-md">
