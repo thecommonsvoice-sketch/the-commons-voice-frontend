@@ -11,13 +11,15 @@ import { toast } from "sonner";
 import { isAxiosError } from "axios";
 import { Category, VideoData } from "@/lib/types";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
-import { VideoSection } from '@/components/VideoSection';
+import { VideoSection } from "@/components/VideoSection";
 
 const CLOUDINARY_UPLOAD_URL = `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/upload`;
 
 export default function EditSpecialAccessArticlePage() {
   const router = useRouter();
-  const params = useParams(); // Get the slug from the URL
+  const params = useParams();
+  const slug = params?.slug; // ✅ safely access slug
+
   const [title, setTitle] = useState<string>("");
   const [content, setContent] = useState<string>("");
   const [categoryId, setCategoryId] = useState<string>("");
@@ -29,18 +31,25 @@ export default function EditSpecialAccessArticlePage() {
   const [imageUploading, setImageUploading] = useState<boolean>(false);
   const [videos, setVideos] = useState<VideoData[]>([]);
 
+  // Redirect if slug is missing
+  useEffect(() => {
+    if (!slug) {
+      toast.error("Invalid article URL.");
+      router.push("/dashboard");
+    }
+  }, [slug, router]);
+
   // Fetch categories and article details
   useEffect(() => {
+    if (!slug) return; // ✅ prevent API call if slug is missing
+
     const fetchData = async () => {
       try {
-        // Fetch categories
         const categoryRes = await api.get("/categories?limit=100");
         setCategories(categoryRes.data?.categories || []);
 
-        // Fetch article details
-        const articleRes = await api.get(`/articles/role-check/${params.slug}`);
+        const articleRes = await api.get(`/articles/role-check/${slug}`);
         const article = articleRes.data?.article;
-
 
         if (article) {
           setTitle(article.title);
@@ -49,9 +58,7 @@ export default function EditSpecialAccessArticlePage() {
           setCoverImage(article.coverImage);
           setMetaTitle(article.metaTitle || "");
           setMetaDescription(article.metaDescription || "");
-          
-          const articleVideos = article.videos || [];
-          setVideos(articleVideos);
+          setVideos(article.videos || []);
         } else {
           toast.error("Article not found.");
           router.push("/dashboard");
@@ -64,22 +71,20 @@ export default function EditSpecialAccessArticlePage() {
     };
 
     fetchData();
-  }, [params.slug, router]);
+  }, [slug, router]);
 
   // Handle image upload
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
     setImageUploading(true);
+
     const formData = new FormData();
     formData.append("file", file);
     formData.append("upload_preset", process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET!);
 
     try {
-      const res = await fetch(CLOUDINARY_UPLOAD_URL, {
-        method: "POST",
-        body: formData,
-      });
+      const res = await fetch(CLOUDINARY_UPLOAD_URL, { method: "POST", body: formData });
       const data = await res.json();
       if (data.secure_url) {
         setCoverImage(data.secure_url);
@@ -97,12 +102,13 @@ export default function EditSpecialAccessArticlePage() {
   // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!slug) return;
+
     setLoading(true);
     try {
-      // Filter out incomplete videos (those without URLs)
-      const validVideos = videos.filter(v => v.url && v.url.trim() !== '');
-      
-      await api.put(`/articles/role-check/${params.slug}`, {
+      const validVideos = videos.filter((v) => v.url && v.url.trim() !== "");
+
+      await api.put(`/articles/role-check/${slug}`, {
         title,
         content,
         categoryId,
@@ -111,13 +117,15 @@ export default function EditSpecialAccessArticlePage() {
         metaDescription: metaDescription || undefined,
         videos: validVideos.length > 0 ? validVideos : undefined,
       });
+
       toast.success("Article updated!");
-      router.push(`/dashboard`);
+      router.push("/dashboard");
     } catch (err) {
-      console.error('Update error details:', err);
-      const errorMessage = isAxiosError(err) && err.response?.data?.message 
-        ? err.response.data.message 
-        : 'Failed to update article';
+      console.error("Update error details:", err);
+      const errorMessage =
+        isAxiosError(err) && err.response?.data?.message
+          ? err.response.data.message
+          : "Failed to update article";
       toast.error(errorMessage);
     } finally {
       setLoading(false);
@@ -155,7 +163,7 @@ export default function EditSpecialAccessArticlePage() {
             />
           </div>
 
-          {/* Meta Title & Description Section */}
+          {/* Meta Title & Description */}
           <div className="flex gap-4">
             <div className="flex-1">
               <label className="block text-lg font-medium text-gray-700 dark:text-gray-300">Meta Title</label>
@@ -196,7 +204,7 @@ export default function EditSpecialAccessArticlePage() {
             </Select>
           </div>
 
-          {/* Cover Image Section */}
+          {/* Cover Image */}
           <div>
             <label className="block text-lg font-medium text-gray-700 dark:text-gray-300">Cover Image</label>
             <div
@@ -235,12 +243,9 @@ export default function EditSpecialAccessArticlePage() {
           </div>
 
           {/* Videos */}
-          <VideoSection 
-            videos={videos}
-            onChange={setVideos}
-          />
+          <VideoSection videos={videos} onChange={setVideos} />
 
-          {/* Submit Button */}
+          {/* Submit */}
           <Button
             type="submit"
             disabled={loading || imageUploading || !title || !content || !categoryId}
