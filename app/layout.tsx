@@ -12,16 +12,16 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"),
-  title: {
+  title: { 
     default: "The Commons Voice - Independent News & Analysis",
     template: "%s | The Commons Voice",
   },
   description:
     "Independent news, analysis, and reporting from around the world. Stay informed with breaking news, in-depth analysis, and expert coverage on politics, business, health, lifestyle, and more.",
   keywords: [
-    "news", "journalism", "politics", "world news", "analysis", "reporting",
-    "breaking news", "current events", "business news", "health news",
-    "lifestyle", "sports coverage", "television", "media", "investigative journalism"
+    "news","journalism","politics","world news","analysis","reporting",
+    "breaking news","current events","business news","health news",
+    "lifestyle","sports coverage","television","media","investigative journalism"
   ],
   authors: [{ name: "The Commons Voice Team" }],
   creator: "The Commons Voice",
@@ -80,15 +80,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body
         className={`${inter.className} h-screen bg-background text-foreground antialiased overflow-x-hidden`}
       >
-        {/* Load AdSense script without data-nscript */}
+        {/* Load AdSense script once, correctly */}
         {adsenseClient && (
           <script
             async
             src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsenseClient}`}
             crossOrigin="anonymous"
-            dangerouslySetInnerHTML={{
-              __html: '',
-            }}
           />
         )}
 
@@ -108,13 +105,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                     data-ad-format="auto"
                     data-full-width-responsive="true"
                   />
-                  {adsenseClient && (
-                    <script
-                      async
-                      src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsenseClient}`}
-                      crossOrigin="anonymous"
-                    />
-                  )}
+                  <script
+                    async
+                    dangerouslySetInnerHTML={{
+                      __html: `(adsbygoogle = window.adsbygoogle || []).push({});`,
+                    }}
+                  />
                 </div>
               )}
 
