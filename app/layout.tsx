@@ -12,28 +12,70 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"),
-  title: { default: "The Commons Voice", template: "%s | The Commons Voice" },
-  description: "Independent news, analysis, and reporting from around the world.",
-  keywords: ["news", "journalism", "politics", "world", "analysis", "reporting"],
+  title: { 
+    default: "The Commons Voice - Independent News & Analysis",
+    template: "%s | The Commons Voice"
+  },
+  description: "Independent news, analysis, and reporting from around the world. Stay informed with breaking news, in-depth analysis, and expert coverage on politics, business, health, lifestyle, and more.",
+  keywords: [
+    "news", "journalism", "politics", "world news", "analysis", "reporting",
+    "breaking news", "current events", "business news", "health news",
+    "lifestyle", "sports coverage", "television", "media", "investigative journalism"
+  ],
   authors: [{ name: "The Commons Voice Team" }],
   creator: "The Commons Voice",
   publisher: "The Commons Voice",
-  icons: [{ rel: "icon", url: "/favicon.ico" }],
+  applicationName: "The Commons Voice",
+  referrer: "origin-when-cross-origin",
+  viewport: {
+    width: "device-width",
+    initialScale: 1,
+    maximumScale: 1,
+  },
+  icons: [
+    { rel: "icon", url: "/favicon.ico" },
+    { rel: "apple-touch-icon", sizes: "180x180", url: "/apple-touch-icon.png" },
+    { rel: "icon", type: "image/png", sizes: "32x32", url: "/favicon-32x32.png" },
+    { rel: "icon", type: "image/png", sizes: "16x16", url: "/favicon-16x16.png" },
+  ],
+  manifest: "/site.webmanifest",
   openGraph: {
     type: "website",
-    title: "The Commons Voice",
-    description: "Independent news, analysis, and reporting from around the world.",
+    title: "The Commons Voice - Independent News & Analysis",
+    description: "Independent news, analysis, and reporting from around the world. Stay informed with breaking news, in-depth analysis, and expert coverage.",
     siteName: "The Commons Voice",
     locale: "en_US",
+    images: [{
+      url: "/og-image.jpg",
+      width: 1200,
+      height: 630,
+      alt: "The Commons Voice - Independent News & Analysis",
+    }],
   },
   twitter: {
     card: "summary_large_image",
     title: "The Commons Voice",
-    description: "Independent news, analysis, and reporting from around the world.",
+    description: "Independent news, analysis, and reporting from around the world. Stay informed with breaking news and expert coverage.",
+    site: "@TheCommonsVoice",
+    creator: "@TheCommonsVoice",
+    images: ["/twitter-image.jpg"],
   },
   robots: {
     index: true,
     follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+  alternates: {
+    canonical: process.env.NEXT_PUBLIC_SITE_URL,
+  },
+  verification: {
+    google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION,
   },
 };
 

@@ -1,18 +1,17 @@
 import {
   Home,
   Tv,
-  Newspaper,
-  BarChart3,
   Film,
   Briefcase,
-  CheckCircle,
+  HeartPulse,
   Palette,
+  Bike
 } from "lucide-react";
 
 export const portalNav = [
   { label: "Home", href: "/", icon: Home },
   { label: "TV", href: "/tv", icon: Tv },
-  { label: "Magazine", href: "/magazine", icon: Newspaper },
+  { label: "Sports", href: "/sports", icon: Bike },
   // {
   //   label: "Election Hub",
   //   href: "/election",
@@ -24,6 +23,6 @@ export const portalNav = [
   // },
   { label: "Life+Style", href: "/lifestyle", icon: Palette },
   { label: "Business", href: "/business", icon: Briefcase },
-  { label: "Videos", href: "/videos", icon: Film },
-  { label: "Fact Check", href: "/fact-check", icon: CheckCircle },
+  { label: "Health", href: "/health", icon: HeartPulse },
+  // { label: "Fact Check", href: "/fact-check", icon: CheckCircle },
 ];
