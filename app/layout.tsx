@@ -63,7 +63,7 @@ export const metadata: Metadata = {
     },
   },
   alternates: { canonical: process.env.NEXT_PUBLIC_SITE_URL },
-  verification: { google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION },
+  // verification: { google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION },
 };
 
 export const viewport: Viewport = {
@@ -77,6 +77,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
   return (
     <html lang="en" className="overflow-x-hidden" suppressHydrationWarning>
+      <head>
+        <meta name="google-site-verification" content="_nmZiV9WeB08rFkX15T_x_LEYcbinV484NCAcCg0rsY" />
+      </head>
       <body
         className={`${inter.className} h-screen bg-background text-foreground antialiased overflow-x-hidden`}
       >
