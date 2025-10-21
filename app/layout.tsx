@@ -1,3 +1,4 @@
+// app/layout.tsx
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
@@ -6,7 +7,6 @@ import { ThemeProvider } from "@/components/ThemeProvider";
 import Navbar from "@/components/Navbar";
 import { Toaster } from "@/components/ui/sonner";
 import Footer from "@/components/Footer";
-import Script from "next/script";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -75,17 +75,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body
         className={`${inter.className} h-screen bg-background text-foreground antialiased overflow-x-hidden`}
       >
-        {/* Google AdSense Script */}
-        {adsenseClient && (
-          <Script
-            id="adsense"
-            strategy="afterInteractive"
-            async
-            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsenseClient}`}
-            crossOrigin="anonymous"
-          />
-        )}
-
+        {/* AdSense script is now in pages/_document.tsx */}
         <ThemeProvider defaultTheme="system">
           <AuthProvider>
             <div className="relative flex min-h-screen flex-col">
@@ -102,9 +92,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                     data-ad-format="auto"
                     data-full-width-responsive="true"
                   />
-                  <Script id="ads-init" strategy="afterInteractive">
-                    {`(adsbygoogle = window.adsbygoogle || []).push({});`}
-                  </Script>
+                  <script
+                    async
+                    dangerouslySetInnerHTML={{
+                      __html: `(adsbygoogle = window.adsbygoogle || []).push({});`,
+                    }}
+                  />
                 </div>
               )}
 
@@ -117,4 +110,4 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </body>
     </html>
   );
-}
+}   
