@@ -14,11 +14,20 @@ import { isAxiosError } from "axios";
 export default function ArticlePage() {
   const params = useParams();
   const router = useRouter();
-  const slug = params.slug as string;
+
+  // Safely get slug
+  const slug = params?.slug;
+
   const [article, setArticle] = useState<Article | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (!slug) {
+      toast.error("Invalid URL, missing article slug.");
+      router.push("/dashboard");
+      return;
+    }
+
     const fetchArticle = async () => {
       try {
         const { data } = await api.get(`/articles/role-check/${slug}`);
@@ -62,13 +71,11 @@ export default function ArticlePage() {
     );
   }
 
-  if (!article) {
-    return null; // Will redirect in useEffect
-  }
+  if (!article) return null; // Will redirect in useEffect
 
   return (
     <SpecialRoutes>
-             <div className="container mx-auto px-4 py-8 max-w-4xl">
+      <div className="container mx-auto px-4 py-8 max-w-4xl">
         <article className="space-y-6">
           {/* Article header */}
           <header className="space-y-4">
@@ -154,6 +161,6 @@ export default function ArticlePage() {
           )}
         </article>
       </div>
-        </SpecialRoutes>
+    </SpecialRoutes>
   );
 }
