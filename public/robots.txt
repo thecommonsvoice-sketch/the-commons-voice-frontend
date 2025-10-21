@@ -1,7 +1,26 @@
+# *
 User-agent: *
 Allow: /
-
-Disallow: /dashboard/
+Disallow: /dashboard
 Disallow: /unauthorized
+Disallow: /login
+Disallow: /signup
+Disallow: /special-access
 
+# *
+User-agent: *
+Allow: /articles
+Allow: /categories
+Allow: /business
+Allow: /health
+Allow: /lifestyle
+Allow: /sports
+Allow: /tv
+
+# Host
+Host: https://thecommonsvoice.com
+
+# Sitemaps
 Sitemap: https://thecommonsvoice.com/sitemap.xml
+Sitemap: https://thecommonsvoice.com/articles-sitemap.xml
+Sitemap: https://thecommonsvoice.com/categories-sitemap.xml
