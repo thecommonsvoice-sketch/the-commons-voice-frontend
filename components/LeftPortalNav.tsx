@@ -3,7 +3,13 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { portalNav } from "@/lib/portalNav";
-import { ChevronDown, ChevronUp, SquareChevronLeft, X, type LucideIcon } from "lucide-react";
+import {
+  ChevronDown,
+  ChevronUp,
+  SquareChevronLeft,
+  X,
+  type LucideIcon,
+} from "lucide-react";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -15,7 +21,7 @@ interface NavItem {
 }
 
 export function LeftPortalNav() {
-  const pathname = usePathname();
+  const pathname = usePathname() ?? ""; // ✅ Always a string
   const [open, setOpen] = useState<string | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -52,11 +58,12 @@ export function LeftPortalNav() {
                   <X size={20} />
                 </button>
               </div>
+
               {portalNav.map((item) => (
                 <NavItem
                   key={item.label}
                   item={item}
-                  pathname={pathname}
+                  pathname={pathname} // ✅ Safe
                   open={open}
                   setOpen={setOpen}
                   onClose={() => setMobileOpen(false)} // Close the Sidebar when a link is clicked
@@ -73,7 +80,7 @@ export function LeftPortalNav() {
           <NavItem
             key={item.label}
             item={item}
-            pathname={pathname}
+            pathname={pathname} // ✅ Safe
             open={open}
             setOpen={setOpen}
           />
@@ -112,7 +119,11 @@ function NavItem({
               {item.icon && <item.icon size={18} />}
               <span>{item.label}</span>
             </div>
-            {open === item.label ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+            {open === item.label ? (
+              <ChevronUp size={16} />
+            ) : (
+              <ChevronDown size={16} />
+            )}
           </button>
           <AnimatePresence>
             {open === item.label && (
@@ -127,9 +138,11 @@ function NavItem({
                     key={sub.label}
                     href={sub.href}
                     className={`block text-sm px-2 py-1 rounded hover:bg-accent ${
-                      pathname.startsWith(sub.href) ? "text-primary font-medium" : ""
+                      pathname.startsWith(sub.href)
+                        ? "text-primary font-medium"
+                        : ""
                     }`}
-                    onClick={onClose} // Close the Sidebar on mobile when a link is clicked
+                    onClick={onClose}
                   >
                     {sub.label}
                   </Link>
@@ -142,8 +155,12 @@ function NavItem({
         <Link
           href={item.href}
           className={`flex items-center gap-2 px-3 py-2 rounded transition-colors
-            ${isActive ? "bg-primary/10 text-primary font-medium" : "hover:bg-accent"}`}
-          onClick={onClose} // Close the Sidebar on mobile when a link is clicked
+            ${
+              isActive
+                ? "bg-primary/10 text-primary font-medium"
+                : "hover:bg-accent"
+            }`}
+          onClick={onClose}
         >
           {item.icon && <item.icon size={18} />}
           {item.label}

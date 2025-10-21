@@ -6,7 +6,14 @@ import { useUserStore } from "@/store/useUserStore";
 
 type Role = "ADMIN" | "EDITOR" | "REPORTER" | "USER";
 
-const PUBLIC_ROUTES = ["/", "/login", "/signup"];
+function isPublicPath(path: string): boolean {
+  const publicPaths = ["/", "/login", "/signup", "/about", "/contact"];
+  return (
+    publicPaths.includes(path) ||
+    path.startsWith("/articles") ||
+    path.startsWith("/categories")
+  );
+}
 
 export default function RequireAuth({
   children,
@@ -16,18 +23,18 @@ export default function RequireAuth({
   allowedRoles?: Role[];
 }) {
   const router = useRouter();
-  const pathname = usePathname();
+  const pathname = usePathname() ?? "/";
   const user = useUserStore((state) => state.user);
   const [checking, setChecking] = useState(true);
 
   useEffect(() => {
-    // Skip auth checks for public pages
-    if (PUBLIC_ROUTES.includes(pathname)) {
+    // Check if it's a public path
+    if (isPublicPath(pathname)) {
       setChecking(false);
       return;
     }
 
-    // Dashboard routes
+    // ✅ Dashboard route protection
     if (pathname.startsWith("/dashboard")) {
       if (!user) {
         router.replace("/login");
@@ -50,5 +57,7 @@ export default function RequireAuth({
     );
   }
 
+  
   return <>{children}</>;
 }
+
