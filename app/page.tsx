@@ -104,10 +104,10 @@ export default async function HomePage() {
               ) : (
                 Array.from({ length: 6 }).map((_, i) => (
                   <Card key={i}>
-                    <Skeleton className="h-48" />
-                    <CardContent className="p-4 space-y-2">
-                      <Skeleton className="h-4 w-3/4" />
-                      <Skeleton className="h-4 w-1/2" />
+                    <Skeleton className="h-48 bg-gray-200 dark:bg-gray-800" />
+                    <CardContent className="p-4 space-y-2 ">
+                      <Skeleton className="h-4 w-3/4 bg-gray-200 dark:bg-gray-800" />
+                      <Skeleton className="h-4 w-1/2 bg-gray-200 dark:bg-gray-800" />
                     </CardContent>
                   </Card>
                 ))
