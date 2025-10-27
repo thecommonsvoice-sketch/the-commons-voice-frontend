@@ -43,10 +43,18 @@ export function BreakingNewsTicker() {
   useEffect(() => {
     if (!marqueeRef.current) return;
 
-    // Wait for browser to render text width
     const el = marqueeRef.current;
-    const totalWidth = el.scrollWidth; // how wide the full text is
-    const speed = 300; // pixels per second (adjust this)
+    const totalWidth = el.scrollWidth;
+
+    const calculateSpeed = () => {
+      const screenWidth = window.innerWidth;
+      // slower on small screens
+      if (screenWidth < 640) return 80; // pixels per second for mobile
+      if (screenWidth < 1024) return 120; // pixels per second for tablets
+      return 200; // default for desktop
+    };
+
+    const speed = calculateSpeed();
     const newDuration = totalWidth / speed;
 
     setDuration(newDuration);

@@ -5,7 +5,6 @@ import { Skeleton } from "@/components/ui/loading-skeleton";
 import type { Article, Category } from "@/lib/types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-// import { AdSlot } from "@/components/AdSlot";
 import { BreakingNewsTicker } from "@/components/BreakingNewsTicker";
 import { RecommendedWidget } from "@/components/RecommendedWidget";
 import { LeftPortalNav } from "@/components/LeftPortalNav";
@@ -21,7 +20,6 @@ async function getArticles(): Promise<Article[]> {
     return Array.isArray(data?.data) ? data.data : [];
   } catch {
     return [];
-    
   }
 }
 
@@ -40,10 +38,7 @@ async function getCategories(): Promise<Category[]> {
 }
 
 export default async function HomePage() {
-  const [articles, categories] = await Promise.all([
-    getArticles(),
-    getCategories()
-  ]);
+  const [articles, categories] = await Promise.all([getArticles(), getCategories()]);
 
   // Only show published articles
   const publishedArticles = articles.filter(a => a.status === "PUBLISHED");
@@ -59,24 +54,22 @@ export default async function HomePage() {
 
   return (
     <div className="container mx-auto px-2 sm:px-4 py-4 sm:py-6 space-y-6 sm:space-y-8">
-      {/* <AdSlot slot="leaderboard" width={970} height={250} className="mx-auto mb-4 sm:mb-6 hidden md:block" /> */}
+      {/* Breaking news ticker */}
+      <BreakingNewsTicker />
 
+      {/* Hero Carousel */}
+      {featuredArticles.length > 0 && <HeroCarousel articles={featuredArticles} />}
 
-        <BreakingNewsTicker />
+      {/* Responsive Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-4 sm:gap-6 lg:gap-8 mt-4 sm:mt-6">
 
-
-      {featuredArticles.length > 0 && (
-        <HeroCarousel articles={featuredArticles} />
-      )}
-
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 sm:gap-6 lg:gap-8 mt-4 sm:mt-6">
-        {/* Left Sidebar - Hidden on mobile */}
-        <div className="hidden lg:block">
+        {/* Left Sidebar */}
+        <aside className="md:col-span-3 space-y-6 order-1 md:order-1">
           <LeftPortalNav />
-        </div>
+        </aside>
 
-        {/* Main content */}
-        <div className="lg:col-span-3 space-y-6 sm:space-y-8">
+        {/* Main Content */}
+        <main className="md:col-span-6 space-y-6 sm:space-y-8 order-2 md:order-2">
           <section>
             <div className="flex items-center justify-between mb-4 sm:mb-6">
               <h2 className="text-xl sm:text-2xl font-bold border-b-2 border-primary pb-2">
@@ -86,26 +79,15 @@ export default async function HomePage() {
                 View all
               </Link>
             </div>
+
             <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6">
               {recentArticles.length > 0 ? (
-                recentArticles.map((article, index) => (
-                  <div key={article.id}>
-                    {/* {index > 0 && index % 4 === 0 && (
-                      <AdSlot
-                        slot={`inline-${index}`}
-                        width={300}
-                        height={250}
-                        className="my-4"
-                      />
-                    )} */}
-                    <ArticleCard article={article} />
-                  </div>
-                ))
+                recentArticles.map((article) => <ArticleCard key={article.id} article={article} />)
               ) : (
                 Array.from({ length: 6 }).map((_, i) => (
                   <Card key={i}>
                     <Skeleton className="h-48 bg-gray-200 dark:bg-gray-800" />
-                    <CardContent className="p-4 space-y-2 ">
+                    <CardContent className="p-4 space-y-2">
                       <Skeleton className="h-4 w-3/4 bg-gray-200 dark:bg-gray-800" />
                       <Skeleton className="h-4 w-1/2 bg-gray-200 dark:bg-gray-800" />
                     </CardContent>
@@ -114,24 +96,20 @@ export default async function HomePage() {
               )}
             </div>
           </section>
-        </div>
+        </main>
 
-        {/* Right Sidebar - Hidden on mobile, shown on lg+ */}
-        <aside className="hidden lg:block space-y-6">
+        {/* Right Sidebar */}
+        <aside className="md:col-span-3 space-y-6 order-3 md:order-3">
           <Card>
             <CardHeader>
               <CardTitle className="text-base sm:text-lg">Trending Topics</CardTitle>
             </CardHeader>
             <CardContent className="space-y-2">
-              {trendingCategories.map(category => (
-                <Link
-                  key={category.id}
-                  href={`/categories/${category.slug}`}
-                  className="block"
-                >
+              {trendingCategories.map((category) => (
+                <Link key={category.id} href={`/categories/${category.slug}`} className="block">
                   <Badge
                     variant="outline"
-                    className="w-full justify-start dark:hover:text-black hover:bg-primary hover:text-primary-foreground transition-colors text-xs sm:text-sm"
+                    className="w-full justify-start hover:bg-primary hover:text-primary-foreground transition-colors text-xs sm:text-sm"
                   >
                     {category.name}
                   </Badge>
@@ -140,7 +118,6 @@ export default async function HomePage() {
             </CardContent>
           </Card>
 
-          {/* <AdSlot slot="sidebar-top" width={300} height={600} className="hidden xl:block" /> */}
           <RecommendedWidget items={recommendedItems} />
 
           <Card>
