@@ -109,7 +109,7 @@ export default async function HomePage() {
                 <Link key={category.id} href={`/categories/${category.slug}`} className="block">
                   <Badge
                     variant="outline"
-                    className="w-full justify-start hover:bg-primary hover:text-primary-foreground transition-colors text-xs sm:text-sm"
+                    className="w-full justify-start hover:bg-primary hover:text-black transition-colors text-xs sm:text-sm"
                   >
                     {category.name}
                   </Badge>
