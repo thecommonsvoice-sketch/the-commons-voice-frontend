@@ -66,22 +66,24 @@ export function BreakingNewsTicker() {
 
   return (
     <div
-      className={`bg-red-600 text-white py-2 px-4 overflow-hidden whitespace-nowrap ${oxanium.className}`}
+      className={`bg-red-600 text-white py-2 px-4 overflow-hidden whitespace-nowrap flex items-center gap-4 ${oxanium.className}`}
     >
-      <strong className="mr-4">Breaking:</strong>
-      <div
-        ref={marqueeRef}
-        className="inline-block"
-        style={{
-          display: "inline-block",
-          animation: `marquee ${duration}s linear infinite`,
-        }}
-      >
-        {repeated.map((h, i) => (
-          <span key={i} className="mx-6 inline-block">
-            {h}
-          </span>
-        ))}
+      <strong className="flex-shrink-0">Breaking:</strong>
+      <div className="overflow-hidden flex-1">
+        <div
+          ref={marqueeRef}
+          className="inline-block"
+          style={{
+            display: "inline-block",
+            animation: `marquee ${duration}s linear infinite`,
+          }}
+        >
+          {repeated.map((h, i) => (
+            <span key={i} className="mx-6 inline-block">
+              {h}
+            </span>
+          ))}
+        </div>
       </div>
 
       <style jsx>{`

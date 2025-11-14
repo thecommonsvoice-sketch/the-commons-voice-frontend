@@ -12,6 +12,8 @@ import { isAxiosError } from "axios";
 import { Category, VideoData } from "@/lib/types";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import { VideoSection } from "@/components/VideoSection";
+import { TagInput } from "@/components/ArticleEditor/TagInput";
+import { CategoryCreateDialog } from "@/components/ArticleEditor/CategoryCreateDialog";
 
 const CLOUDINARY_UPLOAD_URL = `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/upload`;
 
@@ -26,6 +28,7 @@ export default function EditSpecialAccessArticlePage() {
   const [coverImage, setCoverImage] = useState<string | null>(null);
   const [metaTitle, setMetaTitle] = useState<string>("");
   const [metaDescription, setMetaDescription] = useState<string>("");
+  const [tags, setTags] = useState<string[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [categories, setCategories] = useState<Category[]>([]);
   const [imageUploading, setImageUploading] = useState<boolean>(false);
@@ -58,6 +61,7 @@ export default function EditSpecialAccessArticlePage() {
           setCoverImage(article.coverImage);
           setMetaTitle(article.metaTitle || "");
           setMetaDescription(article.metaDescription || "");
+          setTags(article.tags || []);
           setVideos(article.videos || []);
         } else {
           toast.error("Article not found.");
@@ -99,6 +103,20 @@ export default function EditSpecialAccessArticlePage() {
     }
   };
 
+  const handleCategoryCreated = (newCategoryId: string, categoryName: string) => {
+    // Add the new category to the list
+    const newCategory: Category = {
+      id: newCategoryId,
+      name: categoryName,
+      slug: categoryName.toLowerCase().replace(/\s+/g, '-'),
+      isActive: true,
+    };
+    setCategories([newCategory, ...categories]);
+    // Auto-select the newly created category
+    setCategoryId(newCategoryId);
+    toast.success(`Category "${categoryName}" created and selected!`);
+  };
+
   // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -106,8 +124,10 @@ export default function EditSpecialAccessArticlePage() {
 
     setLoading(true);
     try {
+      // Filter out incomplete videos (those without URLs)
       const validVideos = videos.filter((v) => v.url && v.url.trim() !== "");
 
+      // Always include videos array to ensure old videos are properly replaced
       await api.put(`/articles/role-check/${slug}`, {
         title,
         content,
@@ -115,7 +135,8 @@ export default function EditSpecialAccessArticlePage() {
         coverImage: coverImage || undefined,
         metaTitle: metaTitle || undefined,
         metaDescription: metaDescription || undefined,
-        videos: validVideos.length > 0 ? validVideos : undefined,
+        tags: tags.length > 0 ? tags : undefined,
+        videos: validVideos, // Always send the array (even if empty) to ensure update
       });
 
       toast.success("Article updated!");
@@ -202,6 +223,13 @@ export default function EditSpecialAccessArticlePage() {
                 ))}
               </SelectContent>
             </Select>
+            <CategoryCreateDialog onCategoryCreated={handleCategoryCreated} />
+          </div>
+
+          {/* Tags Section */}
+          <div>
+            <label className="block text-lg font-medium text-gray-700 dark:text-gray-300 mb-2">Tags</label>
+            <TagInput tags={tags} onChange={setTags} />
           </div>
 
           {/* Cover Image */}

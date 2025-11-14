@@ -132,20 +132,26 @@ export default function ArticlePage() {
               {article.videos.map((vid, idx) => (
                 <div key={idx} className="rounded-lg overflow-hidden border">
                   {vid.type === "embed" ? (
-                    <div className="aspect-video">
+                    <div className="w-full max-w-2xl mx-auto max-h-80 aspect-video">
                       <iframe
                         src={vid.url.replace('youtu.be/', 'www.youtube.com/embed/').replace('watch?v=', 'embed/')}
                         title={vid.title || `Video ${idx + 1}`}
-                        className="w-full h-full"
+                        className="w-full h-full aspect-video"
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                         allowFullScreen
                       />
                     </div>
                   ) : (
-                    <video controls className="w-full">
-                      <source src={vid.url} />
-                      Your browser does not support the video tag.
-                    </video>
+                    <div className="w-full max-w-2xl mx-auto">
+                      <video 
+                        controls 
+                        className="w-full h-auto max-h-80 object-contain"
+                        style={{ backgroundColor: '#000' }}
+                      >
+                        <source src={vid.url} />
+                        Your browser does not support the video tag.
+                      </video>
+                    </div>
                   )}
                   {(vid.title || vid.description) && (
                     <div className="p-4 space-y-1 bg-gray-50 dark:bg-gray-800">

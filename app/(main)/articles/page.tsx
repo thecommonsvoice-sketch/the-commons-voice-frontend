@@ -109,7 +109,7 @@ async function ArticlesList({ page, search }: { page: number; search: string }) 
   return (
     <>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-        {articles.map((article, index) => (
+        {articles.map((article ) => (
           <div key={article.id}>
             {/* Insert inline ads after every 6 articles */}
             {/* {index > 0 && index % 6 === 0 && (

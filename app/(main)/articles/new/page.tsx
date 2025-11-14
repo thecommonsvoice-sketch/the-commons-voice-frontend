@@ -12,6 +12,8 @@ import { Category, VideoData } from "@/lib/types";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import { useUserStore } from "@/store/useUserStore";
 import { VideoSection } from '@/components/VideoSection';
+import { TagInput } from '@/components/ArticleEditor/TagInput';
+import { CategoryCreateDialog } from '@/components/ArticleEditor/CategoryCreateDialog';
 
 const CLOUDINARY_UPLOAD_URL = `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/upload`;
 
@@ -23,6 +25,7 @@ export default function NewArticlePage() {
   const [coverImage, setCoverImage] = useState<string | null>(null);
   const [metaTitle, setMetaTitle] = useState<string>("");
   const [metaDescription, setMetaDescription] = useState<string>("");
+  const [tags, setTags] = useState<string[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [categories, setCategories] = useState<Category[]>([]);
   const [imageUploading, setImageUploading] = useState<boolean>(false);
@@ -69,6 +72,20 @@ export default function NewArticlePage() {
     }
   };
 
+  const handleCategoryCreated = (newCategoryId: string, categoryName: string) => {
+    // Add the new category to the list
+    const newCategory: Category = {
+      id: newCategoryId,
+      name: categoryName,
+      slug: categoryName.toLowerCase().replace(/\s+/g, '-'),
+      isActive: true,
+    };
+    setCategories([newCategory, ...categories]);
+    // Auto-select the newly created category
+    setCategoryId(newCategoryId);
+    toast.success(`Category "${categoryName}" created and selected!`);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -83,13 +100,14 @@ export default function NewArticlePage() {
         coverImage: coverImage || undefined,
         metaTitle: metaTitle || undefined,
         metaDescription: metaDescription || undefined,
+        tags: tags.length > 0 ? tags : undefined,
         videos: validVideos.length > 0 ? validVideos : undefined,
       });
       
       toast.success("Article created!");
       router.push(`/dashboard/${user?.role?.toLowerCase() || ''}`);
     } catch (err) {
-      console.error('Error details:', err); // Debug error response
+      console.error('Error details:', err);
       const errorMessage = isAxiosError(err) && err.response?.data?.message 
         ? err.response.data.message 
         : 'Failed to create article';
@@ -169,6 +187,13 @@ export default function NewArticlePage() {
                 ))}
               </SelectContent>
             </Select>
+            <CategoryCreateDialog onCategoryCreated={handleCategoryCreated} />
+          </div>
+
+          {/* Tags Section */}
+          <div>
+            <label className="block text-base sm:text-lg font-medium text-gray-700 dark:text-gray-300 mb-2">Tags</label>
+            <TagInput tags={tags} onChange={setTags} />
           </div>
 
           {/* Cover Image Section */}
