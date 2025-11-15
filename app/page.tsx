@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { HeroCarousel } from "@/components/HeroCarousel";
 import { ArticleCard } from "@/components/ArticleCard";
@@ -8,6 +9,21 @@ import { Badge } from "@/components/ui/badge";
 import { BreakingNewsTicker } from "@/components/BreakingNewsTicker";
 import { RecommendedWidget } from "@/components/RecommendedWidget";
 import { LeftPortalNav } from "@/components/LeftPortalNav";
+
+// Homepage metadata - optimized for SEO
+export const metadata: Metadata = {
+  title: "Independent News & Analysis - The Commons Voice",
+  description: "Breaking news, in-depth analysis, and expert coverage of politics, business, health, lifestyle, and more. Independent journalism from The Commons Voice.",
+  alternates: {
+    canonical: process.env.NEXT_PUBLIC_SITE_URL,
+  },
+  openGraph: {
+    title: "Independent News & Analysis - The Commons Voice",
+    description: "Breaking news and in-depth analysis from The Commons Voice. Stay informed with our independent journalism.",
+    type: "website",
+    locale: "en_IN",
+  },
+};
 
 async function getArticles(): Promise<Article[]> {
   try {
@@ -52,16 +68,80 @@ export default async function HomePage() {
     image: article.coverImage ?? "/placeholder.jpg"
   }));
 
+  // Structured data for Organization
+  const organizationSchema = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: "The Commons Voice",
+    url: process.env.NEXT_PUBLIC_SITE_URL,
+    logo: `${process.env.NEXT_PUBLIC_SITE_URL}/logo.png`,
+    description: "Independent news, analysis, and reporting from around the world.",
+    sameAs: [
+      "https://twitter.com/TheCommonsVoice",
+    ],
+    contact: {
+      "@type": "ContactPoint",
+      contactType: "General Support",
+      url: `${process.env.NEXT_PUBLIC_SITE_URL}/contact`,
+    },
+  };
+
+  // Structured data for NewsCollection (BreadcrumbList alternative)
+  const newsCollectionSchema = {
+    "@context": "https://schema.org",
+    "@type": "NewsMediaOrganization",
+    name: "The Commons Voice",
+    url: process.env.NEXT_PUBLIC_SITE_URL,
+    logo: `${process.env.NEXT_PUBLIC_SITE_URL}/logo.png`,
+    masthead: `${process.env.NEXT_PUBLIC_SITE_URL}/about`,
+    correctionsPolicy: `${process.env.NEXT_PUBLIC_SITE_URL}/about`,
+  };
+
   return (
-    <div className="container mx-auto px-2 sm:px-4 py-4 sm:py-6 space-y-6 sm:space-y-8">
-      {/* Breaking news ticker */}
-      <BreakingNewsTicker />
+    <>
+      {/* Structured Data */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(newsCollectionSchema) }}
+      />
 
-      {/* Hero Carousel */}
-      {featuredArticles.length > 0 && <HeroCarousel articles={featuredArticles} />}
+      <div className="container mx-auto px-2 sm:px-4 py-4 sm:py-6 space-y-6 sm:space-y-8">
+        {/* Breaking news ticker */}
+        <BreakingNewsTicker />
 
-      {/* Responsive Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-4 sm:gap-6 lg:gap-8 mt-4 sm:mt-6">
+        {/* H1 - Main Hero Section with SEO intro */}
+        <section className="bg-gradient-to-r from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 rounded-lg p-6 sm:p-8 border border-slate-200 dark:border-slate-700 mb-6">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-slate-900 dark:text-white mb-3 leading-tight">
+            Independent News & In-Depth Analysis
+          </h1>
+          <p className="text-base sm:text-lg text-slate-700 dark:text-slate-300 mb-4 leading-relaxed">
+            Welcome to The Commons Voice, your trusted source for independent journalism and comprehensive analysis. We cover breaking news, politics, business, health, lifestyle, and more with rigorous reporting and diverse perspectives. Stay informed with our expert coverage of the stories that matter most to you.
+          </p>
+          <div className="flex flex-wrap gap-3 text-sm sm:text-base">
+            <Link 
+              href="/articles" 
+              className="inline-block bg-primary text-primary-foreground px-4 sm:px-6 py-2 rounded-md hover:bg-primary/90 transition-colors font-medium"
+            >
+              Explore All News
+            </Link>
+            <Link 
+              href="/about" 
+              className="inline-block bg-slate-200 dark:bg-slate-700 text-slate-900 dark:text-slate-100 px-4 sm:px-6 py-2 rounded-md hover:bg-slate-300 dark:hover:bg-slate-600 transition-colors font-medium"
+            >
+              About Us
+            </Link>
+          </div>
+        </section>
+
+        {/* Hero Carousel */}
+        {featuredArticles.length > 0 && <HeroCarousel articles={featuredArticles} />}
+
+        {/* Responsive Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-4 sm:gap-6 lg:gap-8 mt-4 sm:mt-6">
 
         {/* Left Sidebar */}
         <aside className="md:col-span-3 space-y-6 order-1 md:order-1">
@@ -142,6 +222,7 @@ export default async function HomePage() {
           </Card>
         </aside>
       </div>
-    </div>
+      </div>
+    </>
   );
 }
