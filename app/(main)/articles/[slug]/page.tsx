@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 // import { AdSlot } from "@/components/AdSlot";
 import Link from "next/link";
+import { ArticleCommentsClient } from "@/components/ArticleCommentsClient";
 
 // --- Fetch Single Article ---
 async function getArticle(slug: string): Promise<Article | null> {
@@ -278,27 +279,11 @@ export default async function ArticlePage({
             </section>
           )}
 
-          {/* Comments Section (Disqus Embed Placeholder) */}
-          {/* <section className="mt-12">
-            <h2 className="text-2xl font-semibold mb-4">Comments</h2>
-            <div id="disqus_thread"></div>
-            <script
-              dangerouslySetInnerHTML={{
-                __html: `
-                  var disqus_config = function () {
-                    this.page.url = '${process.env.NEXT_PUBLIC_SITE_URL}/articles/${article.slug}';
-                    this.page.identifier = '${article.id}';
-                  };
-                  (function() {
-                    var d = document, s = d.createElement('script');
-                    s.src = 'https://YOUR_DISQUS_SHORTNAME.disqus.com/embed.js';
-                    s.setAttribute('data-timestamp', +new Date());
-                    (d.head || d.body).appendChild(s);
-                  })();
-                `,
-              }}
-            />
-          </section> */}
+          {/* Comments Section */}
+          <section className="mt-12 border-t pt-8">
+            <h2 className="text-2xl font-semibold mb-6">Comments</h2>
+            <ArticleCommentsClient articleId={article.id} />
+          </section>
         </article>
       </div>
     </>

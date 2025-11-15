@@ -10,6 +10,7 @@ import { api } from "@/lib/api";
 import SpecialRoutes from "@/components/specialRoutes";
 import { toast } from "sonner";
 import { isAxiosError } from "axios";
+import { ArticleCommentsClient } from "@/components/ArticleCommentsClient";
 
 export default function ArticlePage() {
   const params = useParams();
@@ -165,6 +166,12 @@ export default function ArticlePage() {
               ))}
             </section>
           )}
+
+          {/* Comments Section */}
+          <section className="mt-12 border-t pt-8">
+            <h2 className="text-2xl font-semibold mb-6">Comments</h2>
+            <ArticleCommentsClient articleId={article.id} />
+          </section>
         </article>
       </div>
     </SpecialRoutes>
