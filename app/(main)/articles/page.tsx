@@ -26,9 +26,18 @@ async function getArticles(page: number, search = ""): Promise<{
   pagination: { total: number; totalPages: number };
 }> {
   try {
+    const { cookies } = await import("next/headers");
+    const cookieStore = await cookies();
+    const cookieHeader = cookieStore.toString();
+
     const base = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000/api";
     const url = `${base}/articles?page=${page}&limit=12&search=${encodeURIComponent(search)}`;
-    const res = await fetch(url, { next: { revalidate: 300 } });
+    const res = await fetch(url, {
+      cache: "no-store",
+      headers: {
+        Cookie: cookieHeader
+      }
+    });
 
     if (!res.ok) return { articles: [], pagination: { total: 0, totalPages: 1 } };
     const data = await res.json();
@@ -109,7 +118,7 @@ async function ArticlesList({ page, search }: { page: number; search: string }) 
   return (
     <>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-        {articles.map((article ) => (
+        {articles.map((article) => (
           <div key={article.id}>
             {/* Insert inline ads after every 6 articles */}
             {/* {index > 0 && index % 6 === 0 && (
@@ -125,9 +134,8 @@ async function ArticlesList({ page, search }: { page: number; search: string }) 
         <div className="mt-6 sm:mt-8 flex flex-col sm:flex-row justify-center items-center gap-3 sm:gap-4">
           <Link
             href={`/articles?page=${page - 1}${search ? `&q=${encodeURIComponent(search)}` : ""}`}
-            className={`w-full sm:w-auto px-4 py-2 border rounded-md text-center text-sm sm:text-base ${
-              page <= 1 ? "opacity-50 pointer-events-none" : ""
-            }`}
+            className={`w-full sm:w-auto px-4 py-2 border rounded-md text-center text-sm sm:text-base ${page <= 1 ? "opacity-50 pointer-events-none" : ""
+              }`}
           >
             Previous
           </Link>
@@ -136,9 +144,8 @@ async function ArticlesList({ page, search }: { page: number; search: string }) 
           </span>
           <Link
             href={`/articles?page=${page + 1}${search ? `&q=${encodeURIComponent(search)}` : ""}`}
-            className={`w-full sm:w-auto px-4 py-2 border rounded-md text-center text-sm sm:text-base ${
-              page >= pagination.totalPages ? "opacity-50 pointer-events-none" : ""
-            }`}
+            className={`w-full sm:w-auto px-4 py-2 border rounded-md text-center text-sm sm:text-base ${page >= pagination.totalPages ? "opacity-50 pointer-events-none" : ""
+              }`}
           >
             Next
           </Link>

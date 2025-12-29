@@ -12,9 +12,19 @@ async function getCategoryWithArticles(
   pagination: { total: number; totalPages: number };
 } | null> {
   try {
+    const { cookies } = await import("next/headers");
+    const cookieStore = await cookies();
+    const cookieHeader = cookieStore.toString();
+
     const [categoryRes, articlesRes] = await Promise.all([
-      fetch(`${process.env.NEXT_PUBLIC_API_URL}/categories/${slug}`, { cache: "no-store" }),
-      fetch(`${process.env.NEXT_PUBLIC_API_URL}/articles?category=${slug}&page=${page}&limit=9`, { cache: "no-store" }),
+      fetch(`${process.env.NEXT_PUBLIC_API_URL}/categories/${slug}`, {
+        cache: "no-store",
+        headers: { Cookie: cookieHeader }
+      }),
+      fetch(`${process.env.NEXT_PUBLIC_API_URL}/articles?category=${slug}&page=${page}&limit=9`, {
+        cache: "no-store",
+        headers: { Cookie: cookieHeader }
+      }),
     ]);
 
     if (!categoryRes.ok || !articlesRes.ok) throw new Error("Failed to fetch data");
