@@ -99,9 +99,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <Navbar />
 
               {/* Top AdSense ad slot */}
-              <div className="w-full flex justify-center my-1 sm:my-2">
+              {/* <div className="w-full flex justify-center my-1 sm:my-2">
                 <AdSlot slot="5678901234" className="w-full" style={{ maxHeight: '100px' }} />
-              </div>
+              </div> */}
 
               <main className="w-full h-full overflow-y-auto flex-1">{children}</main>
               <Footer />
