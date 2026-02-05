@@ -223,10 +223,15 @@ export default function AdminDashboard() {
               Manage users and content across the platform
             </p>
           </div>
-          <Badge variant="secondary" className="flex items-center gap-2">
-            <Shield className="h-3 w-3" />
-            Administrator
-          </Badge>
+          <div className="flex items-center gap-2">
+            <Button asChild>
+              <Link href="/dashboard/admin/categories">Manage Categories</Link>
+            </Button>
+            <Badge variant="secondary" className="flex items-center gap-2">
+              <Shield className="h-3 w-3" />
+              Administrator
+            </Badge>
+          </div>
         </div>
 
         {/* Stats */}
