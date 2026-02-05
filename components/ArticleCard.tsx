@@ -52,38 +52,28 @@ export function ArticleCard({ article, variant = "default", show = true }: Artic
       console.error("Error toggling bookmark:", error);
       toast.error("Something went wrong");
     }
-    finally{
-        setDisable(false);
-      }
+    finally {
+      setDisable(false);
+    }
   };
 
   useEffect(() => {
-    const fetchBookmarkStatus = async () => {
-      if (user && article.id) {
-        try {
-          const res = await api.get(`bookmarks/${article.id}`);
-          setIsBookmarked(res.data.success);
-        } catch (error) {
-          console.log(error);
-        }
-      }
-    };
-
-    fetchBookmarkStatus();
-  }, [article.id, user]);
+    // Initialize bookmark status from article prop
+    if (article.isBookmarked !== undefined) {
+      setIsBookmarked(article.isBookmarked);
+    }
+  }, [article.isBookmarked]);
 
   return (
     <>
       <Card
-        className={`group overflow-hidden transition-all duration-300 hover:shadow-lg sm:hover:shadow-xl ${
-          isFeatured ? "sm:col-span-2 lg:col-span-2" : ""
-        }`}
+        className={`group overflow-hidden transition-all duration-300 hover:shadow-lg sm:hover:shadow-xl ${isFeatured ? "sm:col-span-2 lg:col-span-2" : ""
+          }`}
       >
         <Link href={`/articles/${article.slug}`} className="block">
           <div
-            className={`relative overflow-hidden ${
-              isFeatured ? "aspect-video sm:aspect-[2/1]" : isCompact ? "aspect-[4/3]" : "aspect-video"
-            }`}
+            className={`relative overflow-hidden ${isFeatured ? "aspect-video sm:aspect-[2/1]" : isCompact ? "aspect-[4/3]" : "aspect-video"
+              }`}
           >
             {article.coverImage ? (
               <>
@@ -111,9 +101,8 @@ export function ArticleCard({ article, variant = "default", show = true }: Artic
 
           <CardContent className={`space-y-1.5 sm:space-y-2 ${isCompact ? "p-2 sm:p-3" : "p-3 sm:p-4"}`}>
             <h3
-              className={`font-bold leading-snug group-hover:text-primary transition-colors line-clamp-2 ${
-                isFeatured ? "text-lg sm:text-xl md:text-2xl" : isCompact ? "text-xs sm:text-sm" : "text-sm sm:text-base md:text-lg"
-              }`}
+              className={`font-bold leading-snug group-hover:text-primary transition-colors line-clamp-2 ${isFeatured ? "text-lg sm:text-xl md:text-2xl" : isCompact ? "text-xs sm:text-sm" : "text-sm sm:text-base md:text-lg"
+                }`}
             >
               {article.title}
             </h3>
@@ -125,9 +114,8 @@ export function ArticleCard({ article, variant = "default", show = true }: Artic
             )}
 
             <div
-              className={`flex items-center justify-between text-[10px] sm:text-xs text-muted-foreground ${
-                isCompact ? "mt-0.5 sm:mt-1" : "mt-2 sm:mt-3"
-              }`}
+              className={`flex items-center justify-between text-[10px] sm:text-xs text-muted-foreground ${isCompact ? "mt-0.5 sm:mt-1" : "mt-2 sm:mt-3"
+                }`}
             >
               <span className="truncate max-w-[60%] sm:max-w-none">{article.author?.name || "Staff Reporter"}</span>
               {publishedDate && <span>{publishedDate}</span>}
@@ -139,7 +127,7 @@ export function ArticleCard({ article, variant = "default", show = true }: Artic
           <div className="flex items-center justify-between w-full">
             <div className="flex items-center space-x-2 sm:space-x-4 text-xs sm:text-sm text-muted-foreground">
               <Button
-              disabled={disable}
+                disabled={disable}
                 onClick={() => setIsCommentsOpen(true)}
                 className="flex items-center hover:text-white bg-transparent dark:bg-transparent p-0.5 sm:p-1 rounded text-black dark:hover:text-black dark:text-white h-auto"
               >

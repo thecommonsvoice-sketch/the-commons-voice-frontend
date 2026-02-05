@@ -26,9 +26,18 @@ async function getArticles(page: number, search = ""): Promise<{
   pagination: { total: number; totalPages: number };
 }> {
   try {
+    const { cookies } = await import("next/headers");
+    const cookieStore = await cookies();
+    const cookieHeader = cookieStore.toString();
+
     const base = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000/api";
     const url = `${base}/articles?page=${page}&limit=12&search=${encodeURIComponent(search)}`;
-    const res = await fetch(url, { next: { revalidate: 300 } });
+    const res = await fetch(url, {
+      cache: "no-store",
+      headers: {
+        Cookie: cookieHeader
+      }
+    });
 
     if (!res.ok) return { articles: [], pagination: { total: 0, totalPages: 1 } };
     const data = await res.json();

@@ -49,6 +49,7 @@ export interface Article {
   author?: Pick<User, "id" | "name">;
   category?: Pick<Category, "id" | "name" | "slug">;
   videos?: VideoData[];
+  isBookmarked?: boolean;
 }
 
 export interface ApiResponse<T = unknown> {
