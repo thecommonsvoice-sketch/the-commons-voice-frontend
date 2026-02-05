@@ -6,22 +6,23 @@ import AuthProvider from "@/providers/AuthProvider";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import Navbar from "@/components/Navbar";
 import { Toaster } from "@/components/ui/sonner";
+import { AdSlot } from "@/components/AdSlot";
 import Footer from "@/components/Footer";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"),
-  title: { 
+  title: {
     default: "The Commons Voice - Independent News & Analysis",
     template: "%s | The Commons Voice",
   },
   description:
     "Independent news, analysis, and reporting from around the world. Stay informed with breaking news, in-depth analysis, and expert coverage on politics, business, health, lifestyle, and more.",
   keywords: [
-    "news","journalism","politics","world news","analysis","reporting",
-    "breaking news","current events","business news","health news",
-    "lifestyle","sports coverage","television","media","investigative journalism"
+    "news", "journalism", "politics", "world news", "analysis", "reporting",
+    "breaking news", "current events", "business news", "health news",
+    "lifestyle", "sports coverage", "television", "media", "investigative journalism"
   ],
   authors: [{ name: "The Commons Voice Team" }],
   creator: "The Commons Voice",
@@ -98,24 +99,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <Navbar />
 
               {/* Top AdSense ad slot */}
-              {adsenseClient && (
-                <div className="w-full flex justify-center my-4">
-                  <ins
-                    className="adsbygoogle"
-                    style={{ display: "block" }}
-                    data-ad-client={adsenseClient}
-                    data-ad-slot="1234567890"
-                    data-ad-format="auto"
-                    data-full-width-responsive="true"
-                  />
-                  <script
-                    async
-                    dangerouslySetInnerHTML={{
-                      __html: `(adsbygoogle = window.adsbygoogle || []).push({});`,
-                    }}
-                  />
-                </div>
-              )}
+              <div className="w-full flex justify-center my-4">
+                <AdSlot slot="5678901234" className="w-full" />
+              </div>
 
               <main className="w-full h-full overflow-y-auto flex-1">{children}</main>
               <Footer />

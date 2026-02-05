@@ -14,6 +14,7 @@ import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import { VideoSection } from "@/components/VideoSection";
 import { TagInput } from "@/components/ArticleEditor/TagInput";
 import { CategoryCreateDialog } from "@/components/ArticleEditor/CategoryCreateDialog";
+import { HierarchicalCategorySelect } from "@/components/ArticleEditor/HierarchicalCategorySelect";
 
 const CLOUDINARY_UPLOAD_URL = `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/upload`;
 
@@ -48,9 +49,6 @@ export default function EditSpecialAccessArticlePage() {
 
     const fetchData = async () => {
       try {
-        const categoryRes = await api.get("/categories?limit=100");
-        setCategories(categoryRes.data?.categories || []);
-
         const articleRes = await api.get(`/articles/role-check/${slug}`);
         const article = articleRes.data?.article;
 
@@ -103,18 +101,9 @@ export default function EditSpecialAccessArticlePage() {
     }
   };
 
-  const handleCategoryCreated = (newCategoryId: string, categoryName: string) => {
-    // Add the new category to the list
-    const newCategory: Category = {
-      id: newCategoryId,
-      name: categoryName,
-      slug: categoryName.toLowerCase().replace(/\s+/g, '-'),
-      isActive: true,
-    };
-    setCategories([newCategory, ...categories]);
+  const handleCategoryCreated = (newCategoryId: string) => {
     // Auto-select the newly created category
     setCategoryId(newCategoryId);
-    toast.success(`Category "${categoryName}" created and selected!`);
   };
 
   // Handle form submission
@@ -208,21 +197,14 @@ export default function EditSpecialAccessArticlePage() {
             </div>
           </div>
 
-          {/* Category Selection */}
           <div>
             <label className="block text-lg font-medium text-gray-700 dark:text-gray-300">Category</label>
-            <Select value={categoryId} onValueChange={setCategoryId}>
-              <SelectTrigger className="mt-2 w-full p-4 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                <SelectValue placeholder="Select Category" />
-              </SelectTrigger>
-              <SelectContent>
-                {categories.map((cat) => (
-                  <SelectItem key={cat.id} value={cat.id}>
-                    {cat.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <div className="mt-2">
+              <HierarchicalCategorySelect
+                value={categoryId}
+                onChange={setCategoryId}
+              />
+            </div>
             <CategoryCreateDialog onCategoryCreated={handleCategoryCreated} />
           </div>
 
@@ -277,9 +259,8 @@ export default function EditSpecialAccessArticlePage() {
           <Button
             type="submit"
             disabled={loading || imageUploading || !title || !content || !categoryId}
-            className={`w-full py-3 text-white font-semibold rounded-md transition-all duration-300 ${
-              loading ? "bg-indigo-400" : "bg-indigo-600 hover:bg-indigo-700"
-            }`}
+            className={`w-full py-3 text-white font-semibold rounded-md transition-all duration-300 ${loading ? "bg-indigo-400" : "bg-indigo-600 hover:bg-indigo-700"
+              }`}
           >
             {loading ? "Updating..." : "Update Article"}
           </Button>

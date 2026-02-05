@@ -50,6 +50,7 @@ export default function ContactPage() {
 
   const onSubmit = async (data: FormSchema) => {
     setIsSubmitting(true);
+    console.log(data);
     try {
       await new Promise((resolve) => setTimeout(resolve, 1000));
       toast.success("Message sent successfully! We&rsquo;ll get back to you soon.");

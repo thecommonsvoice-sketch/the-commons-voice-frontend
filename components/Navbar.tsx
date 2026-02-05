@@ -38,34 +38,34 @@ export default function Navbar() {
   };
 
   // Fetch categories only if not already available
-useEffect(() => {
-  if (hasFetched) return;
+  useEffect(() => {
+    if (hasFetched) return;
 
-  const fetchCategories = async () => {
-    try {
-      const base = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000/api";
-      const res = await fetch(`${base}/categories`, {
-        next: { revalidate: 600 },
-      });
+    const fetchCategories = async () => {
+      try {
+        const base = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000/api";
+        const res = await fetch(`${base}/categories`, {
+          cache: 'no-store'
+        });
 
-      if (!res.ok) throw new Error(`Failed to fetch categories: ${res.statusText}`);
+        if (!res.ok) throw new Error(`Failed to fetch categories: ${res.statusText}`);
 
-      const data = await res.json();
+        const data = await res.json();
 
-      const fetchedCategories = data?.categories.map((cat: { name: string; slug: string }) => ({
-        name: cat.name,
-        href: `/categories/${cat.slug}`,
-      })) || [];
+        const fetchedCategories = data?.categories.map((cat: { name: string; slug: string }) => ({
+          name: cat.name,
+          href: `/categories/${cat.slug}`,
+        })) || [];
 
-      setCategories(fetchedCategories); // ✅ This also sets hasFetched to true
-    } catch (error) {
-      console.error("Failed to fetch categories:", error);
-      useCategoryStore.getState().markFetched(); // ✅ Still mark as fetched to avoid retry loop
-    }
-  };
+        setCategories(fetchedCategories); // ✅ This also sets hasFetched to true
+      } catch (error) {
+        console.error("Failed to fetch categories:", error);
+        useCategoryStore.getState().markFetched(); // ✅ Still mark as fetched to avoid retry loop
+      }
+    };
 
-  fetchCategories();
-}, [hasFetched, setCategories]);
+    fetchCategories();
+  }, [hasFetched, setCategories]);
 
 
   // Memoize visible and hidden categories
@@ -78,11 +78,11 @@ useEffect(() => {
       <header className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b">
         <div className="container mx-auto px-2 sm:px-4">
           {/* Breaking news ticker */}
-          <div className="border-b border-red-600 bg-red-600 text-white py-1 px-2 text-[10px] sm:text-xs font-medium">
+          {/* <div className="border-b border-red-600 bg-red-600 text-white py-1 px-2 text-[10px] sm:text-xs font-medium">
             <div className="animate-marquee whitespace-nowrap">
               🔴 BREAKING: Latest news updates • Stay informed with real-time reporting
             </div>
-          </div>
+          </div> */}
 
           <nav className="flex h-14 sm:h-16 items-center justify-between">
             {/* Logo */}

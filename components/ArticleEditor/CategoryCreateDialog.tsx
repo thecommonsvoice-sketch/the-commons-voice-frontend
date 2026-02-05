@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -14,9 +14,22 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface CategoryCreateDialogProps {
   onCategoryCreated: (categoryId: string, categoryName: string) => void;
+}
+
+interface Category {
+  id: string;
+  name: string;
+  slug: string;
 }
 
 export function CategoryCreateDialog({ onCategoryCreated }: CategoryCreateDialogProps) {
@@ -24,6 +37,23 @@ export function CategoryCreateDialog({ onCategoryCreated }: CategoryCreateDialog
   const [loading, setLoading] = useState(false);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
+  const [parentCategories, setParentCategories] = useState<Category[]>([]);
+  const [selectedParentId, setSelectedParentId] = useState<string>("");
+
+  // Fetch parent categories when dialog opens
+  useEffect(() => {
+    if (open) {
+      const fetchParentCategories = async () => {
+        try {
+          const res = await api.get("/categories");
+          setParentCategories(res.data?.categories || []);
+        } catch (error) {
+          console.error("Failed to fetch categories:", error);
+        }
+      };
+      fetchParentCategories();
+    }
+  }, [open]);
 
   const handleCreate = async () => {
     if (!name.trim()) {
@@ -37,6 +67,7 @@ export function CategoryCreateDialog({ onCategoryCreated }: CategoryCreateDialog
         name: name.trim(),
         description: description.trim() || undefined,
         isActive: true,
+        parentId: selectedParentId || undefined,
       });
 
       const newCategory = res.data?.category;
@@ -45,6 +76,7 @@ export function CategoryCreateDialog({ onCategoryCreated }: CategoryCreateDialog
         onCategoryCreated(newCategory.id, newCategory.name);
         setName("");
         setDescription("");
+        setSelectedParentId("");
         setOpen(false);
       }
     } catch (error) {
@@ -80,6 +112,25 @@ export function CategoryCreateDialog({ onCategoryCreated }: CategoryCreateDialog
             />
           </div>
           <div>
+            <label className="block text-sm font-medium mb-2">Parent Category (optional)</label>
+            <Select value={selectedParentId} onValueChange={setSelectedParentId} disabled={loading}>
+              <SelectTrigger>
+                <SelectValue placeholder="None (create as main category)" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="">None (main category)</SelectItem>
+                {parentCategories.map((cat) => (
+                  <SelectItem key={cat.id} value={cat.id}>
+                    {cat.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <p className="text-xs text-muted-foreground mt-1">
+              Select a parent to create this as a subcategory
+            </p>
+          </div>
+          <div>
             <label className="block text-sm font-medium mb-2">Description (optional)</label>
             <Textarea
               placeholder="Brief description of this category"
@@ -97,6 +148,7 @@ export function CategoryCreateDialog({ onCategoryCreated }: CategoryCreateDialog
               setOpen(false);
               setName("");
               setDescription("");
+              setSelectedParentId("");
             }}
             disabled={loading}
           >

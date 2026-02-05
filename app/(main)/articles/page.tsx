@@ -4,7 +4,7 @@ import { Metadata } from "next";
 import { ArticleCard } from "@/components/ArticleCard";
 import { Skeleton } from "@/components/ui/loading-skeleton";
 import { Card, CardContent } from "@/components/ui/card";
-// import { AdSlot } from "@/components/AdSlot";
+import { AdSlot } from "@/components/AdSlot";
 import { SearchBar } from "@/components/SearchBar"; // New reusable search bar
 import type { Article } from "@/lib/types";
 
@@ -70,7 +70,7 @@ export default async function ArticlesPage({
   return (
     <div className="container mx-auto px-4 sm:px-6 py-6 sm:py-8 space-y-6 sm:space-y-8">
       {/* Leaderboard Ad */}
-      {/* <AdSlot slot="leaderboard" width={970} height={250} className="mx-auto mb-4 sm:mb-6 hidden md:block" /> */}
+      <AdSlot slot="7890123456" className="mx-auto mb-4 sm:mb-6 hidden md:block" />
 
       <div className="mb-6 sm:mb-8">
         <h1 className="text-2xl sm:text-3xl font-bold mb-2">All Articles</h1>
@@ -87,7 +87,7 @@ export default async function ArticlesPage({
       </Suspense>
 
       {/* Bottom Ad */}
-      {/* <AdSlot slot="footer-inline" width={728} height={90} className="mx-auto my-8" /> */}
+      <AdSlot slot="3456789012" className="mx-auto my-8" />
     </div>
   );
 }
@@ -109,7 +109,7 @@ async function ArticlesList({ page, search }: { page: number; search: string }) 
   return (
     <>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-        {articles.map((article ) => (
+        {articles.map((article) => (
           <div key={article.id}>
             {/* Insert inline ads after every 6 articles */}
             {/* {index > 0 && index % 6 === 0 && (
@@ -125,9 +125,8 @@ async function ArticlesList({ page, search }: { page: number; search: string }) 
         <div className="mt-6 sm:mt-8 flex flex-col sm:flex-row justify-center items-center gap-3 sm:gap-4">
           <Link
             href={`/articles?page=${page - 1}${search ? `&q=${encodeURIComponent(search)}` : ""}`}
-            className={`w-full sm:w-auto px-4 py-2 border rounded-md text-center text-sm sm:text-base ${
-              page <= 1 ? "opacity-50 pointer-events-none" : ""
-            }`}
+            className={`w-full sm:w-auto px-4 py-2 border rounded-md text-center text-sm sm:text-base ${page <= 1 ? "opacity-50 pointer-events-none" : ""
+              }`}
           >
             Previous
           </Link>
@@ -136,9 +135,8 @@ async function ArticlesList({ page, search }: { page: number; search: string }) 
           </span>
           <Link
             href={`/articles?page=${page + 1}${search ? `&q=${encodeURIComponent(search)}` : ""}`}
-            className={`w-full sm:w-auto px-4 py-2 border rounded-md text-center text-sm sm:text-base ${
-              page >= pagination.totalPages ? "opacity-50 pointer-events-none" : ""
-            }`}
+            className={`w-full sm:w-auto px-4 py-2 border rounded-md text-center text-sm sm:text-base ${page >= pagination.totalPages ? "opacity-50 pointer-events-none" : ""
+              }`}
           >
             Next
           </Link>
