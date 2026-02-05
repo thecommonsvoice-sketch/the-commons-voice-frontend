@@ -3,7 +3,8 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { useUserStore } from "@/store/useUserStore";
-import { useCategoryStore } from "@/store/useCategoryStore";
+
+// import { useCategoryStore } from "@/store/useCategoryStore";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ThemeToggle";
@@ -20,7 +21,7 @@ import {
 
 export default function Navbar() {
   const { user, clearUser } = useUserStore();
-  const { categories, setCategories, hasFetched } = useCategoryStore();
+
   const router = useRouter();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -37,35 +38,21 @@ export default function Navbar() {
     }
   };
 
+  // Static categories definitions
+  const categories = [
+    { name: "General", href: "/categories/general" },
+    { name: "Politics", href: "/categories/politics" },
+    { name: "Science and Technology", href: "/categories/science-and-technology" },
+    { name: "Entertainment", href: "/categories/entertainment" },
+    { name: "Business", href: "/categories/business" },
+  ];
+
+  /* 
   // Fetch categories only if not already available
   useEffect(() => {
-    if (hasFetched) return;
-
-    const fetchCategories = async () => {
-      try {
-        const base = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000/api";
-        const res = await fetch(`${base}/categories`, {
-          cache: 'no-store'
-        });
-
-        if (!res.ok) throw new Error(`Failed to fetch categories: ${res.statusText}`);
-
-        const data = await res.json();
-
-        const fetchedCategories = data?.categories.map((cat: { name: string; slug: string }) => ({
-          name: cat.name,
-          href: `/categories/${cat.slug}`,
-        })) || [];
-
-        setCategories(fetchedCategories); // ✅ This also sets hasFetched to true
-      } catch (error) {
-        console.error("Failed to fetch categories:", error);
-        useCategoryStore.getState().markFetched(); // ✅ Still mark as fetched to avoid retry loop
-      }
-    };
-
-    fetchCategories();
-  }, [hasFetched, setCategories]);
+    // Logic removed for static optimization
+  }, []);
+  */
 
 
   // Memoize visible and hidden categories
