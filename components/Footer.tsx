@@ -10,7 +10,7 @@ const Footer = () => {
     { name: "General", href: "/categories/general" },
     { name: "Politics", href: "/categories/politics" },
     { name: "Science and Technology", href: "/categories/science-and-technology" },
-    { name: "Page 4", href: "/categories/page-4" },
+    { name: "Sports and Entertainment", href: "/categories/sports-and-entertainment" },
     { name: "Business", href: "/categories/business" },
   ];
 
