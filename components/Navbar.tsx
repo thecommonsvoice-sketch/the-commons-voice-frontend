@@ -74,7 +74,7 @@ export default function Navbar() {
           <nav className="flex h-14 sm:h-16 items-center justify-between">
             {/* Logo */}
             <Link href="/" className="flex items-center gap-2">
-              <span className="font-serif text-2xl sm:text-3xl font-black tracking-tighter text-primary">TCV</span>
+              {/* <span className="font-serif text-2xl sm:text-3xl font-black tracking-tighter text-primary">TCV</span> */}
               <span className="hidden sm:inline-block font-serif font-bold text-lg tracking-tight text-foreground/90">The Commons Voice</span>
             </Link>
 
