@@ -99,10 +99,11 @@ export default async function ArticlePage({
     notFound();
   }
 
-  const relatedArticles = article?.category?.slug
-    ? await getRelatedArticles(article.category.slug, slug)
-    : [];
-  const { next, prev } = await getAdjacentArticles(slug);
+  const [relatedArticles, adjacent] = await Promise.all([
+    article.category?.slug ? getRelatedArticles(article.category.slug, slug) : Promise.resolve([]),
+    getAdjacentArticles(slug)
+  ]);
+  const { next, prev } = adjacent;
 
   const jsonLd = {
     "@context": "https://schema.org",
