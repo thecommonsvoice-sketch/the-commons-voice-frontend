@@ -26,6 +26,7 @@ export const metadata: Metadata = {
   description:
     "Independent news, analysis, and reporting from around the world. Stay informed with breaking news, in-depth analysis, and expert coverage on politics, business, health, lifestyle, and more.",
   keywords: [
+    "the commons voice", "thecommonsvoice", "the common voice", "commons voice",
     "news", "journalism", "politics", "world news", "analysis", "reporting",
     "breaking news", "current events", "business news", "health news",
     "lifestyle", "sports coverage", "television", "media", "investigative journalism"

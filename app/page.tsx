@@ -12,16 +12,44 @@ import { LeftPortalNav } from "@/components/LeftPortalNav";
 
 // Homepage metadata - optimized for SEO
 export const metadata: Metadata = {
-  title: "Independent News & Analysis - The Commons Voice",
-  description: "Breaking news, in-depth analysis, and expert coverage of politics, business, health, lifestyle, and more. Independent journalism from The Commons Voice.",
+  title: "The Commons Voice - Independent News & Analysis",
+  description: "The Commons Voice delivers independent news, in-depth analysis, and expert coverage of politics, business, health, lifestyle, sports, and entertainment. Your trusted source for breaking news and investigative journalism.",
+  keywords: [
+    "the commons voice",
+    "thecommonsvoice",
+    "the common voice",
+    "commons voice news",
+    "independent news",
+    "breaking news",
+    "news analysis",
+    "investigative journalism"
+  ],
   alternates: {
     canonical: process.env.NEXT_PUBLIC_SITE_URL,
   },
   openGraph: {
-    title: "Independent News & Analysis - The Commons Voice",
-    description: "Breaking news and in-depth analysis from The Commons Voice. Stay informed with our independent journalism.",
+    title: "The Commons Voice - Independent News & Analysis",
+    description: "Your trusted source for independent news, breaking stories, and in-depth analysis from The Commons Voice.",
     type: "website",
     locale: "en_IN",
+    url: process.env.NEXT_PUBLIC_SITE_URL,
+    siteName: "The Commons Voice",
+    images: [
+      {
+        url: `${process.env.NEXT_PUBLIC_SITE_URL}/og-image.jpg`,
+        width: 1200,
+        height: 630,
+        alt: "The Commons Voice - Independent News",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "The Commons Voice - Independent News & Analysis",
+    description: "Your trusted source for independent news and analysis",
+    site: "@TheCommonsVoice",
+    creator: "@TheCommonsVoice",
+    images: [`${process.env.NEXT_PUBLIC_SITE_URL}/twitter-image.jpg`],
   },
 };
 
@@ -83,13 +111,14 @@ export default async function HomePage() {
     "@context": "https://schema.org",
     "@type": "Organization",
     name: "The Commons Voice",
+    alternateName: ["TheCommonsVoice", "The Common Voice", "Commons Voice"],
     url: process.env.NEXT_PUBLIC_SITE_URL,
     logo: `${process.env.NEXT_PUBLIC_SITE_URL}/logo.png`,
-    description: "Independent news, analysis, and reporting from around the world.",
+    description: "Independent news, analysis, and reporting from around the world. Your trusted source for breaking news and investigative journalism.",
     sameAs: [
       "https://twitter.com/TheCommonsVoice",
     ],
-    contact: {
+    contactPoint: {
       "@type": "ContactPoint",
       contactType: "General Support",
       url: `${process.env.NEXT_PUBLIC_SITE_URL}/contact`,
