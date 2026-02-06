@@ -8,12 +8,40 @@ import { Separator } from "@/components/ui/separator";
 import Link from "next/link";
 import { ArticleCommentsClient } from "@/components/ArticleCommentsClient";
 
+// ISR Configuration
+export const revalidate = 60; // Revalidate every 60 seconds
+export const dynamic = 'force-static'; // Force static generation
+export const dynamicParams = true; // Allow dynamic params not in generateStaticParams
+
+// --- Generate Static Params for ISR ---
+export async function generateStaticParams() {
+  const base = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000/api";
+
+  try {
+    const res = await fetch(`${base}/articles?limit=50&status=PUBLISHED`, {
+      cache: 'no-store'  // Always fetch fresh during build
+    });
+
+    if (!res.ok) return [];
+
+    const data = await res.json();
+    const articles = data?.data || [];
+
+    return articles.map((article: any) => ({
+      slug: article.slug,
+    }));
+  } catch (error) {
+    console.error('Error generating static params:', error);
+    return [];
+  }
+}
+
 // --- Fetch Single Article ---
 async function getArticle(slug: string): Promise<Article | null> {
   try {
     const base = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000/api";
     const res = await fetch(`${base}/articles/${slug}`, {
-      next: { revalidate: 600 },
+      next: { revalidate: 60 },  // Reduced from 600 to 60 seconds
     });
     if (!res.ok) return null;
     const data = await res.json();
@@ -29,7 +57,7 @@ async function getRelatedArticles(categorySlug: string, excludeSlug: string) {
     const base = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000/api";
     const res = await fetch(
       `${base}/articles?category=${categorySlug}&limit=4&exclude=${excludeSlug}`,
-      { next: { revalidate: 600 } }
+      { next: { revalidate: 60 } }  // Reduced from 600 to 60 seconds
     );
     if (!res.ok) return [];
     const data = await res.json();
@@ -44,7 +72,7 @@ async function getAdjacentArticles(slug: string) {
   try {
     const base = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000/api";
     const res = await fetch(`${base}/articles/adjacent/${slug}`, {
-      next: { revalidate: 600 },
+      next: { revalidate: 60 },  // Reduced from 600 to 60 seconds
     });
     if (!res.ok) return { next: null, prev: null };
     const data = await res.json();

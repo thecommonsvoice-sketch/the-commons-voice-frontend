@@ -3,6 +3,34 @@ import { notFound } from "next/navigation";
 import CategoryClient from "./CategoryClient";
 import type { Article, Category } from "@/lib/types";
 
+// ISR Configuration
+export const revalidate = 120; // Revalidate every 2 minutes (categories change less frequently)
+export const dynamic = 'force-static';
+export const dynamicParams = true;
+
+// --- Generate Static Params for ISR ---
+export async function generateStaticParams() {
+  const base = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000/api";
+
+  try {
+    const res = await fetch(`${base}/categories/all-with-hierarchy`, {
+      cache: 'no-store'
+    });
+
+    if (!res.ok) return [];
+
+    const data = await res.json();
+    const categories = Array.isArray(data) ? data : (data?.categories || []);
+
+    return categories.map((cat: any) => ({
+      slug: cat.slug,
+    }));
+  } catch (error) {
+    console.error('Error generating static params for categories:', error);
+    return [];
+  }
+}
+
 async function getCategoryWithArticles(
   slug: string,
   page: number
@@ -18,11 +46,11 @@ async function getCategoryWithArticles(
 
     const [categoryRes, articlesRes] = await Promise.all([
       fetch(`${process.env.NEXT_PUBLIC_API_URL}/categories/${slug}`, {
-        cache: "no-store",
+        next: { revalidate: 120 },  // Cache with ISR
         headers: { Cookie: cookieHeader }
       }),
       fetch(`${process.env.NEXT_PUBLIC_API_URL}/articles?category=${slug}&page=${page}&limit=9`, {
-        cache: "no-store",
+        next: { revalidate: 120 },  // Cache with ISR
         headers: { Cookie: cookieHeader }
       }),
     ]);

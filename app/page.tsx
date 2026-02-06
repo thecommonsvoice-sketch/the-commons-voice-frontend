@@ -25,6 +25,9 @@ export const metadata: Metadata = {
   },
 };
 
+// ISR Configuration
+export const revalidate = 60; // Revalidate every 60 seconds
+
 async function getArticles(): Promise<Article[]> {
   try {
     const { cookies } = await import("next/headers");
@@ -33,7 +36,7 @@ async function getArticles(): Promise<Article[]> {
 
     const base = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000/api";
     const res = await fetch(`${base}/articles?limit=20`, {
-      cache: "no-store",
+      next: { revalidate: 60 },  // ISR caching
       headers: {
         Cookie: cookieHeader
       }
@@ -50,7 +53,7 @@ async function getCategories(): Promise<Category[]> {
   try {
     const base = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000/api";
     const res = await fetch(`${base}/categories`, {
-      next: { revalidate: 600 }
+      next: { revalidate: 60 }  // Reduced from 600 to 60 seconds
     });
     if (!res.ok) return [];
     const data = await res.json();
