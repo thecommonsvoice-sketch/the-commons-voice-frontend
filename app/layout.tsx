@@ -37,12 +37,12 @@ export const metadata: Metadata = {
   applicationName: "The Commons Voice",
   referrer: "origin-when-cross-origin",
   icons: [
-    { rel: "icon", url: "/favicon.ico" },
-    { rel: "apple-touch-icon", sizes: "180x180", url: "/apple-touch-icon.png" },
-    { rel: "icon", type: "image/png", sizes: "32x32", url: "/favicon-32x32.png" },
-    { rel: "icon", type: "image/png", sizes: "16x16", url: "/favicon-16x16.png" },
+    { rel: "icon", url: "/favicon.ico?v=2" },
+    { rel: "apple-touch-icon", sizes: "180x180", url: "/apple-touch-icon.png?v=2" },
+    { rel: "icon", type: "image/png", sizes: "32x32", url: "/favicon-32x32.png?v=2" },
+    { rel: "icon", type: "image/png", sizes: "16x16", url: "/favicon-16x16.png?v=2" },
   ],
-  manifest: "/site.webmanifest",
+  manifest: "/manifest.json",
   openGraph: {
     type: "website",
     title: "The Commons Voice - Independent News & Analysis",
