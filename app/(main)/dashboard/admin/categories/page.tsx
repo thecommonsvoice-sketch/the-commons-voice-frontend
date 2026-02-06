@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, ReactNode } from "react";
 import RequireAuth from "@/components/RequireAuth";
 import { api } from "@/lib/api";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -165,7 +165,7 @@ export default function CategoryManagementPage() {
     };
 
     // Recursive Render Row
-    const renderCategoryRow = (category: Category, level: number = 0) => {
+    const renderCategoryRow = (category: Category, level: number = 0): ReactNode => {
         return (
             <>
                 <TableRow key={category.id}>
