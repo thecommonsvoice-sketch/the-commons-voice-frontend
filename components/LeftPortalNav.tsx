@@ -28,7 +28,7 @@ export function LeftPortalNav() {
   return (
     <>
       {/* Mobile Toggle Button */}
-      <div className="lg:hidden flex justify-between items-center p-2 border-b bg-background">
+      <div className="md:hidden flex justify-between items-center p-2 border-b bg-background">
         <button
           onClick={() => setMobileOpen(true)}
           className="flex items-center gap-2 text-sm font-medium"
@@ -41,7 +41,7 @@ export function LeftPortalNav() {
       <AnimatePresence>
         {mobileOpen && (
           <motion.div
-            className="fixed inset-0 bg-black/50 z-50 lg:hidden"
+            className="fixed inset-0 bg-black/50 z-50 md:hidden"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -75,7 +75,7 @@ export function LeftPortalNav() {
       </AnimatePresence>
 
       {/* Desktop Sidebar */}
-      <aside className="hidden lg:flex flex-col w-full border-r bg-background p-3 sticky top-16 h-[calc(100vh-4rem)] overflow-y-auto">
+      <aside className="hidden md:flex flex-col w-full border-r bg-background p-3 sticky top-16 h-[calc(100vh-4rem)] overflow-y-auto">
         {portalNav.map((item) => (
           <NavItem
             key={item.label}
@@ -137,11 +137,10 @@ function NavItem({
                   <Link
                     key={sub.label}
                     href={sub.href}
-                    className={`block text-sm px-2 py-1 rounded hover:bg-accent ${
-                      pathname.startsWith(sub.href)
+                    className={`block text-sm px-2 py-1 rounded hover:bg-accent ${pathname.startsWith(sub.href)
                         ? "text-primary font-medium"
                         : ""
-                    }`}
+                      }`}
                     onClick={onClose}
                   >
                     {sub.label}
@@ -155,10 +154,9 @@ function NavItem({
         <Link
           href={item.href}
           className={`flex items-center gap-2 px-3 py-2 rounded transition-colors
-            ${
-              isActive
-                ? "bg-primary/10 text-primary font-medium"
-                : "hover:bg-accent"
+            ${isActive
+              ? "bg-primary/10 text-primary font-medium"
+              : "hover:bg-accent"
             }`}
           onClick={onClose}
         >

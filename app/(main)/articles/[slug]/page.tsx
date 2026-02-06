@@ -179,27 +179,31 @@ export default async function ArticlePage({
               </Link>
             )}
 
-            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold leading-tight">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-gray-900 dark:text-gray-100 leading-tight">
               {article.title}
             </h1>
 
             {article.excerpt && (
-              <p className="text-base sm:text-lg text-muted-foreground leading-relaxed">
+              <p className="text-lg sm:text-xl text-gray-600 dark:text-gray-300 leading-relaxed font-meduim">
                 {article.excerpt}
               </p>
             )}
 
-            <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-xs sm:text-sm text-muted-foreground">
+            <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500 dark:text-gray-400 py-2">
               {article.author?.name && (
-                <span>
-                  By{" "}
-                  <span className="font-medium">{article.author.name}</span>
-                </span>
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold">
+                    {article.author.name.charAt(0)}
+                  </div>
+                  <span>
+                    By <span className="font-semibold text-gray-900 dark:text-gray-100">{article.author.name}</span>
+                  </span>
+                </div>
               )}
               {article.createdAt && (
                 <>
                   <Separator orientation="vertical" className="h-4" />
-                  <time dateTime={article.createdAt}>
+                  <time dateTime={article.createdAt} className="font-medium">
                     {formatDistanceToNow(new Date(article.createdAt), {
                       addSuffix: true,
                     })}
@@ -223,7 +227,15 @@ export default async function ArticlePage({
 
           {/* Content */}
           <div
-            className="prose prose-sm sm:prose-base md:prose-lg prose-neutral max-w-none dark:prose-invert prose-headings:font-semibold prose-a:text-primary prose-a:no-underline hover:prose-a:underline"
+            className="prose prose-lg sm:prose-xl prose-slate dark:prose-invert max-w-none 
+            font-serif text-gray-800 dark:text-gray-200 leading-loose
+            prose-headings:font-sans prose-headings:font-bold prose-headings:tracking-tight 
+            prose-p:leading-loose prose-p:mb-6
+            prose-a:text-primary prose-a:no-underline hover:prose-a:underline
+            prose-blockquote:border-l-4 prose-blockquote:border-primary prose-blockquote:pl-6 prose-blockquote:italic prose-blockquote:text-gray-700 dark:prose-blockquote:text-gray-300
+            prose-img:rounded-xl prose-img:shadow-lg prose-img:my-8
+            prose-li:marker:text-primary
+            first-letter:text-5xl first-letter:font-bold first-letter:mr-3 first-letter:float-left first-letter:font-serif"
             dangerouslySetInnerHTML={{ __html: article.content }}
           />
 
@@ -269,41 +281,63 @@ export default async function ArticlePage({
 
           {/* Next & Previous Navigation */}
           {(next || prev) && (
-            <div className="flex justify-between mt-10 border-t pt-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-12 border-t pt-8">
               {prev ? (
-                <Link href={`/articles/${prev.slug}`} className="text-primary hover:underline">
-                  ← {prev.title}
+                <Link href={`/articles/${prev.slug}`} className="group flex flex-col p-4 rounded-lg border hover:bg-muted/50 transition">
+                  <span className="text-sm text-muted-foreground mb-1">← Previous Article</span>
+                  <span className="font-medium group-hover:text-primary line-clamp-2">{prev.title}</span>
                 </Link>
-              ) : <span />}
+              ) : <div />}
               {next ? (
-                <Link href={`/articles/${next.slug}`} className="text-primary hover:underline">
-                  {next.title} →
+                <Link href={`/articles/${next.slug}`} className="group flex flex-col items-end text-right p-4 rounded-lg border hover:bg-muted/50 transition">
+                  <span className="text-sm text-muted-foreground mb-1">Next Article →</span>
+                  <span className="font-medium group-hover:text-primary line-clamp-2">{next.title}</span>
                 </Link>
-              ) : <span />}
+              ) : <div />}
             </div>
           )}
 
           {/* Related Articles */}
           {relatedArticles.length > 0 && (
-            <section className="mt-12">
-              <h2 className="text-2xl font-semibold mb-4">Related Articles</h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                {relatedArticles.map((related: Article) => (
-                  <Link
-                    key={related.id}
-                    href={`/articles/${related.slug}`}
-                    className="group block rounded-lg border hover:shadow-md transition p-4"
-                  >
-                    <h3 className="text-lg font-medium group-hover:text-primary">
-                      {related.title}
-                    </h3>
-                    {related.excerpt && (
-                      <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
-                        {related.excerpt}
-                      </p>
-                    )}
-                  </Link>
-                ))}
+            <section className="mt-16 bg-muted/30 -mx-4 sm:-mx-6 px-4 sm:px-6 py-12">
+              <div className="max-w-4xl mx-auto">
+                <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
+                  <span className="w-1 h-6 bg-primary rounded-full"></span>
+                  Related Articles
+                </h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  {relatedArticles.map((related: Article) => (
+                    <Link
+                      key={related.id}
+                      href={`/articles/${related.slug}`}
+                      className="group flex flex-col bg-card rounded-xl border shadow-sm hover:shadow-md transition overflow-hidden"
+                    >
+                      {related.coverImage && (
+                        <div className="relative aspect-video overflow-hidden">
+                          <img
+                            src={related.coverImage}
+                            alt={related.title}
+                            className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+                            loading="lazy"
+                          />
+                        </div>
+                      )}
+                      <div className="p-5 flex flex-col flex-1">
+                        <h3 className="text-lg font-bold group-hover:text-primary leading-snug mb-2 line-clamp-2">
+                          {related.title}
+                        </h3>
+                        {related.excerpt && (
+                          <p className="text-sm text-muted-foreground line-clamp-2 mb-4 flex-1">
+                            {related.excerpt}
+                          </p>
+                        )}
+                        <div className="text-xs text-muted-foreground font-medium pt-2 border-t mt-auto">
+                          Read article →
+                        </div>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
               </div>
             </section>
           )}

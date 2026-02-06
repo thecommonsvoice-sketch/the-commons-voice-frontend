@@ -1,6 +1,6 @@
 // app/layout.tsx
 import type { Metadata, Viewport } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Merriweather } from "next/font/google"; // Import Merriweather
 import "./globals.css";
 import AuthProvider from "@/providers/AuthProvider";
 import { ThemeProvider } from "@/components/ThemeProvider";
@@ -9,7 +9,13 @@ import { Toaster } from "@/components/ui/sonner";
 import { AdSlot } from "@/components/AdSlot";
 import Footer from "@/components/Footer";
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
+const merriweather = Merriweather({
+  subsets: ["latin"],
+  weight: ["300", "400", "700", "900"],
+  variable: "--font-merriweather",
+  display: 'swap'
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"),
@@ -82,7 +88,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <meta name="google-site-verification" content="_nmZiV9WeB08rFkX15T_x_LEYcbinV484NCAcCg0rsY" />
       </head>
       <body
-        className={`${inter.className} h-screen bg-background text-foreground antialiased overflow-x-hidden`}
+        className={`${inter.variable} ${merriweather.variable} font-sans h-screen bg-background text-foreground antialiased overflow-x-hidden`}
       >
         {/* Load AdSense script once, correctly */}
         {adsenseClient && (

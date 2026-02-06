@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 
 interface RecommendedItem {
   title: string;
@@ -15,24 +14,33 @@ export function RecommendedWidget({ items }: RecommendedWidgetProps) {
   if (!items.length) return null;
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="text-lg">Recommended</CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-4">
+    <div className="space-y-4">
+      <h3 className="text-lg font-bold font-serif border-l-4 border-primary pl-3">Recommended</h3>
+      <div className="flex flex-col gap-4">
         {items.map((item, idx) => (
-          <Link key={idx} href={item.link} className="flex gap-3 hover:underline">
+          <Link
+            key={idx}
+            href={item.link}
+            className="group flex gap-3 items-start"
+          >
             {item.image && (
-              <img
-                src={item.image}
-                alt={item.title}
-                className="w-16 h-16 object-cover rounded"
-              />
+              <div className="relative shrink-0 w-20 h-16 rounded-md overflow-hidden">
+                <img
+                  src={item.image}
+                  alt={item.title}
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  loading="lazy"
+                />
+              </div>
             )}
-            <p className="text-sm">{item.title}</p>
+            <div className="flex flex-col">
+              <h4 className="text-sm font-medium leading-snug line-clamp-3 group-hover:text-primary transition-colors">
+                {item.title}
+              </h4>
+            </div>
           </Link>
         ))}
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 }
