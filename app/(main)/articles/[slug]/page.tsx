@@ -283,13 +283,13 @@ export default async function ArticlePage({
           {(next || prev) && (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-12 border-t pt-8">
               {prev ? (
-                <Link href={`/articles/${prev.slug}`} className="group flex flex-col p-4 rounded-lg border hover:bg-muted/50 transition">
+                <Link href={`/articles/${prev.slug}`} prefetch={false} className="group flex flex-col p-4 rounded-lg border hover:bg-muted/50 transition">
                   <span className="text-sm text-muted-foreground mb-1">← Previous Article</span>
                   <span className="font-medium group-hover:text-primary line-clamp-2">{prev.title}</span>
                 </Link>
               ) : <div />}
               {next ? (
-                <Link href={`/articles/${next.slug}`} className="group flex flex-col items-end text-right p-4 rounded-lg border hover:bg-muted/50 transition">
+                <Link href={`/articles/${next.slug}`} prefetch={false} className="group flex flex-col items-end text-right p-4 rounded-lg border hover:bg-muted/50 transition">
                   <span className="text-sm text-muted-foreground mb-1">Next Article →</span>
                   <span className="font-medium group-hover:text-primary line-clamp-2">{next.title}</span>
                 </Link>

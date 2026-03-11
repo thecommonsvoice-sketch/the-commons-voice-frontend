@@ -79,7 +79,7 @@ export function ArticleCard({ article, variant = "default", show = true }: Artic
         className={`group border-none shadow-sm hover:shadow-xl transition-all duration-300 bg-card rounded-xl overflow-hidden h-full flex flex-col 
           ${isFeatured ? "sm:col-span-2 lg:col-span-2" : isHorizontal ? "flex-row h-auto min-h-[140px]" : ""}`}
       >
-        <Link href={`/articles/${article.slug}`} className={`flex-1 flex ${isHorizontal ? "flex-row gap-4" : "flex-col"}`}>
+        <Link href={`/articles/${article.slug}`} prefetch={false} className={`flex-1 flex ${isHorizontal ? "flex-row gap-4" : "flex-col"}`}>
           {/* Image Container */}
           <div className={`relative overflow-hidden ${isHorizontal ? "w-1/3 aspect-[4/3] sm:aspect-video h-auto shrink-0" : "aspect-video"}`}>
             {article.coverImage ? (

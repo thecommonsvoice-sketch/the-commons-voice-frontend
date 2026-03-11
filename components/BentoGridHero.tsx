@@ -19,7 +19,7 @@ export function BentoGridHero({ articles }: BentoGridHeroProps) {
         <section className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-12">
             {/* Main Feature - Takes 2/3 width on large screens */}
             <div className="lg:col-span-2 relative group overflow-hidden rounded-2xl shadow-xl min-h-[400px] lg:min-h-[500px]">
-                <Link href={`/articles/${mainArticle.slug}`} className="block w-full h-full">
+                <Link href={`/articles/${mainArticle.slug}`} prefetch={false} className="block w-full h-full">
                     <div className="absolute inset-0">
                         <img
                             src={mainArticle.coverImage || "/placeholder.jpg"}
