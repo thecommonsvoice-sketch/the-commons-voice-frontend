@@ -51,13 +51,13 @@ async function getArticle(slug: string): Promise<Article | null> {
   }
 }
 
-// --- Fetch Related Articles ---
-async function getRelatedArticles(categorySlug: string, excludeSlug: string) {
+// --- Fetch Related Articles (Tag-based + Category fallback) ---
+async function getRelatedArticles(slug: string) {
   try {
     const base = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000/api";
     const res = await fetch(
-      `${base}/articles?category=${categorySlug}&limit=4&exclude=${excludeSlug}`,
-      { next: { revalidate: 60 } }  // Reduced from 600 to 60 seconds
+      `${base}/articles/related/${slug}?limit=4`,
+      { next: { revalidate: 60 } }
     );
     if (!res.ok) return [];
     const data = await res.json();
@@ -104,6 +104,7 @@ export async function generateMetadata({
   return {
     title,
     description,
+    keywords: article.tags?.length ? article.tags : undefined,
     alternates: {
       canonical: `/articles/${slug}`,
     },
@@ -131,7 +132,7 @@ export default async function ArticlePage({
   }
 
   const [relatedArticles, adjacent] = await Promise.all([
-    article.category?.slug ? getRelatedArticles(article.category.slug, slug) : Promise.resolve([]),
+    getRelatedArticles(slug),
     getAdjacentArticles(slug)
   ]);
   const { next, prev } = adjacent;
@@ -157,6 +158,7 @@ export default async function ArticlePage({
       },
     },
     mainEntityOfPage: `${process.env.NEXT_PUBLIC_SITE_URL}/articles/${article.slug}`,
+    ...(article.tags?.length ? { keywords: article.tags.join(', ') } : {}),
   };
 
   return (
@@ -241,6 +243,21 @@ export default async function ArticlePage({
             first-letter:text-5xl first-letter:font-bold first-letter:mr-3 first-letter:float-left first-letter:font-serif"
             dangerouslySetInnerHTML={{ __html: article.content }}
           />
+
+          {/* Tags */}
+          {Array.isArray(article.tags) && article.tags.length > 0 && (
+            <div className="flex flex-wrap gap-2 mt-6">
+              {article.tags.map((tag: string) => (
+                <Link
+                  key={tag}
+                  href={`/articles?q=${encodeURIComponent(tag)}`}
+                  className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
+                >
+                  #{tag}
+                </Link>
+              ))}
+            </div>
+          )}
 
           {/* Inline Ad */}
           {/* <AdSlot slot="article-inline" width={728} height={90} className="mx-auto my-8" /> */}

@@ -39,6 +39,7 @@ export interface Article {
   metaDescription?: string | null;
   coverImage?: string | null;
   ogImage?: string | null;
+  tags?: string[];
   categoryId: string;
   authorId: string;
   status: ArticleStatus;

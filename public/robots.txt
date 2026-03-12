@@ -1,3 +1,4 @@
+# *
 User-agent: *
 Allow: /
 Disallow: /dashboard
@@ -5,6 +6,9 @@ Disallow: /unauthorized
 Disallow: /login
 Disallow: /signup
 Disallow: /special-access
+
+# Host
+Host: https://thecommonsvoice.com
 
 # Sitemaps
 Sitemap: https://thecommonsvoice.com/sitemap.xml
