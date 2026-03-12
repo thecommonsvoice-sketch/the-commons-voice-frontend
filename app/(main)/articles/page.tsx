@@ -80,9 +80,8 @@ export default async function ArticlesPage({
   const search = searchParams?.q || "";
 
   return (
-    <div className="container mx-auto px-4 sm:px-6 py-6 sm:py-8 space-y-6 sm:space-y-8">
-      {/* Leaderboard Ad */}
-      <AdSlot slot="7890123456" className="mx-auto mb-4 sm:mb-6 hidden md:block" />
+    <div className="container mx-auto px-4 sm:px-6 pt-2 pb-6 sm:pt-4 sm:pb-8 space-y-6 sm:space-y-8">
+      {/* Header section starts immediately now to avoid blank space from ads */}
 
       <div className="mb-6 sm:mb-8">
         <h1 className="text-2xl sm:text-3xl font-bold mb-2">All Articles</h1>
