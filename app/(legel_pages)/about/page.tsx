@@ -17,9 +17,9 @@ export default function AboutPage() {
   return (
     <div className="container mx-auto px-4 sm:px-6 py-8 sm:py-12 max-w-4xl">
       <div className="text-center space-y-3 sm:space-y-4 mb-8 sm:mb-12">
-        <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold">About The Commons Voice</h1>
+        <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold">TheCommonsVoice </h1>
         <p className="text-sm sm:text-base md:text-lg text-muted-foreground max-w-2xl mx-auto px-2">
-          Independent journalism for the modern world. We believe in the power of truth, transparency, and thoughtful reporting.
+          We love to tell grounded stories and explore life.
         </p>
       </div>
 
