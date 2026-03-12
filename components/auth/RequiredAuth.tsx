@@ -25,16 +25,20 @@ export default function RequireAuth({
   const router = useRouter();
   const pathname = usePathname() ?? "/";
   const user = useUserStore((state) => state.user);
-  const [checking, setChecking] = useState(true);
+  const hydrated = useUserStore((state) => state.hydrated);
+  const [authorized, setAuthorized] = useState(false);
 
   useEffect(() => {
-    // Check if it's a public path
+    // If it's a public path, allow immediately
     if (isPublicPath(pathname)) {
-      setChecking(false);
+      setAuthorized(true);
       return;
     }
 
-    // ✅ Dashboard route protection
+    // Wait for auth hydration to complete before making decisions
+    if (!hydrated) return;
+
+    // Dashboard route protection
     if (pathname.startsWith("/dashboard")) {
       if (!user) {
         router.replace("/login");
@@ -46,18 +50,17 @@ export default function RequireAuth({
       }
     }
 
-    setChecking(false);
-  }, [pathname, router, user, allowedRoles]);
+    setAuthorized(true);
+  }, [pathname, router, user, allowedRoles, hydrated]);
 
-  if (checking) {
+  // Show loading only for protected routes while waiting for hydration
+  if (!authorized) {
     return (
       <div className="flex h-screen items-center justify-center">
-        <span className="text-lg text-gray-600">Loading…</span>
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
       </div>
     );
   }
 
-  
   return <>{children}</>;
 }
-

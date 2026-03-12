@@ -10,20 +10,25 @@ export default function SpecialRoutes({
 }: { children: ReactNode; allowedRoles?: Role[]; }) {
   const router = useRouter();
   const pathname = usePathname();
-  const { user } = useUserStore();
-  const [checking, setChecking] = useState(true);
+  const { user, hydrated } = useUserStore();
+  const [authorized, setAuthorized] = useState(false);
 
   useEffect(() => {
-      if (!user) {
-        router.replace("/login"); setChecking(false); return;
-      }
-      if (!allowedRoles.includes(user.role)) {
-        router.replace("/unauthorized"); setChecking(false); return;
-    }
-    setChecking(false);
-  }, [pathname, router, user, allowedRoles]);
+    // Wait for auth hydration to complete before making decisions
+    if (!hydrated) return;
 
-  if (checking) {
+    if (!user) {
+      router.replace("/login");
+      return;
+    }
+    if (!allowedRoles.includes(user.role)) {
+      router.replace("/unauthorized");
+      return;
+    }
+    setAuthorized(true);
+  }, [pathname, router, user, allowedRoles, hydrated]);
+
+  if (!authorized) {
     return (
       <div className="flex h-screen items-center justify-center">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
@@ -31,4 +36,4 @@ export default function SpecialRoutes({
     );
   }
   return <>{children}</>;
-}
+}
