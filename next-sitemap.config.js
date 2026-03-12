@@ -23,10 +23,6 @@ module.exports = {
           '/special-access',
         ],
       },
-      {
-        userAgent: '*',
-        allow: ['/articles', '/categories', '/business', '/health', '/lifestyle', '/sports', '/tv'],
-      },
     ],
     additionalSitemaps: [
       `${process.env.NEXT_PUBLIC_SITE_URL}/articles-sitemap.xml`,
