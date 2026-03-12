@@ -70,7 +70,7 @@ export const metadata: Metadata = {
       "max-snippet": -1,
     },
   },
-  alternates: { canonical: process.env.NEXT_PUBLIC_SITE_URL },
+  // alternates: { canonical: process.env.NEXT_PUBLIC_SITE_URL }, // REMOVED: Causes all pages to canonicalize to homepage
   // verification: { google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION },
 };
 
