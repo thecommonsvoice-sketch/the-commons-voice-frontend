@@ -21,6 +21,12 @@ export default function AboutPage() {
         <p className="text-sm sm:text-base md:text-lg text-muted-foreground max-w-2xl mx-auto px-2">
           We love to tell grounded stories and explore life
         </p>
+        <p className="text-sm sm:text-base md:text-lg text-muted-foreground max-w-2xl mx-auto px-2">
+          TheCommonsVoice was founded in 2025 with a simple belief: 
+Important stories don't always come from the powerful. Sometimes they come from the ordinary people living ordinary lives. 
+Started as a storytelling platform dedicated to sharing unheard Voices, TheCommonsVoice has evolved into a digital media space for podcasts, storytelling, journalism, and social conversations.
+Today, we creates content that informs, motivates, and connects people with the stories that Matter!
+        </p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 md:gap-8 mb-8 sm:mb-12">
@@ -65,30 +71,7 @@ export default function AboutPage() {
         </Card>
       </div>
 
-      <div className="prose prose-sm sm:prose-base md:prose-lg prose-neutral max-w-none dark:prose-invert px-2">
-        <h2>Our Story</h2>
-        <p>
-          Founded in 2025, The Commons Voice emerged from a simple belief: that quality journalism should be accessible to everyone. In an era of information overload and polarization, we strive to cut through the noise and deliver news that matters.
-        </p>
-
-        <p>
-          Our editorial philosophy centers on thorough research, multiple source verification, and presenting complex issues with clarity and context. We believe that informed citizens are the foundation of a healthy democracy.
-        </p>
-
-        <h2>Our Values</h2>
-        <ul>
-          <li><strong>Independence:</strong> We maintain editorial independence and are committed to reporting without bias or external influence.</li>
-          <li><strong>Accuracy:</strong> Every fact is verified through multiple sources before publication.</li>
-          <li><strong>Transparency:</strong> We clearly distinguish between news reporting and opinion content.</li>
-          <li><strong>Accessibility:</strong> We make our content available to readers regardless of their economic background.</li>
-        </ul>
-
-        <h2>Contact Our Editorial Team</h2>
-        <p>
-          Have a story tip or feedback? We&rsquo;d love to hear from you. Reach out to our editorial team at{" "}
-          <a href="mailto:editorial@thecommonvoice.com">editorial@thecommonvoice.com</a>.
-        </p>
-      </div>
+      
     </div>
   );
 }
