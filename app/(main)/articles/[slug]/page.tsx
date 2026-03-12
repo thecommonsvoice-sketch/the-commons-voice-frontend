@@ -177,11 +177,11 @@ export default async function ArticlePage({
           {/* Header */}
           <header className="space-y-3 sm:space-y-4">
             {article.category && (
-              <Link href={`/category/${article.category.slug}`}>
-                <Badge variant="secondary" className="mb-2 cursor-pointer">
-                  {article.category.name}
-                </Badge>
-              </Link>
+              <Link href={`/category/${article.category.slug}`} prefetch={false}>
+                 <Badge variant="secondary" className="mb-2 cursor-pointer">
+                   {article.category.name}
+                 </Badge>
+               </Link>
             )}
 
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-gray-900 dark:text-gray-100 leading-tight">
@@ -251,6 +251,7 @@ export default async function ArticlePage({
                 <Link
                   key={tag}
                   href={`/articles?q=${encodeURIComponent(tag)}`}
+                  prefetch={false}
                   className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
                 >
                   #{tag}
@@ -330,6 +331,7 @@ export default async function ArticlePage({
                     <Link
                       key={related.id}
                       href={`/articles/${related.slug}`}
+                      prefetch={false}
                       className="group flex flex-col bg-card rounded-xl border shadow-sm hover:shadow-md transition overflow-hidden"
                     >
                       {related.coverImage && (

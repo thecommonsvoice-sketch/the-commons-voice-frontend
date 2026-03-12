@@ -216,10 +216,10 @@ export default function Dashboard() {
         {isWriter && (
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 sm:gap-4 mb-4">
             <Button asChild className="w-full sm:w-auto">
-              <Link href="/articles/new">
-                <Plus className="mr-2 h-4 w-4" />
-                New Article
-              </Link>
+              <Link href="/articles/new" prefetch={false}>
+                 <Plus className="mr-2 h-4 w-4" />
+                 New Article
+               </Link>
             </Button>
             <select
               value={articleType}
@@ -276,11 +276,11 @@ export default function Dashboard() {
                       </div>
                       <div className="flex flex-col sm:flex-row gap-2 mt-2">
                         <Button asChild size="sm" variant="outline">
-                          <Link href={`/articles/${article.slug}`}>View</Link>
-                        </Button>
-                        <Button asChild size="sm" variant="secondary">
-                          <Link href={`/articles/${article.slug}/edit`}>Edit</Link>
-                        </Button>
+                         <Link href={`/articles/special-access/${article.slug}`} prefetch={false}>View</Link>
+                       </Button>
+                       <Button asChild size="sm" variant="secondary">
+                         <Link href={`/articles/special-access/${article.slug}/edit`} prefetch={false}>Edit</Link>
+                       </Button>
                       </div>
                     </div>
                   ))}
@@ -317,9 +317,9 @@ export default function Dashboard() {
                       )}
                       <span className="font-semibold text-sm sm:text-base break-words flex-1 min-w-0">{bm.article.title}</span>
                     </div>
-                    <Button asChild size="sm" variant="outline" className="self-start sm:self-auto">
-                      <Link href={`/articles/${bm.article.slug}`}>Read</Link>
-                    </Button>
+                     <Button asChild size="sm" variant="outline" className="self-start sm:self-auto">
+                       <Link href={`/articles/${bm.article.slug}`} prefetch={false}>Read</Link>
+                     </Button>
                   </div>
                 ))}
               </div>
@@ -345,10 +345,11 @@ export default function Dashboard() {
                 {userComments.slice(0, 10).map((comment) => (
                   <div key={comment.id} className="p-3 sm:p-4 border rounded-lg flex flex-col gap-2">
                     <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-                      <Link
-                        href={`/articles/${comment.article.slug}`}
-                        className="font-semibold text-sm sm:text-base text-primary hover:underline break-words flex-1 min-w-0"
-                      >
+                       <Link
+                         href={`/articles/${comment.article.slug}`}
+                         prefetch={false}
+                         className="font-semibold text-sm sm:text-base text-primary hover:underline break-words flex-1 min-w-0"
+                       >
                         {comment.article.title}
                       </Link>
                       <span className="text-xs text-muted-foreground whitespace-nowrap">

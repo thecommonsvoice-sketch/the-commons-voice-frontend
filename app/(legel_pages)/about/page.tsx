@@ -19,7 +19,7 @@ export default function AboutPage() {
       <div className="text-center space-y-3 sm:space-y-4 mb-8 sm:mb-12">
         <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold">TheCommonsVoice </h1>
         <p className="text-sm sm:text-base md:text-lg text-muted-foreground max-w-2xl mx-auto px-2">
-          We love to tell grounded stories and explore life.
+          We love to tell grounded stories and explore life
         </p>
       </div>
 
