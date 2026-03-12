@@ -40,13 +40,12 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
     // };
   }, [setUser, clearUser]);
 
-  if (!ready) {
-    return (
-      <div className="flex h-screen items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-      </div>
-    );
-  }
-
+  /* 
+     REMOVED FULL-PAGE LOADING SPINNER FOR SEO:
+     Next.js should render the content immediately. 
+     The 'ready' state is still useful if you want to prevent 
+     flickering in the Navbar, but it shouldn't block the whole page.
+  */
+  
   return <>{children}</>;
 }
