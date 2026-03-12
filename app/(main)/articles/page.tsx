@@ -19,6 +19,9 @@ export const metadata: Metadata = {
     siteName: "The Commons Voice",
     type: "website",
   },
+  alternates: {
+    canonical: "/articles",
+  },
 };
 
 async function getArticles(page: number, search = ""): Promise<{
