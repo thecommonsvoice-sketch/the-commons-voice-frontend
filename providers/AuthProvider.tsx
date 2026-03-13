@@ -15,15 +15,12 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
 
     async function hydrate() {
       try {
+        // First attempt: the interceptor will auto-refresh if access token is expired
         const { data } = await api.get("/auth/me");
         setUser(data.user);
       } catch {
-        try {
-          const { data } = await api.get("/auth/me");
-          setUser(data.user);
-        } catch {
-          clearUser();
-        }
+        // If both access token AND refresh token are expired/invalid, clear user
+        clearUser();
       } finally {
         setHydrated();
       }
@@ -40,4 +37,3 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
   
   return <>{children}</>;
 }
-
