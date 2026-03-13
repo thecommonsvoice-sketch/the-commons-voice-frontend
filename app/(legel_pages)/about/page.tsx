@@ -25,7 +25,7 @@ export default function AboutPage() {
           TheCommonsVoice was founded in 2025 with a simple belief: 
 Important stories don't always come from the powerful. Sometimes they come from the ordinary people living ordinary lives. 
 Started as a storytelling platform dedicated to sharing unheard Voices, TheCommonsVoice has evolved into a digital media space for podcasts, storytelling, journalism, and social conversations.
-Today, we creates content that informs, motivates, and connects people with the stories that Matter!
+Today, we create content that informs, motivates, and connects people with the stories that Matter!
         </p>
       </div>
 
@@ -33,9 +33,9 @@ Today, we creates content that informs, motivates, and connects people with the 
         <Card>
           <CardContent className="p-4 sm:p-6 text-center space-y-3 sm:space-y-4">
             <Target className="h-10 w-10 sm:h-12 sm:w-12 text-primary mx-auto" />
-            <h3 className="text-lg sm:text-xl font-semibold">Our Mission</h3>
+            <h3 className="text-lg sm:text-xl font-semibold">Our Philosophy</h3>
             <p className="text-sm sm:text-base text-muted-foreground">
-              To provide accurate, unbiased news coverage and analysis that empowers readers to make informed decisions about the world around them.
+              We believe the strongest impact comes from stories grounded in reality, and that belief is what TheCommonsVoice is built on. The idea that authentic stories matter more than loud narratives! Because when stories stay rooted in truth, they resonate further and leave a lasting impression.
             </p>
           </CardContent>
         </Card>
