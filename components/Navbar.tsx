@@ -75,7 +75,7 @@ export default function Navbar() {
             {/* Logo */}
             <Link href="/" className="flex items-center gap-2">
               {/* <span className="font-serif text-2xl sm:text-3xl font-black tracking-tighter text-primary">TCV</span> */}
-              <span className="hidden sm:inline-block font-serif font-bold text-lg tracking-tight text-foreground/90">The Commons Voice</span>
+              <span className="font-serif font-bold text-base sm:text-lg tracking-tight text-foreground/90 whitespace-nowrap">The Commons Voice</span>
             </Link>
 
             {/* Desktop Navigation */}
