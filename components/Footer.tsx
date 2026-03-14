@@ -23,7 +23,7 @@ const Footer = () => {
           <div>
             <h3 className="font-semibold mb-3">The Commons Voice</h3>
             <p className="text-sm text-muted-foreground">
-              Independent journalism for the modern world.
+              We love to tell grounded stories and explore life.
             </p>
           </div>
           <div>
@@ -55,7 +55,7 @@ const Footer = () => {
           </div>
         </div>
         <div className="mt-8 pt-8 border-t text-center text-sm text-muted-foreground">
-          <p>&copy; 2025 The Commons Voice. All rights reserved.</p>
+          <p>&copy; 2026 The Commons Voice. All rights reserved.</p>
         </div>
       </div>
     </footer>
