@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { formatDistanceToNow } from "date-fns";
+import { format } from "date-fns";
 import type { Article } from "@/lib/types";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
@@ -226,9 +226,7 @@ export default async function ArticlePage({
                 <>
                   <Separator orientation="vertical" className="h-4" />
                   <time dateTime={article.createdAt} className="font-medium">
-                    {formatDistanceToNow(new Date(article.createdAt), {
-                      addSuffix: true,
-                    })}
+                    {format(new Date(article.createdAt), "MMMM d, yyyy")}
                   </time>
                 </>
               )}
