@@ -123,7 +123,7 @@ export default function AboutPage() {
                   Our Focus
                 </h2>
                 <p className="text-lg sm:text-xl text-muted-foreground leading-relaxed font-medium">
-                  While our stories explore life everywhere, we place special attention on Uttarakhand&apos;s people, culture, issues, and voices. We believe regional stories deserve a global audience and a standard of excellence.
+                  While our stories explore life everywhere, we place special attention on Uttarakhand&apos;s people, culture, issues, and voices. We believe regional stories deserve a global audience.
                 </p>
               </div>
           </div>
