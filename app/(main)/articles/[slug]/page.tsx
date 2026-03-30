@@ -7,6 +7,8 @@ import { Separator } from "@/components/ui/separator";
 // import { AdSlot } from "@/components/AdSlot";
 import Link from "next/link";
 import { ArticleCommentsClient } from "@/components/ArticleCommentsClient";
+import DOMPurify from "dompurify";
+import { JSDOM } from "jsdom";
 
 // ISR Configuration
 export const revalidate = 60; // Revalidate every 60 seconds
@@ -256,7 +258,11 @@ export default async function ArticlePage({
             prose-img:rounded-xl prose-img:shadow-lg prose-img:my-8
             prose-li:marker:text-primary
             first-letter:text-5xl first-letter:font-bold first-letter:mr-3 first-letter:float-left first-letter:font-serif"
-            dangerouslySetInnerHTML={{ __html: article.content }}
+            dangerouslySetInnerHTML={{ 
+                __html: typeof window !== 'undefined' 
+                    ? DOMPurify.sanitize(article.content) 
+                    : DOMPurify(new JSDOM('').window).sanitize(article.content) 
+            }}
           />
 
           {/* Tags */}
