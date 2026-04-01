@@ -45,6 +45,8 @@ export default function Navbar() {
     { name: "Science and Technology", href: "/categories/science-and-technology" },
     { name: "Sports and Entertainment", href: "/categories/sports-and-entertainment" },
     { name: "Business", href: "/categories/business" },
+    { name: "World", href: "/categories/world" },
+    { name: "Defense", href: "/categories/defense" },
   ];
 
   /* 
@@ -56,7 +58,7 @@ export default function Navbar() {
 
 
   // Memoize visible and hidden categories
-  const maxVisible = 5;
+  const maxVisible = 7;
   const visibleCategories = useMemo(() => categories.slice(0, maxVisible), [categories]);
   const hiddenCategories = useMemo(() => categories.slice(maxVisible), [categories]);
 

@@ -13,7 +13,6 @@ import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import { useUserStore } from "@/store/useUserStore";
 import { VideoSection } from '@/components/VideoSection';
 import { TagInput } from '@/components/ArticleEditor/TagInput';
-import { CategoryCreateDialog } from '@/components/ArticleEditor/CategoryCreateDialog';
 import { HierarchicalCategorySelect } from '@/components/ArticleEditor/HierarchicalCategorySelect';
 
 const CLOUDINARY_UPLOAD_URL = `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/upload`;
@@ -69,10 +68,6 @@ export default function NewArticlePage() {
     }
   };
 
-  const handleCategoryCreated = (newCategoryId: string) => {
-    // Auto-select the newly created category
-    setCategoryId(newCategoryId);
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -168,7 +163,6 @@ export default function NewArticlePage() {
                 onChange={setCategoryId}
               />
             </div>
-            <CategoryCreateDialog onCategoryCreated={handleCategoryCreated} />
           </div>
 
           {/* Tags Section */}
