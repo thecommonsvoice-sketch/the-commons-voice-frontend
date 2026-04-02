@@ -7,21 +7,7 @@ import { Separator } from "@/components/ui/separator";
 // import { AdSlot } from "@/components/AdSlot";
 import Link from "next/link";
 import { ArticleCommentsClient } from "@/components/ArticleCommentsClient";
-import DOMPurify from "dompurify";
-import { JSDOM } from "jsdom";
 
-// Helper to prevent memory leaks and timeouts on the server
-const getPurify = () => {
-  if (typeof window !== "undefined") {
-    return DOMPurify;
-  }
-  // Memoize the JSDOM instance and DOMPurify on the server
-  if (!(global as any).serverPurify) {
-    const window = new JSDOM("").window;
-    (global as any).serverPurify = DOMPurify(window as any);
-  }
-  return (global as any).serverPurify;
-};
 
 // ISR Configuration
 export const revalidate = 60; // Revalidate every 60 seconds
@@ -278,7 +264,7 @@ export default async function ArticlePage({
             prose-li:marker:text-primary
             first-letter:text-5xl first-letter:font-bold first-letter:mr-3 first-letter:float-left first-letter:font-serif"
             dangerouslySetInnerHTML={{ 
-                __html: getPurify().sanitize(article.content) 
+                __html: article.content 
             }}
           />
 
