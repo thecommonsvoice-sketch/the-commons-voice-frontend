@@ -173,13 +173,13 @@ export default async function ArticlePage({
     "@context": "https://schema.org",
     "@type": "NewsArticle",
     headline: article.title,
-    description: article.excerpt,
-    image: article.coverImage,
+    description: article.excerpt || "",
+    image: article.coverImage || "",
     datePublished: article.createdAt,
     dateModified: article.updatedAt,
     author: {
       "@type": "Person",
-      name: article.author?.name,
+      name: article.author?.name || "The Commons Voice",
     },
     publisher: {
       "@type": "Organization",
@@ -208,8 +208,8 @@ export default async function ArticlePage({
 
           {/* Header */}
           <header className="space-y-3 sm:space-y-4">
-            {article.category && (
-              <Link href={`/category/${article.category.slug}`} prefetch={false}>
+            {article.category?.slug && (
+              <Link href={`/categories/${article.category.slug}`} prefetch={false}>
                  <Badge variant="secondary" className="mb-2 cursor-pointer">
                    {article.category.name}
                  </Badge>
@@ -241,7 +241,13 @@ export default async function ArticlePage({
                 <>
                   <Separator orientation="vertical" className="h-4" />
                   <time dateTime={article.createdAt} className="font-medium">
-                    {format(new Date(article.createdAt), "MMMM d, yyyy")}
+                    {(() => {
+                      try {
+                        return format(new Date(article.createdAt), "MMMM d, yyyy");
+                      } catch (e) {
+                        return "Date unavailable";
+                      }
+                    })()}
                   </time>
                 </>
               )}
