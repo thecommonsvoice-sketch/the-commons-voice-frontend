@@ -13,7 +13,7 @@ const Footer = () => {
     { name: "Sports and Entertainment", href: "/categories/sports-and-entertainment" },
     { name: "Business", href: "/categories/business" },
     { name: "World", href: "/categories/world" },
-    { name: "Defense", href: "/categories/defense" },
+    { name: "Defence", href: "/categories/defence" },
   ];
 
   // Use all 5 categories (or slice if you strictly want max 5, but static list is already 5)

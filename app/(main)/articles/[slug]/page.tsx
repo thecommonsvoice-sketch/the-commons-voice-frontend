@@ -10,6 +10,19 @@ import { ArticleCommentsClient } from "@/components/ArticleCommentsClient";
 import DOMPurify from "dompurify";
 import { JSDOM } from "jsdom";
 
+// Helper to prevent memory leaks and timeouts on the server
+const getPurify = () => {
+  if (typeof window !== "undefined") {
+    return DOMPurify;
+  }
+  // Memoize the JSDOM instance and DOMPurify on the server
+  if (!(global as any).serverPurify) {
+    const window = new JSDOM("").window;
+    (global as any).serverPurify = DOMPurify(window as any);
+  }
+  return (global as any).serverPurify;
+};
+
 // ISR Configuration
 export const revalidate = 60; // Revalidate every 60 seconds
 export const dynamic = 'force-static'; // Force static generation
@@ -259,9 +272,7 @@ export default async function ArticlePage({
             prose-li:marker:text-primary
             first-letter:text-5xl first-letter:font-bold first-letter:mr-3 first-letter:float-left first-letter:font-serif"
             dangerouslySetInnerHTML={{ 
-                __html: typeof window !== 'undefined' 
-                    ? DOMPurify.sanitize(article.content) 
-                    : DOMPurify(new JSDOM('').window).sanitize(article.content) 
+                __html: getPurify().sanitize(article.content) 
             }}
           />
 

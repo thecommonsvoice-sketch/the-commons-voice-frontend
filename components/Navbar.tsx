@@ -46,7 +46,7 @@ export default function Navbar() {
     { name: "Sports and Entertainment", href: "/categories/sports-and-entertainment" },
     { name: "Business", href: "/categories/business" },
     { name: "World", href: "/categories/world" },
-    { name: "Defense", href: "/categories/defense" },
+    { name: "Defence", href: "/categories/defence" },
   ];
 
   /* 
