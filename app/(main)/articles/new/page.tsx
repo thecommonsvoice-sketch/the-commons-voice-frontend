@@ -13,6 +13,7 @@ import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import { useUserStore } from "@/store/useUserStore";
 import { VideoSection } from '@/components/VideoSection';
 import { TagInput } from '@/components/ArticleEditor/TagInput';
+import { CategoryCreateDialog } from '@/components/ArticleEditor/CategoryCreateDialog';
 import { HierarchicalCategorySelect } from '@/components/ArticleEditor/HierarchicalCategorySelect';
 
 const CLOUDINARY_UPLOAD_URL = `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/upload`;
@@ -30,6 +31,7 @@ export default function NewArticlePage() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [imageUploading, setImageUploading] = useState<boolean>(false);
   const [videos, setVideos] = useState<VideoData[]>([]);
+  const [refreshKey, setRefreshKey] = useState<number>(0);
   const { user } = useUserStore();
 
 
@@ -68,6 +70,11 @@ export default function NewArticlePage() {
     }
   };
 
+  const handleCategoryCreated = (newCategoryId: string) => {
+    // Auto-select the newly created category and refresh the list
+    setCategoryId(newCategoryId);
+    setRefreshKey(prev => prev + 1);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -159,10 +166,12 @@ export default function NewArticlePage() {
             <label className="block text-base sm:text-lg font-medium text-gray-700 dark:text-gray-300">Category</label>
             <div className="mt-2">
               <HierarchicalCategorySelect
+                key={refreshKey}
                 value={categoryId}
                 onChange={setCategoryId}
               />
             </div>
+            <CategoryCreateDialog onCategoryCreated={handleCategoryCreated} />
           </div>
 
           {/* Tags Section */}
