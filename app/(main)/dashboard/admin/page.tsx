@@ -53,6 +53,7 @@ type ArticlesResponse = {
   page: number;
   limit: number;
   publishedTodayCount: number;
+  draftsCount: number;
 };
 
 const STATUS_COLORS: Record<string, string> = {
@@ -101,6 +102,7 @@ export default function AdminDashboard() {
   const [userCount, setUserCount] = useState(0);
   const [articleCount, setArticleCount] = useState(0);
   const [publishedToday, setPublishedToday] = useState(0);
+  const [draftsCount, setDraftsCount] = useState(0);
 
   // Active tab
   const [activeTab, setActiveTab] = useState<"users" | "articles">("users");
@@ -137,6 +139,7 @@ export default function AdminDashboard() {
         setArticleTotalPages(data?.totalPages);
         setArticleCount(data?.total);
         setPublishedToday(data?.publishedTodayCount || 0);
+        setDraftsCount(data?.draftsCount || 0);
       } catch {
         toast.error("Failed to load articles");
       } finally {
@@ -145,6 +148,21 @@ export default function AdminDashboard() {
     };
     fetchArticles();
   }, [articlePage, articleSearch]);
+
+  const refreshArticles = async () => {
+    try {
+      const { data }: { data: ArticlesResponse } = await api.get(
+        `/admin/articles?page=${articlePage}&limit=${articleLimit}&search=${encodeURIComponent(articleSearch)}`
+      );
+      setArticles(data?.articles);
+      setArticleTotalPages(data?.totalPages);
+      setArticleCount(data?.total);
+      setPublishedToday(data?.publishedTodayCount || 0);
+      setDraftsCount(data?.draftsCount || 0);
+    } catch {
+      console.error("Failed to refresh articles");
+    }
+  };
 
   const handleUserSearch = () => {
     setUserPage(1);
@@ -195,12 +213,8 @@ export default function AdminDashboard() {
   const updateArticleStatus = async (articleId: string, status: Article["status"]) => {
     try {
       await api.patch(`/admin/articles/${articleId}/status`, { status });
-      setArticles((prev) =>
-        prev.map((article) =>
-          article.id === articleId ? { ...article, status } : article
-        )
-      );
       toast.success("Article status updated");
+      refreshArticles(); // Refresh to update all counts and list
     } catch {
       toast.error("Failed to update status");
     }
@@ -259,7 +273,7 @@ export default function AdminDashboard() {
         />
         <DashboardStatCard
           title="Drafts"
-          value={articles.filter((a) => a.status === "DRAFT").length}
+          value={draftsCount}
           subtitle="Awaiting review"
           icon={Clock}
           accentColor="bg-amber-500/10 text-amber-600"
