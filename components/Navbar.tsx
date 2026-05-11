@@ -33,6 +33,9 @@ export default function Navbar() {
       console.error("Logout error:", error);
       toast.error("Failed to logout");
     } finally {
+      if (typeof window !== "undefined") {
+        localStorage.removeItem("tcv_token");
+      }
       clearUser();
       router.replace("/");
     }

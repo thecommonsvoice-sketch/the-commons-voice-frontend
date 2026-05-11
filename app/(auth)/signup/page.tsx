@@ -54,6 +54,12 @@ export default function SignupPage() {
       const { name, email, password } = values;
       const { data } = await api.post("/auth/register", { name, email, password });
       if (!data?.user) throw new Error("No user returned");
+      
+      // Save token to localStorage as fallback for browsers blocking 3rd-party cookies
+      if (data.accessToken) {
+        localStorage.setItem("tcv_token", data.accessToken);
+      }
+      
       setUser(data.user);
       toast.success("Account created successfully!");
       redirectByRole(router);

@@ -47,6 +47,12 @@ export default function LoginPage() {
     try {
       const { data } = await api.post("/auth/login", values);
       if (!data?.user) throw new Error("No user returned");
+      
+      // Save token to localStorage as fallback for browsers blocking 3rd-party cookies
+      if (data.accessToken) {
+        localStorage.setItem("tcv_token", data.accessToken);
+      }
+      
       setUser(data.user);
       toast.success("Login successful!");
       redirectByRole(router);

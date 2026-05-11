@@ -20,6 +20,9 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
         setUser(data.user);
       } catch {
         // If both access token AND refresh token are expired/invalid, clear user
+        if (typeof window !== "undefined") {
+          localStorage.removeItem("tcv_token");
+        }
         clearUser();
       } finally {
         setHydrated();

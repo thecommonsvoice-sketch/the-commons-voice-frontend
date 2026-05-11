@@ -8,6 +8,17 @@ export const api = axios.create({
   },
 });
 
+// Add request interceptor to attach Bearer token if it exists (fallback for blocked cookies)
+api.interceptors.request.use((config) => {
+  if (typeof window !== "undefined") {
+    const token = localStorage.getItem("tcv_token");
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+  }
+  return config;
+});
+
 // ── Refresh-token interceptor ──────────────────────────────────────────
 // Handles 401 responses by attempting a single token refresh, then retrying
 // the original request. Uses a queue to avoid multiple concurrent refreshes.
