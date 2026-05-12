@@ -85,7 +85,7 @@ export default function Dashboard() {
     }
     setLoading(true);
     api
-      .get<ArticlesResponse>(`/articles?author=${user.name}&limit=10`)
+      .get<ArticlesResponse>(`/articles?authorId=${user.id}&limit=10`)
       .then((res) => {
         setUserArticles(res.data?.data || []);
         setPublishedToday(res.data?.updatedTodayCount || 0);
@@ -130,7 +130,7 @@ export default function Dashboard() {
   const refreshArticles = () => {
     if (!user || !isWriter) return;
     api
-      .get<ArticlesResponse>(`/articles?author=${user.name}&limit=10`)
+      .get<ArticlesResponse>(`/articles?authorId=${user.id}&limit=10`)
       .then((res) => {
         setUserArticles(res.data?.data || []);
         setPublishedToday(res.data?.updatedTodayCount || 0);

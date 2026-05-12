@@ -18,6 +18,9 @@ import {
   Eye,
   Edit,
   Trash2,
+  Search,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 import Link from "next/link";
 import { motion } from "framer-motion";
@@ -52,6 +55,12 @@ export default function ReporterDashboard() {
   const [publishedToday, setPublishedToday] = useState(0);
   const [draftCount, setDraftCount] = useState(0);
   const [selectedArticles, setSelectedArticles] = useState<string[]>([]);
+  
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [search, setSearch] = useState("");
+  const [searchInput, setSearchInput] = useState("");
+  const limit = 10;
 
   useEffect(() => {
     if (user && user.role !== "REPORTER") {
@@ -59,31 +68,51 @@ export default function ReporterDashboard() {
     }
   }, [user, router]);
 
-  useEffect(() => {
+   useEffect(() => {
     if (!user) return;
     setLoading(true);
+    
+    const statusQuery = articleType !== "ALL" ? `&status=${articleType}` : "";
+    const searchQuery = search ? `&search=${encodeURIComponent(search)}` : "";
+    
     api
       .get<ArticlesResponse>(
-        `/articles?author=${user.name}&authorId=${user.id}&limit=10`
+        `/articles?authorId=${user.id}&page=${page}&limit=${limit}${statusQuery}${searchQuery}`
       )
       .then((res) => {
         setArticles(res.data?.data || []);
+        setTotalPages(res.data?.pagination?.totalPages || 1);
         setPublishedToday(res.data?.updatedTodayCount || 0);
         setDraftCount(res.data?.draftCount || 0);
       })
       .catch(() => {
         setArticles([]);
         setPublishedToday(0);
+        setDraftCount(0);
       })
       .finally(() => setLoading(false));
-  }, [user]);
+  }, [user, page, articleType, search]);
+
+  const handleSearch = () => {
+    setPage(1);
+    setSearch(searchInput.trim());
+  };
+
+  useEffect(() => {
+    if (searchInput === "") {
+      setSearch("");
+      setPage(1);
+    }
+  }, [searchInput]);
 
   const refreshArticles = () => {
     if (!user) return;
-    setLoading(true);
+    const statusQuery = articleType !== "ALL" ? `&status=${articleType}` : "";
+    const searchQuery = search ? `&search=${encodeURIComponent(search)}` : "";
+    
     api
       .get<ArticlesResponse>(
-        `/articles?author=${user.name}&authorId=${user.id}&limit=10`
+        `/articles?authorId=${user.id}&page=${page}&limit=${limit}${statusQuery}${searchQuery}`
       )
       .then((res) => {
         setArticles(res.data?.data || []);
@@ -92,9 +121,7 @@ export default function ReporterDashboard() {
       })
       .catch(() => {
         setArticles([]);
-        setPublishedToday(0);
-      })
-      .finally(() => setLoading(false));
+      });
   };
 
   const handleBulkDelete = async () => {
@@ -184,6 +211,19 @@ export default function ReporterDashboard() {
               <FileText className="h-5 w-5 text-muted-foreground" />
               Your Articles
             </CardTitle>
+            <div className="flex items-center gap-2">
+                <div className="relative max-w-xs">
+                  <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+                  <input
+                    type="text"
+                    placeholder="Search your articles..."
+                    value={searchInput}
+                    onChange={(e) => setSearchInput(e.target.value)}
+                    onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+                    className="pl-8 h-8 w-full sm:w-64 text-xs bg-muted/50 border-none rounded-md focus:ring-1 focus:ring-primary outline-none transition-all"
+                  />
+                </div>
+            </div>
           </div>
           {/* Filter Tabs */}
           <div className="flex items-center gap-1 mt-3 bg-muted/50 rounded-lg p-1 w-fit">
@@ -326,6 +366,35 @@ export default function ReporterDashboard() {
                   </div>
                 </motion.div>
               ))}
+              
+              {/* Pagination controls */}
+              {totalPages > 1 && (
+                <div className="flex items-center justify-between pt-4 border-t mt-4">
+                  <p className="text-xs text-muted-foreground">
+                    Page {page} of {totalPages}
+                  </p>
+                  <div className="flex items-center gap-1">
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      className="h-7 w-7"
+                      disabled={page <= 1}
+                      onClick={() => setPage((p) => p - 1)}
+                    >
+                      <ChevronLeft className="h-3.5 w-3.5" />
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      className="h-7 w-7"
+                      disabled={page >= totalPages}
+                      onClick={() => setPage((p) => p + 1)}
+                    >
+                      <ChevronRight className="h-3.5 w-3.5" />
+                    </Button>
+                  </div>
+                </div>
+              )}
             </div>
           ) : (
             <div className="text-center py-12">
