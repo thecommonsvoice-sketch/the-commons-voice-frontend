@@ -68,6 +68,7 @@ export default function EditorDashboard() {
   const [articleTotalPages, setArticleTotalPages] = useState(1);
   const [articleCount, setArticleCount] = useState(0);
   const [publishedToday, setPublishedToday] = useState(0);
+  const [selectedArticles, setSelectedArticles] = useState<string[]>([]);
 
   useEffect(() => {
     fetchArticles();
@@ -129,6 +130,47 @@ export default function EditorDashboard() {
     }
   };
 
+  const handleBulkDelete = async () => {
+    if (!selectedArticles.length) return;
+    if (!confirm(`Are you sure you want to delete ${selectedArticles.length} articles?`)) return;
+
+    try {
+      await api.post("/articles/bulk-delete", { ids: selectedArticles });
+      toast.success(`${selectedArticles.length} articles deleted`);
+      setSelectedArticles([]);
+      fetchArticles();
+    } catch {
+      toast.error("Failed to bulk delete articles");
+    }
+  };
+
+  const handleBulkStatusUpdate = async (status: string) => {
+    if (!selectedArticles.length) return;
+
+    try {
+      await api.patch("/articles/bulk-status", { ids: selectedArticles, status });
+      toast.success(`${selectedArticles.length} articles updated to ${status}`);
+      setSelectedArticles([]);
+      fetchArticles();
+    } catch {
+      toast.error("Failed to bulk update status");
+    }
+  };
+
+  const toggleArticleSelection = (id: string) => {
+    setSelectedArticles((prev) =>
+      prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
+    );
+  };
+
+  const toggleSelectAllArticles = () => {
+    if (selectedArticles.length === articles.length && articles.length > 0) {
+      setSelectedArticles([]);
+    } else {
+      setSelectedArticles(articles.map((a) => a.id));
+    }
+  };
+
   const reviewQueue = articles.filter((a) => a.status === "DRAFT");
 
   if (user && user.role !== "EDITOR") return null;
@@ -187,6 +229,55 @@ export default function EditorDashboard() {
               <Search className="h-3.5 w-3.5" />
             </Button>
           </div>
+
+          {/* Bulk Actions Bar */}
+          {articles.length > 0 && (
+            <div className="flex flex-wrap items-center gap-3 mt-4 p-2.5 bg-muted/30 rounded-lg border border-border/50">
+              <div className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  className="h-3.5 w-3.5 rounded border-gray-300 text-primary focus:ring-primary"
+                  checked={selectedArticles.length === articles.length && articles.length > 0}
+                  onChange={toggleSelectAllArticles}
+                />
+                <span className="text-xs font-medium text-muted-foreground">
+                  {selectedArticles.length} selected
+                </span>
+              </div>
+              
+              {selectedArticles.length > 0 && (
+                <motion.div 
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="flex items-center gap-2"
+                >
+                  <div className="h-4 w-px bg-border mx-1 hidden sm:block" />
+                  <span className="text-xs text-muted-foreground mr-1 hidden sm:inline">Bulk:</span>
+                  <Select
+                    onValueChange={(status) => handleBulkStatusUpdate(status)}
+                  >
+                    <SelectTrigger className="w-32 h-8 text-xs">
+                      <SelectValue placeholder="Set Status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="DRAFT">Draft</SelectItem>
+                      <SelectItem value="PUBLISHED">Published</SelectItem>
+                      <SelectItem value="ARCHIVED">Archived</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    className="h-8 px-2.5 text-xs gap-1.5"
+                    onClick={handleBulkDelete}
+                  >
+                    <Trash2 className="h-3.5 w-3.5" />
+                    Delete
+                  </Button>
+                </motion.div>
+              )}
+            </div>
+          )}
         </CardHeader>
         <CardContent>
           {articleLoading ? (
@@ -205,14 +296,6 @@ export default function EditorDashboard() {
                   transition={{ delay: idx * 0.03 }}
                   className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 rounded-lg border border-transparent hover:border-border hover:bg-accent/30 transition-all duration-200"
                 >
-                  <div className="flex-1 min-w-0">
-                    <p className="font-medium text-sm truncate">{article.title}</p>
-                    <div className="flex items-center gap-2 mt-1 flex-wrap">
-                      <span className="text-xs text-muted-foreground">
-                        By {article.author?.name}
-                      </span>
-                      <span
-                        className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold border ${
                           STATUS_COLORS[article.status] || ""
                         }`}
                       >

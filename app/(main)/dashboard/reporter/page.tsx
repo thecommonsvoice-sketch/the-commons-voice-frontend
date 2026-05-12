@@ -17,6 +17,7 @@ import {
   Newspaper,
   Eye,
   Edit,
+  Trash2,
 } from "lucide-react";
 import Link from "next/link";
 import { motion } from "framer-motion";
@@ -50,6 +51,7 @@ export default function ReporterDashboard() {
   );
   const [publishedToday, setPublishedToday] = useState(0);
   const [draftCount, setDraftCount] = useState(0);
+  const [selectedArticles, setSelectedArticles] = useState<string[]>([]);
 
   useEffect(() => {
     if (user && user.role !== "REPORTER") {
@@ -75,6 +77,52 @@ export default function ReporterDashboard() {
       })
       .finally(() => setLoading(false));
   }, [user]);
+
+  const refreshArticles = () => {
+    if (!user) return;
+    setLoading(true);
+    api
+      .get<ArticlesResponse>(
+        `/articles?author=${user.name}&authorId=${user.id}&limit=10`
+      )
+      .then((res) => {
+        setArticles(res.data?.data || []);
+        setPublishedToday(res.data?.updatedTodayCount || 0);
+        setDraftCount(res.data?.draftCount || 0);
+      })
+      .catch(() => {
+        setArticles([]);
+        setPublishedToday(0);
+      })
+      .finally(() => setLoading(false));
+  };
+
+  const handleBulkDelete = async () => {
+    if (!selectedArticles.length) return;
+    if (!confirm(`Are you sure you want to delete ${selectedArticles.length} articles?`)) return;
+
+    try {
+      await api.post("/articles/bulk-delete", { ids: selectedArticles });
+      setSelectedArticles([]);
+      refreshArticles();
+    } catch {
+      console.error("Failed to bulk delete articles");
+    }
+  };
+
+  const toggleArticleSelection = (id: string) => {
+    setSelectedArticles((prev) =>
+      prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
+    );
+  };
+
+  const toggleSelectAllArticles = () => {
+    if (selectedArticles.length === filteredArticles.length && filteredArticles.length > 0) {
+      setSelectedArticles([]);
+    } else {
+      setSelectedArticles(filteredArticles.map((a) => a.id));
+    }
+  };
 
   const filteredArticles =
     articleType === "ALL"
@@ -153,6 +201,42 @@ export default function ReporterDashboard() {
               </button>
             ))}
           </div>
+
+          {/* Bulk Actions Bar */}
+          {filteredArticles.length > 0 && (
+             <div className="flex flex-wrap items-center gap-3 mt-4 p-2.5 bg-muted/30 rounded-lg border border-border/50">
+               <div className="flex items-center gap-2">
+                 <input
+                   type="checkbox"
+                   className="h-3.5 w-3.5 rounded border-gray-300 text-primary focus:ring-primary"
+                   checked={selectedArticles.length === filteredArticles.length && filteredArticles.length > 0}
+                   onChange={toggleSelectAllArticles}
+                 />
+                 <span className="text-[11px] font-medium text-muted-foreground">
+                   {selectedArticles.length} selected
+                 </span>
+               </div>
+               
+               {selectedArticles.length > 0 && (
+                 <motion.div 
+                   initial={{ opacity: 0, scale: 0.95 }}
+                   animate={{ opacity: 1, scale: 1 }}
+                   className="flex items-center gap-2"
+                 >
+                   <div className="h-4 w-px bg-border mx-1" />
+                   <Button
+                     variant="destructive"
+                     size="sm"
+                     className="h-7 px-2.5 text-[10px] gap-1"
+                     onClick={handleBulkDelete}
+                   >
+                     <Trash2 className="h-3 w-3" />
+                     Delete
+                   </Button>
+                 </motion.div>
+               )}
+             </div>
+           )}
         </CardHeader>
         <CardContent>
           {loading ? (
@@ -171,6 +255,13 @@ export default function ReporterDashboard() {
                   transition={{ delay: idx * 0.04 }}
                   className="group flex flex-col sm:flex-row sm:items-center gap-3 p-3 rounded-lg border border-transparent hover:border-border hover:bg-accent/30 transition-all duration-200"
                 >
+                  {/* Selection */}
+                  <input
+                    type="checkbox"
+                    className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary shrink-0"
+                    checked={selectedArticles.includes(article.id)}
+                    onChange={() => toggleArticleSelection(article.id)}
+                  />
                   {/* Thumbnail */}
                   {article.coverImage && (
                     <img

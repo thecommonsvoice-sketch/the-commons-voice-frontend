@@ -18,6 +18,7 @@ import {
   TrendingUp,
   Clock,
   Eye,
+  Trash2,
 } from "lucide-react";
 import Link from "next/link";
 import { motion } from "framer-motion";
@@ -73,6 +74,7 @@ export default function Dashboard() {
   const [bookmarkedArticles, setBookmarkedArticles] = useState<BookmarkItem[]>([]);
   const [commentCount, setCommentCount] = useState(0);
   const [userComments, setUserComments] = useState<CommentItem[]>([]);
+  const [selectedArticles, setSelectedArticles] = useState<string[]>([]);
 
   const isWriter = user?.role === "REPORTER" || user?.role === "EDITOR" || user?.role === "ADMIN";
 
@@ -124,6 +126,60 @@ export default function Dashboard() {
         setCommentCount(0);
       });
   }, [user]);
+
+  const refreshArticles = () => {
+    if (!user || !isWriter) return;
+    api
+      .get<ArticlesResponse>(`/articles?author=${user.name}&limit=10`)
+      .then((res) => {
+        setUserArticles(res.data?.data || []);
+        setPublishedToday(res.data?.updatedTodayCount || 0);
+        setDraftCount(res.data?.draftCount || 0);
+      })
+      .catch(() => {
+        setUserArticles([]);
+        setPublishedToday(0);
+      });
+  };
+
+  const handleBulkDelete = async () => {
+    if (!selectedArticles.length) return;
+    if (!confirm(`Are you sure you want to delete ${selectedArticles.length} articles?`)) return;
+
+    try {
+      await api.post("/articles/bulk-delete", { ids: selectedArticles });
+      setSelectedArticles([]);
+      refreshArticles();
+    } catch {
+      console.error("Failed to bulk delete articles");
+    }
+  };
+
+  const handleBulkStatusUpdate = async (status: string) => {
+    if (!selectedArticles.length) return;
+
+    try {
+      await api.patch("/articles/bulk-status", { ids: selectedArticles, status });
+      setSelectedArticles([]);
+      refreshArticles();
+    } catch {
+      console.error("Failed to bulk update status");
+    }
+  };
+
+  const toggleArticleSelection = (id: string) => {
+    setSelectedArticles((prev) =>
+      prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
+    );
+  };
+
+  const toggleSelectAllArticles = () => {
+    if (selectedArticles.length === filteredArticles.length && filteredArticles.length > 0) {
+      setSelectedArticles([]);
+    } else {
+      setSelectedArticles(filteredArticles.map((a) => a.id));
+    }
+  };
 
   const filteredArticles =
     articleType === "ALL"
@@ -226,6 +282,60 @@ export default function Dashboard() {
                   </button>
                 ))}
               </div>
+
+              {/* Bulk Actions Bar */}
+              {filteredArticles.length > 0 && (
+                <div className="flex flex-wrap items-center gap-3 mt-4 p-2.5 bg-muted/30 rounded-lg border border-border/50">
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      className="h-3.5 w-3.5 rounded border-gray-300 text-primary focus:ring-primary"
+                      checked={selectedArticles.length === filteredArticles.length && filteredArticles.length > 0}
+                      onChange={toggleSelectAllArticles}
+                    />
+                    <span className="text-[11px] font-medium text-muted-foreground">
+                      {selectedArticles.length} selected
+                    </span>
+                  </div>
+                  
+                  {selectedArticles.length > 0 && (
+                    <motion.div 
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      className="flex items-center gap-2"
+                    >
+                      <div className="h-4 w-px bg-border mx-1 hidden sm:block" />
+                      {(user?.role === "ADMIN" || user?.role === "EDITOR") && (
+                        <div className="flex items-center gap-1.5">
+                          <span className="text-[11px] text-muted-foreground hidden sm:inline">Status:</span>
+                          <div className="flex gap-1">
+                            {["DRAFT", "PUBLISHED", "ARCHIVED"].map((s) => (
+                              <Button
+                                key={s}
+                                variant="outline"
+                                size="sm"
+                                className="h-7 px-2 text-[10px]"
+                                onClick={() => handleBulkStatusUpdate(s)}
+                              >
+                                {s.charAt(0) + s.slice(1).toLowerCase()}
+                              </Button>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        className="h-7 px-2.5 text-[10px] gap-1"
+                        onClick={handleBulkDelete}
+                      >
+                        <Trash2 className="h-3 w-3" />
+                        Delete
+                      </Button>
+                    </motion.div>
+                  )}
+                </div>
+              )}
             </CardHeader>
             <CardContent>
               {loading ? (
@@ -244,6 +354,13 @@ export default function Dashboard() {
                       transition={{ delay: idx * 0.04 }}
                       className="group flex flex-col sm:flex-row sm:items-center gap-3 p-3 rounded-lg border border-transparent hover:border-border hover:bg-accent/30 transition-all duration-200"
                     >
+                      {/* Selection */}
+                      <input
+                        type="checkbox"
+                        className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary shrink-0"
+                        checked={selectedArticles.includes(article.id)}
+                        onChange={() => toggleArticleSelection(article.id)}
+                      />
                       {/* Thumbnail */}
                       {article.coverImage && (
                         <img
