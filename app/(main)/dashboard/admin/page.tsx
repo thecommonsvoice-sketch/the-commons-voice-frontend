@@ -770,13 +770,12 @@ export default function AdminDashboard() {
                         {article.coverImage && (
                           <div className="relative h-10 w-16 rounded-md overflow-hidden ring-1 ring-border shrink-0 bg-muted">
                             <Image
-                              src={article.coverImage.startsWith('http') ? article.coverImage : `${process.env.NEXT_PUBLIC_API_URL?.replace('/api', '') || 'http://localhost:5000'}${article.coverImage}`}
+                              src={article.coverImage.startsWith('http') ? article.coverImage : `${process.env.NEXT_PUBLIC_API_URL?.replace('/api', '') || 'http://localhost:5000'}${article.coverImage.startsWith('/') ? '' : '/'}${article.coverImage}`}
                               alt={article.title}
                               fill
                               sizes="64px"
                               className="object-cover"
                               onError={(e) => {
-                                // Fallback or hide on error
                                 (e.target as any).style.display = 'none';
                               }}
                             />

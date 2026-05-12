@@ -404,7 +404,7 @@ export default function Dashboard() {
                       {article.coverImage && (
                         <div className="relative h-12 w-20 rounded-md overflow-hidden ring-1 ring-border/50 shrink-0 bg-muted">
                           <Image
-                            src={article.coverImage.startsWith('http') ? article.coverImage : `${process.env.NEXT_PUBLIC_API_URL?.replace('/api', '') || 'http://localhost:5000'}${article.coverImage}`}
+                            src={article.coverImage.startsWith('http') ? article.coverImage : `${process.env.NEXT_PUBLIC_API_URL?.replace('/api', '') || 'http://localhost:5000'}${article.coverImage.startsWith('/') ? '' : '/'}${article.coverImage}`}
                             alt={article.title}
                             fill
                             sizes="80px"

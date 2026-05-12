@@ -245,15 +245,12 @@ export default async function ArticlePage({
           {article.coverImage && (
             <div className="relative aspect-video overflow-hidden rounded-xl bg-muted">
               <Image
-                src={article.coverImage.startsWith('http') ? article.coverImage : `${process.env.NEXT_PUBLIC_API_URL?.replace('/api', '') || 'http://localhost:5000'}${article.coverImage}`}
+                src={article.coverImage.startsWith('http') ? article.coverImage : `${process.env.NEXT_PUBLIC_API_URL?.replace('/api', '') || 'http://localhost:5000'}${article.coverImage.startsWith('/') ? '' : '/'}${article.coverImage}`}
                 alt={article.title}
                 fill
                 priority
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px"
                 className="object-cover"
-                onError={(e) => {
-                  (e.target as any).style.display = 'none';
-                }}
               />
             </div>
           )}
@@ -367,14 +364,11 @@ export default async function ArticlePage({
                       {related.coverImage && (
                         <div className="relative aspect-video overflow-hidden bg-muted">
                           <Image
-                            src={related.coverImage.startsWith('http') ? related.coverImage : `${process.env.NEXT_PUBLIC_API_URL?.replace('/api', '') || 'http://localhost:5000'}${related.coverImage}`}
+                            src={related.coverImage.startsWith('http') ? related.coverImage : `${process.env.NEXT_PUBLIC_API_URL?.replace('/api', '') || 'http://localhost:5000'}${related.coverImage.startsWith('/') ? '' : '/'}${related.coverImage}`}
                             alt={related.title}
                             fill
                             sizes="(max-width: 768px) 100vw, 400px"
                             className="object-cover group-hover:scale-105 transition duration-500"
-                            onError={(e) => {
-                              (e.target as any).style.display = 'none';
-                            }}
                           />
                         </div>
                       )}

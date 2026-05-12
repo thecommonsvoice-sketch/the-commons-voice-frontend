@@ -31,6 +31,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { useUserStore } from "@/store/useUserStore";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 type ArticlesResponse = {
   data: Article[];
@@ -340,6 +341,20 @@ export default function EditorDashboard() {
                       checked={selectedArticles.includes(article.id)}
                       onChange={() => toggleArticleSelection(article.id)}
                     />
+                    {article.coverImage && (
+                      <div className="relative h-10 w-16 rounded-md overflow-hidden ring-1 ring-border shrink-0 bg-muted">
+                        <Image
+                          src={article.coverImage.startsWith('http') ? article.coverImage : `${process.env.NEXT_PUBLIC_API_URL?.replace('/api', '') || 'http://localhost:5000'}${article.coverImage.startsWith('/') ? '' : '/'}${article.coverImage}`}
+                          alt={article.title}
+                          fill
+                          sizes="64px"
+                          className="object-cover"
+                          onError={(e) => {
+                            (e.target as any).style.display = 'none';
+                          }}
+                        />
+                      </div>
+                    )}
                     <div className="flex flex-col truncate">
                       <span className="text-sm font-medium truncate">{article.title}</span>
                       <div className="flex items-center gap-2 mt-0.5 flex-wrap">

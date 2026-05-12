@@ -114,7 +114,7 @@ export default function ArticlePage() {
           {article.coverImage && (
             <div className="relative aspect-video overflow-hidden rounded-xl bg-muted">
               <Image
-                src={article.coverImage.startsWith('http') ? article.coverImage : `${process.env.NEXT_PUBLIC_API_URL?.replace('/api', '') || 'http://localhost:5000'}${article.coverImage}`}
+                src={article.coverImage.startsWith('http') ? article.coverImage : `${process.env.NEXT_PUBLIC_API_URL?.replace('/api', '') || 'http://localhost:5000'}${article.coverImage.startsWith('/') ? '' : '/'}${article.coverImage}`}
                 alt={article.title}
                 fill
                 priority
