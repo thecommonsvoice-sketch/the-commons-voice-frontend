@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
+import Image from "next/image";
 import { formatDistanceToNow } from "date-fns";
 import type { Article } from "@/lib/types";
 import { Badge } from "@/components/ui/badge";
@@ -111,11 +112,17 @@ export default function ArticlePage() {
 
           {/* Featured image */}
           {article.coverImage && (
-            <div className="relative aspect-video overflow-hidden rounded-xl">
-              <img
-                src={article.coverImage}
+            <div className="relative aspect-video overflow-hidden rounded-xl bg-muted">
+              <Image
+                src={article.coverImage.startsWith('http') ? article.coverImage : `${process.env.NEXT_PUBLIC_API_URL?.replace('/api', '') || 'http://localhost:5000'}${article.coverImage}`}
                 alt={article.title}
-                className="h-full w-full object-cover"
+                fill
+                priority
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px"
+                className="object-cover"
+                onError={(e) => {
+                  (e.target as any).style.display = 'none';
+                }}
               />
             </div>
           )}

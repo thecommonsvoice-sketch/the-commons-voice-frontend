@@ -26,6 +26,7 @@ import {
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 type ArticlesResponse = {
   data: Article[];
@@ -341,11 +342,18 @@ export default function ReporterDashboard() {
                   />
                   {/* Thumbnail */}
                   {article.coverImage && (
-                    <img
-                      src={article.coverImage}
-                      alt=""
-                      className="h-12 w-20 object-cover rounded-md flex-shrink-0 ring-1 ring-border/50"
-                    />
+                    <div className="relative h-12 w-20 rounded-md overflow-hidden ring-1 ring-border/50 shrink-0 bg-muted">
+                      <Image
+                        src={article.coverImage.startsWith('http') ? article.coverImage : `${process.env.NEXT_PUBLIC_API_URL?.replace('/api', '') || 'http://localhost:5000'}${article.coverImage}`}
+                        alt={article.title}
+                        fill
+                        sizes="80px"
+                        className="object-cover"
+                        onError={(e) => {
+                          (e.target as any).style.display = 'none';
+                        }}
+                      />
+                    </div>
                   )}
                   {/* Info */}
                   <div className="flex-1 min-w-0">

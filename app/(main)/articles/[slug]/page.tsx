@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import Image from "next/image";
 import { format } from "date-fns";
 import type { Article } from "@/lib/types";
 import { Badge } from "@/components/ui/badge";
@@ -242,12 +243,17 @@ export default async function ArticlePage({
 
           {/* Featured Image */}
           {article.coverImage && (
-            <div className="relative aspect-video overflow-hidden rounded-xl">
-              <img
-                src={article.coverImage}
+            <div className="relative aspect-video overflow-hidden rounded-xl bg-muted">
+              <Image
+                src={article.coverImage.startsWith('http') ? article.coverImage : `${process.env.NEXT_PUBLIC_API_URL?.replace('/api', '') || 'http://localhost:5000'}${article.coverImage}`}
                 alt={article.title}
-                className="h-full w-full object-cover"
-                loading="lazy"
+                fill
+                priority
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px"
+                className="object-cover"
+                onError={(e) => {
+                  (e.target as any).style.display = 'none';
+                }}
               />
             </div>
           )}
@@ -359,12 +365,16 @@ export default async function ArticlePage({
                       className="group flex flex-col bg-card rounded-xl border shadow-sm hover:shadow-md transition overflow-hidden"
                     >
                       {related.coverImage && (
-                        <div className="relative aspect-video overflow-hidden">
-                          <img
-                            src={related.coverImage}
+                        <div className="relative aspect-video overflow-hidden bg-muted">
+                          <Image
+                            src={related.coverImage.startsWith('http') ? related.coverImage : `${process.env.NEXT_PUBLIC_API_URL?.replace('/api', '') || 'http://localhost:5000'}${related.coverImage}`}
                             alt={related.title}
-                            className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
-                            loading="lazy"
+                            fill
+                            sizes="(max-width: 768px) 100vw, 400px"
+                            className="object-cover group-hover:scale-105 transition duration-500"
+                            onError={(e) => {
+                              (e.target as any).style.display = 'none';
+                            }}
                           />
                         </div>
                       )}
