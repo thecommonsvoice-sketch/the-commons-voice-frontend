@@ -5,6 +5,7 @@ import { useUserStore } from "@/store/useUserStore";
 import { api } from "@/lib/api";
 import type { Article } from "@/lib/types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/loading-skeleton";
@@ -60,7 +61,7 @@ export default function ReporterDashboard() {
   const [totalPages, setTotalPages] = useState(1);
   const [search, setSearch] = useState("");
   const [searchInput, setSearchInput] = useState("");
-  const limit = 10;
+  const [limit, setLimit] = useState(20);
 
   useEffect(() => {
     if (user && user.role !== "REPORTER") {
@@ -91,7 +92,7 @@ export default function ReporterDashboard() {
         setDraftCount(0);
       })
       .finally(() => setLoading(false));
-  }, [user, page, articleType, search]);
+  }, [user, page, articleType, search, limit]);
 
   const handleSearch = () => {
     setPage(1);
@@ -149,6 +150,11 @@ export default function ReporterDashboard() {
     } else {
       setSelectedArticles(filteredArticles.map((a) => a.id));
     }
+  };
+
+  const selectArticlesByType = (status: Article["status"]) => {
+    const ids = filteredArticles.filter(a => a.status === status).map(a => a.id);
+    setSelectedArticles(ids);
   };
 
   const filteredArticles =
@@ -220,9 +226,24 @@ export default function ReporterDashboard() {
                     value={searchInput}
                     onChange={(e) => setSearchInput(e.target.value)}
                     onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-                    className="pl-8 h-8 w-full sm:w-64 text-xs bg-muted/50 border-none rounded-md focus:ring-1 focus:ring-primary outline-none transition-all"
                   />
                 </div>
+                <Select
+                  value={limit.toString()}
+                  onValueChange={(val) => {
+                    setLimit(parseInt(val));
+                    setPage(1);
+                  }}
+                >
+                  <SelectTrigger className="w-20 h-8 text-xs bg-muted/50 border-none shadow-none focus:ring-1 focus:ring-primary">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="20">20 / pg</SelectItem>
+                    <SelectItem value="50">50 / pg</SelectItem>
+                    <SelectItem value="100">100 / pg</SelectItem>
+                  </SelectContent>
+                </Select>
             </div>
           </div>
           {/* Filter Tabs */}
@@ -246,12 +267,28 @@ export default function ReporterDashboard() {
           {filteredArticles.length > 0 && (
              <div className="flex flex-wrap items-center gap-3 mt-4 p-2.5 bg-muted/30 rounded-lg border border-border/50">
                <div className="flex items-center gap-2">
-                 <input
-                   type="checkbox"
-                   className="h-3.5 w-3.5 rounded border-gray-300 text-primary focus:ring-primary"
-                   checked={selectedArticles.length === filteredArticles.length && filteredArticles.length > 0}
-                   onChange={toggleSelectAllArticles}
-                 />
+                 <Select onValueChange={(val) => {
+                   if (val === "all") toggleSelectAllArticles();
+                   else if (val === "none") setSelectedArticles([]);
+                   else selectArticlesByType(val as Article["status"]);
+                 }}>
+                   <SelectTrigger className="w-8 h-8 p-0 border-none bg-transparent shadow-none focus:ring-0">
+                     <input
+                       type="checkbox"
+                       className="h-4 w-4 rounded border-2 border-primary/30 text-primary focus:ring-primary accent-primary cursor-pointer pointer-events-none"
+                       checked={selectedArticles.length === filteredArticles.length && filteredArticles.length > 0}
+                       readOnly
+                     />
+                   </SelectTrigger>
+                   <SelectContent align="start" className="text-xs">
+                     <SelectItem value="all">Select All Page</SelectItem>
+                     <SelectItem value="none">Select None</SelectItem>
+                     <div className="h-px bg-border my-1" />
+                     <SelectItem value="DRAFT">Select Drafts</SelectItem>
+                     <SelectItem value="PUBLISHED">Select Published</SelectItem>
+                     <SelectItem value="ARCHIVED">Select Archived</SelectItem>
+                   </SelectContent>
+                 </Select>
                  <span className="text-[11px] font-medium text-muted-foreground">
                    {selectedArticles.length} selected
                  </span>
@@ -298,7 +335,7 @@ export default function ReporterDashboard() {
                   {/* Selection */}
                   <input
                     type="checkbox"
-                    className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary shrink-0"
+                    className="h-4 w-4 rounded border-2 border-primary/30 text-primary focus:ring-primary accent-primary cursor-pointer transition-all"
                     checked={selectedArticles.includes(article.id)}
                     onChange={() => toggleArticleSelection(article.id)}
                   />

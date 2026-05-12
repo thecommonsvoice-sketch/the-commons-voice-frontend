@@ -62,7 +62,7 @@ export default function EditorDashboard() {
   const [articles, setArticles] = useState<Article[]>([]);
   const [articleLoading, setArticleLoading] = useState(true);
   const [articlePage, setArticlePage] = useState(1);
-  const articleLimit = 8;
+  const [articleLimit, setArticleLimit] = useState(20);
   const [articleSearch, setArticleSearch] = useState("");
   const [articleSearchInput, setArticleSearchInput] = useState("");
   const [articleTotalPages, setArticleTotalPages] = useState(1);
@@ -72,7 +72,7 @@ export default function EditorDashboard() {
 
   useEffect(() => {
     fetchArticles();
-  }, [articlePage, articleSearch]);
+  }, [articlePage, articleSearch, articleLimit]);
 
   const fetchArticles = async () => {
     setArticleLoading(true);
@@ -171,6 +171,11 @@ export default function EditorDashboard() {
     }
   };
 
+  const selectArticlesByType = (status: Article["status"]) => {
+    const ids = articles.filter(a => a.status === status).map(a => a.id);
+    setSelectedArticles(ids);
+  };
+
   const reviewQueue = articles.filter((a) => a.status === "DRAFT");
 
   if (user && user.role !== "EDITOR") return null;
@@ -228,18 +233,50 @@ export default function EditorDashboard() {
             <Button variant="outline" size="sm" onClick={handleArticleSearch} className="h-9">
               <Search className="h-3.5 w-3.5" />
             </Button>
+            <Select
+              value={articleLimit.toString()}
+              onValueChange={(val) => {
+                setArticleLimit(parseInt(val));
+                setArticlePage(1);
+              }}
+            >
+              <SelectTrigger className="w-20 h-9 text-xs">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="20">20 / pg</SelectItem>
+                <SelectItem value="50">50 / pg</SelectItem>
+                <SelectItem value="100">100 / pg</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
 
           {/* Bulk Actions Bar */}
           {articles.length > 0 && (
             <div className="flex flex-wrap items-center gap-3 mt-4 p-2.5 bg-muted/30 rounded-lg border border-border/50">
               <div className="flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  className="h-3.5 w-3.5 rounded border-gray-300 text-primary focus:ring-primary"
-                  checked={selectedArticles.length === articles.length && articles.length > 0}
-                  onChange={toggleSelectAllArticles}
-                />
+                <Select onValueChange={(val) => {
+                  if (val === "all") toggleSelectAllArticles();
+                  else if (val === "none") setSelectedArticles([]);
+                  else selectArticlesByType(val as Article["status"]);
+                }}>
+                  <SelectTrigger className="w-8 h-8 p-0 border-none bg-transparent shadow-none focus:ring-0">
+                    <input
+                      type="checkbox"
+                      className="h-4 w-4 rounded border-2 border-primary/30 text-primary focus:ring-primary accent-primary cursor-pointer pointer-events-none"
+                      checked={selectedArticles.length === articles.length && articles.length > 0}
+                      readOnly
+                    />
+                  </SelectTrigger>
+                  <SelectContent align="start" className="text-xs">
+                    <SelectItem value="all">Select All Page</SelectItem>
+                    <SelectItem value="none">Select None</SelectItem>
+                    <div className="h-px bg-border my-1" />
+                    <SelectItem value="DRAFT">Select Drafts</SelectItem>
+                    <SelectItem value="PUBLISHED">Select Published</SelectItem>
+                    <SelectItem value="ARCHIVED">Select Archived</SelectItem>
+                  </SelectContent>
+                </Select>
                 <span className="text-xs font-medium text-muted-foreground">
                   {selectedArticles.length} selected
                 </span>
@@ -296,16 +333,32 @@ export default function EditorDashboard() {
                   transition={{ delay: idx * 0.03 }}
                   className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 rounded-lg border border-transparent hover:border-border hover:bg-accent/30 transition-all duration-200"
                 >
-                          STATUS_COLORS[article.status] || ""
-                        }`}
-                      >
-                        {article.status}
-                      </span>
-                      {article.category && (
-                        <Badge variant="secondary" className="text-[10px] h-5">
-                          {article.category.name}
-                        </Badge>
-                      )}
+                  <div className="flex items-center gap-3 min-w-0">
+                    <input
+                      type="checkbox"
+                      className="h-4 w-4 rounded border-2 border-primary/30 text-primary focus:ring-primary accent-primary cursor-pointer transition-all"
+                      checked={selectedArticles.includes(article.id)}
+                      onChange={() => toggleArticleSelection(article.id)}
+                    />
+                    <div className="flex flex-col truncate">
+                      <span className="text-sm font-medium truncate">{article.title}</span>
+                      <div className="flex items-center gap-2 mt-0.5 flex-wrap">
+                        <span className="text-[10px] text-muted-foreground">
+                          By {article.author?.name}
+                        </span>
+                        <span
+                          className={`px-2 py-0.5 rounded-full text-[10px] font-medium border ${
+                            STATUS_COLORS[article.status] || ""
+                          }`}
+                        >
+                          {article.status}
+                        </span>
+                        {article.category && (
+                          <Badge variant="secondary" className="text-[10px] h-5">
+                            {article.category.name}
+                          </Badge>
+                        )}
+                      </div>
                     </div>
                   </div>
                   <div className="flex items-center gap-1.5 flex-shrink-0 flex-wrap">

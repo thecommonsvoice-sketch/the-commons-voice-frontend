@@ -26,9 +26,11 @@ import {
   ChevronRight,
   UserCog,
   Newspaper,
+  ChevronDown,
 } from "lucide-react";
 import { toast } from "sonner";
 import type { User, Article } from "@/lib/types";
+import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { useUserStore } from "@/store/useUserStore";
@@ -84,7 +86,7 @@ export default function AdminDashboard() {
   const [users, setUsers] = useState<User[]>([]);
   const [userLoading, setUserLoading] = useState(true);
   const [userPage, setUserPage] = useState(1);
-  const userLimit = 5;
+  const [userLimit, setUserLimit] = useState(20);
   const [userSearch, setUserSearch] = useState("");
   const [userSearchInput, setUserSearchInput] = useState("");
   const [userTotalPages, setUserTotalPages] = useState(1);
@@ -93,7 +95,7 @@ export default function AdminDashboard() {
   const [articles, setArticles] = useState<Article[]>([]);
   const [articleLoading, setArticleLoading] = useState(true);
   const [articlePage, setArticlePage] = useState(1);
-  const articleLimit = 5;
+  const [articleLimit, setArticleLimit] = useState(20);
   const [articleSearch, setArticleSearch] = useState("");
   const [articleSearchInput, setArticleSearchInput] = useState("");
   const [articleTotalPages, setArticleTotalPages] = useState(1);
@@ -104,6 +106,7 @@ export default function AdminDashboard() {
   const [publishedToday, setPublishedToday] = useState(0);
   const [draftsCount, setDraftsCount] = useState(0);
   const [selectedArticles, setSelectedArticles] = useState<string[]>([]);
+  const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
 
   // Active tab
   const [activeTab, setActiveTab] = useState<"users" | "articles">("users");
@@ -126,7 +129,7 @@ export default function AdminDashboard() {
       }
     };
     fetchUsers();
-  }, [userPage, userSearch]);
+  }, [userPage, userSearch, userLimit]);
 
   // Fetch articles
   useEffect(() => {
@@ -148,7 +151,7 @@ export default function AdminDashboard() {
       }
     };
     fetchArticles();
-  }, [articlePage, articleSearch]);
+  }, [articlePage, articleSearch, articleLimit]);
 
   const refreshArticles = async () => {
     try {
@@ -199,10 +202,57 @@ export default function AdminDashboard() {
   };
 
   const toggleSelectAllArticles = () => {
-    if (selectedArticles.length === articles.length) {
+    if (selectedArticles.length === articles.length && articles.length > 0) {
       setSelectedArticles([]);
     } else {
       setSelectedArticles(articles.map((a) => a.id));
+    }
+  };
+
+  const selectArticlesByType = (status: Article["status"]) => {
+    const ids = articles.filter(a => a.status === status).map(a => a.id);
+    setSelectedArticles(ids);
+  };
+
+  const toggleSelectAllUsers = () => {
+    if (selectedUsers.length === users.length && users.length > 0) {
+      setSelectedUsers([]);
+    } else {
+      setSelectedUsers(users.map((u) => u.id));
+    }
+  };
+
+  const selectUsersByRole = (role: User["role"]) => {
+    const ids = users.filter(u => u.role === role).map(u => u.id);
+    setSelectedUsers(ids);
+  };
+
+  const handleBulkUserDelete = async () => {
+    if (!selectedUsers.length) return;
+    if (!confirm(`Are you sure you want to delete ${selectedUsers.length} users?`)) return;
+    try {
+      await api.post("/admin/users/bulk-delete", { ids: selectedUsers });
+      toast.success(`${selectedUsers.length} users deleted`);
+      setSelectedUsers([]);
+      // Refresh user list
+      const { data } = await api.get(`/admin/users?page=${userPage}&limit=${userLimit}&search=${encodeURIComponent(userSearch)}`);
+      setUsers(data?.users);
+    } catch {
+      toast.error("Failed to delete users");
+    }
+  };
+
+  const handleBulkUserUpdate = async (update: { role?: User["role"], isActive?: boolean }) => {
+    if (!selectedUsers.length) return;
+    try {
+      await api.patch("/admin/users/bulk-update", { ids: selectedUsers, ...update });
+      toast.success(`${selectedUsers.length} users updated`);
+      setSelectedUsers([]);
+      // Refresh user list
+      const { data } = await api.get(`/admin/users?page=${userPage}&limit=${userLimit}&search=${encodeURIComponent(userSearch)}`);
+      setUsers(data?.users);
+    } catch {
+      toast.error("Failed to update users");
     }
   };
 
@@ -373,7 +423,103 @@ export default function AdminDashboard() {
                 <Button variant="outline" size="sm" onClick={handleUserSearch} className="h-9">
                   <Search className="h-3.5 w-3.5" />
                 </Button>
+                <Select
+                  value={userLimit.toString()}
+                  onValueChange={(val) => {
+                    setUserLimit(parseInt(val));
+                    setUserPage(1);
+                  }}
+                >
+                  <SelectTrigger className="w-20 h-9 text-xs">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="20">20 / pg</SelectItem>
+                    <SelectItem value="50">50 / pg</SelectItem>
+                    <SelectItem value="100">100 / pg</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
+
+              {/* User Bulk Actions Bar */}
+              {activeTab === "users" && users.length > 0 && (
+                <div className="flex flex-wrap items-center gap-3 mt-4 p-2.5 bg-muted/30 rounded-lg border border-border/50">
+                  <div className="flex items-center gap-2">
+                    <Select onValueChange={(val) => {
+                      if (val === "all") toggleSelectAllUsers();
+                      else if (val === "none") setSelectedUsers([]);
+                      else selectUsersByRole(val as User["role"]);
+                    }}>
+                      <SelectTrigger className="w-8 h-8 p-0 border-none bg-transparent shadow-none focus:ring-0">
+                        <input
+                          type="checkbox"
+                          className="h-4 w-4 rounded border-2 border-primary/30 text-primary focus:ring-primary accent-primary cursor-pointer pointer-events-none"
+                          checked={selectedUsers.length === users.length && users.length > 0}
+                          readOnly
+                        />
+                      </SelectTrigger>
+                      <SelectContent align="start" className="text-xs">
+                        <SelectItem value="all">Select All Page</SelectItem>
+                        <SelectItem value="none">Select None</SelectItem>
+                        <div className="h-px bg-border my-1" />
+                        <SelectItem value="USER">Select Users</SelectItem>
+                        <SelectItem value="REPORTER">Select Reporters</SelectItem>
+                        <SelectItem value="EDITOR">Select Editors</SelectItem>
+                        <SelectItem value="ADMIN">Select Admins</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <span className="text-[11px] font-medium text-muted-foreground">
+                      {selectedUsers.length} selected
+                    </span>
+                  </div>
+                  
+                  {selectedUsers.length > 0 && (
+                    <motion.div 
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      className="flex items-center gap-2"
+                    >
+                      <div className="h-4 w-px bg-border mx-1" />
+                      <Select onValueChange={(role) => handleBulkUserUpdate({ role: role as User["role"] })}>
+                        <SelectTrigger className="w-28 h-8 text-[11px]">
+                          <SelectValue placeholder="Role" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="USER">User</SelectItem>
+                          <SelectItem value="REPORTER">Reporter</SelectItem>
+                          <SelectItem value="EDITOR">Editor</SelectItem>
+                          <SelectItem value="ADMIN">Admin</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="h-8 px-2.5 text-[11px]"
+                        onClick={() => handleBulkUserUpdate({ isActive: true })}
+                      >
+                        Activate
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="h-8 px-2.5 text-[11px]"
+                        onClick={() => handleBulkUserUpdate({ isActive: false })}
+                      >
+                        Deactivate
+                      </Button>
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        className="h-8 px-2.5 text-[11px] gap-1"
+                        onClick={handleBulkUserDelete}
+                      >
+                        <Trash2 className="h-3.5 w-3.5" />
+                        Delete
+                      </Button>
+                    </motion.div>
+                  )}
+                </div>
+              )}
             </CardHeader>
             <CardContent>
               {userLoading ? (
@@ -393,6 +539,12 @@ export default function AdminDashboard() {
                       className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 rounded-lg border border-transparent hover:border-border hover:bg-accent/30 transition-all duration-200"
                     >
                       <div className="flex items-center gap-3 min-w-0">
+                        <input
+                          type="checkbox"
+                          className="h-4 w-4 rounded border-2 border-primary/30 text-primary focus:ring-primary accent-primary cursor-pointer transition-all"
+                          checked={selectedUsers.includes(u.id)}
+                          onChange={() => setSelectedUsers(prev => prev.includes(u.id) ? prev.filter(id => id !== u.id) : [...prev, u.id])}
+                        />
                         <div className="h-9 w-9 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-sm shrink-0">
                           {(u.name || u.email)?.[0]?.toUpperCase()}
                         </div>
@@ -508,18 +660,50 @@ export default function AdminDashboard() {
                 <Button variant="outline" size="sm" onClick={handleArticleSearch} className="h-9">
                   <Search className="h-3.5 w-3.5" />
                 </Button>
+                <Select
+                  value={articleLimit.toString()}
+                  onValueChange={(val) => {
+                    setArticleLimit(parseInt(val));
+                    setArticlePage(1);
+                  }}
+                >
+                  <SelectTrigger className="w-20 h-9 text-xs">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="20">20 / pg</SelectItem>
+                    <SelectItem value="50">50 / pg</SelectItem>
+                    <SelectItem value="100">100 / pg</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
               
               {/* Bulk Actions Bar */}
               {activeTab === "articles" && articles.length > 0 && (
                 <div className="flex flex-wrap items-center gap-3 mt-4 p-3 bg-muted/30 rounded-lg border border-border/50">
                   <div className="flex items-center gap-2">
-                    <input
-                      type="checkbox"
-                      className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
-                      checked={selectedArticles.length === articles.length && articles.length > 0}
-                      onChange={toggleSelectAllArticles}
-                    />
+                    <Select onValueChange={(val) => {
+                      if (val === "all") toggleSelectAllArticles();
+                      else if (val === "none") setSelectedArticles([]);
+                      else selectArticlesByType(val as Article["status"]);
+                    }}>
+                      <SelectTrigger className="w-8 h-8 p-0 border-none bg-transparent shadow-none focus:ring-0">
+                        <input
+                          type="checkbox"
+                          className="h-4 w-4 rounded border-2 border-primary/30 text-primary focus:ring-primary accent-primary cursor-pointer pointer-events-none"
+                          checked={selectedArticles.length === articles.length && articles.length > 0}
+                          readOnly
+                        />
+                      </SelectTrigger>
+                      <SelectContent align="start" className="text-xs">
+                        <SelectItem value="all">Select All Page</SelectItem>
+                        <SelectItem value="none">Select None</SelectItem>
+                        <div className="h-px bg-border my-1" />
+                        <SelectItem value="DRAFT">Select Drafts</SelectItem>
+                        <SelectItem value="PUBLISHED">Select Published</SelectItem>
+                        <SelectItem value="ARCHIVED">Select Archived</SelectItem>
+                      </SelectContent>
+                    </Select>
                     <span className="text-xs font-medium text-muted-foreground">
                       {selectedArticles.length} selected
                     </span>
@@ -579,10 +763,21 @@ export default function AdminDashboard() {
                       <div className="flex items-center gap-3 min-w-0">
                         <input
                           type="checkbox"
-                          className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary shrink-0"
+                          className="h-4 w-4 rounded border-2 border-primary/30 text-primary focus:ring-primary accent-primary cursor-pointer transition-all"
                           checked={selectedArticles.includes(article.id)}
                           onChange={() => toggleArticleSelection(article.id)}
                         />
+                        {article.coverImage && (
+                          <div className="relative h-10 w-16 rounded-md overflow-hidden ring-1 ring-border shrink-0 bg-muted">
+                            <Image
+                              src={article.coverImage}
+                              alt={article.title}
+                              fill
+                              sizes="(max-width: 64px) 100vw, 64px"
+                              className="object-cover"
+                            />
+                          </div>
+                        )}
                         <div className="flex-1 min-w-0">
                           <p className="font-medium text-sm truncate">{article.title}</p>
                           <div className="flex items-center gap-2 mt-1 flex-wrap">
