@@ -8,6 +8,7 @@ import Navbar from "@/components/Navbar";
 import { Toaster } from "@/components/ui/sonner";
 import { AdSlot } from "@/components/AdSlot";
 import Footer from "@/components/Footer";
+import Script from "next/script";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const merriweather = Merriweather({
@@ -90,10 +91,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body
         className={`${inter.variable} ${merriweather.variable} font-sans h-screen bg-background text-foreground antialiased overflow-x-hidden`}
       >
-        {/* Load AdSense script once, correctly */}
+        {/* Load AdSense script optimally using Next.js Script */}
         {adsenseClient && (
-          <script
-            async
+          <Script
+            id="adsense-script"
+            strategy="lazyOnload"
             src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsenseClient}`}
             crossOrigin="anonymous"
           />

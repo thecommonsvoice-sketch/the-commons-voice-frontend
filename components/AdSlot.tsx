@@ -7,6 +7,8 @@ interface AdSlotProps {
   format?: "auto" | "fluid" | "rectangle";
   responsive?: boolean;
   style?: React.CSSProperties;
+  width?: number | string;
+  height?: number | string;
 }
 
 export function AdSlot({
@@ -15,6 +17,8 @@ export function AdSlot({
   format = "auto",
   responsive = true,
   style,
+  width,
+  height,
 }: AdSlotProps) {
   const adRef = useRef<HTMLModElement>(null);
 
@@ -32,8 +36,12 @@ export function AdSlot({
 
   if (!client) {
     if (process.env.NODE_ENV === "development") {
+      const displayHeight = height ? (typeof height === "number" ? `${height}px` : height) : "auto";
       return (
-        <div className={`bg-gray-100 border p-4 text-center text-xs text-gray-500 ${className}`}>
+        <div 
+          className={`bg-gray-100 border p-4 text-center text-xs text-gray-500 ${className || ""}`}
+          style={{ height: displayHeight, display: "flex", flexDirection: "column", justifyContent: "center" }}
+        >
           <p>AdSense Client ID missing.</p>
           <p>Slot: {slot}</p>
         </div>
@@ -42,11 +50,28 @@ export function AdSlot({
     return null;
   }
 
+  const containerStyle: React.CSSProperties = {
+    ...style,
+  };
+
+  if (width) {
+    containerStyle.width = typeof width === "number" ? `${width}px` : width;
+    containerStyle.minWidth = typeof width === "number" ? `${width}px` : width;
+  }
+  if (height) {
+    containerStyle.height = typeof height === "number" ? `${height}px` : height;
+    containerStyle.minHeight = typeof height === "number" ? `${height}px` : height;
+  }
+
   return (
-    <div className={`ad-container ${className || ""}`}>
+    <div className={`ad-container ${className || ""}`} style={containerStyle}>
       <ins
         className="adsbygoogle"
-        style={{ display: "block", ...style }}
+        style={{ 
+          display: "block",
+          width: width ? (typeof width === "number" ? `${width}px` : width) : "100%",
+          height: height ? (typeof height === "number" ? `${height}px` : height) : "auto",
+        }}
         data-ad-client={client}
         data-ad-slot={slot}
         data-ad-format={format}

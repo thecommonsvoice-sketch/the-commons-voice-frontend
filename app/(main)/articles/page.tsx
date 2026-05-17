@@ -4,7 +4,7 @@ import { Metadata } from "next";
 import { ArticleCard } from "@/components/ArticleCard";
 import { Skeleton } from "@/components/ui/loading-skeleton";
 import { Card, CardContent } from "@/components/ui/card";
-import { AdSlot } from "@/components/AdSlot";
+// import { AdSlot } from "@/components/AdSlot";
 import { SearchBar } from "@/components/SearchBar"; // New reusable search bar
 import type { Article } from "@/lib/types";
 
@@ -99,7 +99,7 @@ export default async function ArticlesPage({
       </Suspense>
 
       {/* Bottom Ad */}
-      <AdSlot slot="3456789012" className="mx-auto my-8" />
+      {/* <AdSlot slot="3456789012" height={90} className="mx-auto my-8" /> */}
     </div>
   );
 }

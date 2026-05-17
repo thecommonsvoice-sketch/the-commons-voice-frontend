@@ -149,6 +149,7 @@ export default async function HomePage() {
       />
 
       <div className="container mx-auto px-2 sm:px-4 py-4 sm:py-6 space-y-6 sm:space-y-8">
+        <h1 className="sr-only">The Commons Voice - Independent News & Analysis</h1>
         {/* Breaking news ticker */}
         <BreakingNewsTicker />
 

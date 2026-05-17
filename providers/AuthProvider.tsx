@@ -14,6 +14,13 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
     hydrating.current = true;
 
     async function hydrate() {
+      const token = typeof window !== "undefined" ? localStorage.getItem("tcv_token") : null;
+      if (!token) {
+        clearUser();
+        setHydrated();
+        return;
+      }
+
       try {
         // First attempt: the interceptor will auto-refresh if access token is expired
         const { data } = await api.get("/auth/me");

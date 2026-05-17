@@ -13,6 +13,13 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
     // let cancelled = false;
 
     async function hydrate() {
+      const token = typeof window !== "undefined" ? localStorage.getItem("tcv_token") : null;
+      if (!token) {
+        clearUser();
+        setReady(true);
+        return;
+      }
+
       try {
         const { data } = await api.get("/auth/me");
         // if (!cancelled)
