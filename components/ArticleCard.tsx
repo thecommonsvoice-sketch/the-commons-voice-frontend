@@ -18,6 +18,16 @@ interface ArticleCardProps {
   show?: boolean;
 }
 
+/** Optimize Cloudinary URLs with auto-format (WebP/AVIF) and responsive width */
+function optimizeImageUrl(url: string | undefined | null, width = 800): string {
+  if (!url) return "/placeholder.jpg";
+  // Only transform Cloudinary URLs
+  if (url.includes("res.cloudinary.com") && url.includes("/upload/")) {
+    return url.replace("/upload/", `/upload/f_auto,q_auto,w_${width}/`);
+  }
+  return url;
+}
+
 export function ArticleCard({ article, variant = "default", show = true }: ArticleCardProps) {
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [isCommentsOpen, setIsCommentsOpen] = useState(false);
@@ -85,7 +95,7 @@ export function ArticleCard({ article, variant = "default", show = true }: Artic
             {article.coverImage ? (
               <>
                 <img
-                  src={article.coverImage}
+                  src={optimizeImageUrl(article.coverImage, isFeatured ? 1200 : isHorizontal ? 600 : 800)}
                   alt={article.title}
                   loading="lazy"
                   className="h-full w-full object-cover transform transition-transform duration-700 group-hover:scale-105"
@@ -145,6 +155,7 @@ export function ArticleCard({ article, variant = "default", show = true }: Artic
               className="h-8 w-8 text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors"
               onClick={openComments}
               title="Comments"
+              aria-label="Open comments"
             >
               <MessageSquareMore className="w-4 h-4" />
             </Button>
@@ -157,6 +168,7 @@ export function ArticleCard({ article, variant = "default", show = true }: Artic
                 onClick={changeBookmarkStatus}
                 disabled={disable}
                 title={isBookmarked ? "Remove Bookmark" : "Bookmark"}
+                aria-label={isBookmarked ? "Remove bookmark" : "Bookmark this article"}
               >
                 {isBookmarked ? <BookmarkCheck className="w-4 h-4" /> : <Bookmark className="w-4 h-4" />}
               </Button>

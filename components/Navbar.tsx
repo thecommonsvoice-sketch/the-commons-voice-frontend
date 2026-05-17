@@ -167,6 +167,7 @@ export default function Navbar() {
                 size="icon"
                 className="lg:hidden h-8 w-8 sm:h-10 sm:w-10"
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                aria-label={mobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
               >
                 {mobileMenuOpen ? <X className="h-4 w-4 sm:h-5 sm:w-5" /> : <Menu className="h-4 w-4 sm:h-5 sm:w-5" />}
               </Button>

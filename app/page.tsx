@@ -171,7 +171,7 @@ export default async function HomePage() {
 
             {/* Mobile/Tablet Trending - Shown here because Right Sidebar is hidden on Tablet or pushed down on Mobile */}
             <div className="lg:hidden space-y-4 mb-6">
-              <h3 className="text-lg font-bold font-serif border-l-4 border-primary pl-3">Trending</h3>
+              <h2 className="text-lg font-bold font-serif border-l-4 border-primary pl-3">Trending</h2>
               <div className="flex flex-wrap gap-2">
                 {trendingCategories.map((category) => (
                   <Link key={category.id} href={`/categories/${category.slug}`}>
@@ -220,7 +220,7 @@ export default async function HomePage() {
           <aside className="block md:hidden lg:block lg:col-span-3 space-y-8 order-3 md:order-3">
             <div className="sticky top-24 space-y-8">
               <div className="hidden lg:block space-y-4">
-                <h3 className="text-lg font-bold font-serif border-l-4 border-primary pl-3">Trending</h3>
+                <h2 className="text-lg font-bold font-serif border-l-4 border-primary pl-3">Trending</h2>
                 <div className="flex flex-wrap gap-2">
                   {trendingCategories.map((category) => (
                     <Link key={category.id} href={`/categories/${category.slug}`}>
@@ -238,7 +238,7 @@ export default async function HomePage() {
               <RecommendedWidget items={recommendedItems} />
 
               <div className="bg-muted/30 p-5 rounded-xl border border-border/50">
-                <h3 className="text-lg font-bold font-serif mb-2">Subscribe</h3>
+                <h2 className="text-lg font-bold font-serif mb-2">Subscribe</h2>
                 <p className="text-sm text-muted-foreground mb-4">
                   Get the latest news delivered.
                 </p>

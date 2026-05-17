@@ -54,7 +54,7 @@ export function LeftPortalNav() {
             >
               <div className="flex justify-between items-center mb-4">
                 <h2 className="text-lg font-bold">Sidebar</h2>
-                <button onClick={() => setMobileOpen(false)}>
+                <button onClick={() => setMobileOpen(false)} aria-label="Close sidebar">
                   <X size={20} />
                 </button>
               </div>

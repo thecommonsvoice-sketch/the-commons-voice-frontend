@@ -8,6 +8,15 @@ interface BentoGridHeroProps {
     articles: Article[];
 }
 
+/** Optimize Cloudinary URLs with auto-format (WebP/AVIF) and responsive width */
+function optimizeImageUrl(url: string | undefined | null, width = 800): string {
+  if (!url) return "/placeholder.jpg";
+  if (url.includes("res.cloudinary.com") && url.includes("/upload/")) {
+    return url.replace("/upload/", `/upload/f_auto,q_auto,w_${width}/`);
+  }
+  return url;
+}
+
 export function BentoGridHero({ articles }: BentoGridHeroProps) {
     if (!articles || articles.length === 0) return null;
 
@@ -22,8 +31,9 @@ export function BentoGridHero({ articles }: BentoGridHeroProps) {
                 <Link href={`/articles/${mainArticle.slug}`} prefetch={false} className="block w-full h-full">
                     <div className="absolute inset-0">
                         <img
-                            src={mainArticle.coverImage || "/placeholder.jpg"}
+                            src={optimizeImageUrl(mainArticle.coverImage, 1200)}
                             alt={mainArticle.title}
+                            fetchPriority="high"
                             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                         />
                         {/* Gradient Overlay */}
@@ -77,8 +87,9 @@ export function BentoGridHero({ articles }: BentoGridHeroProps) {
                     >
                         <div className="absolute inset-0">
                             <img
-                                src={article.coverImage || "/placeholder.jpg"}
+                                src={optimizeImageUrl(article.coverImage, 600)}
                                 alt={article.title}
+                                loading="lazy"
                                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                             />
                             <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />

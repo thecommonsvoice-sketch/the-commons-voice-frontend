@@ -10,12 +10,20 @@ interface RecommendedWidgetProps {
   items: RecommendedItem[];
 }
 
+function optimizeImageUrl(url: string | undefined | null, width = 300): string {
+  if (!url) return "/placeholder.jpg";
+  if (url.includes("res.cloudinary.com") && url.includes("/upload/")) {
+    return url.replace("/upload/", `/upload/f_auto,q_auto,w_${width}/`);
+  }
+  return url;
+}
+
 export function RecommendedWidget({ items }: RecommendedWidgetProps) {
   if (!items.length) return null;
 
   return (
     <div className="space-y-4">
-      <h3 className="text-lg font-bold font-serif border-l-4 border-primary pl-3">Recommended</h3>
+      <h2 className="text-lg font-bold font-serif border-l-4 border-primary pl-3">Recommended</h2>
       <div className="flex flex-col gap-4">
         {items.map((item, idx) => (
           <Link
@@ -26,7 +34,7 @@ export function RecommendedWidget({ items }: RecommendedWidgetProps) {
             {item.image && (
               <div className="relative shrink-0 w-20 h-16 rounded-md overflow-hidden">
                 <img
-                  src={item.image}
+                  src={optimizeImageUrl(item.image)}
                   alt={item.title}
                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                   loading="lazy"
@@ -34,9 +42,9 @@ export function RecommendedWidget({ items }: RecommendedWidgetProps) {
               </div>
             )}
             <div className="flex flex-col">
-              <h4 className="text-sm font-medium leading-snug line-clamp-3 group-hover:text-primary transition-colors">
+              <h3 className="text-sm font-medium leading-snug line-clamp-3 group-hover:text-primary transition-colors">
                 {item.title}
-              </h4>
+              </h3>
             </div>
           </Link>
         ))}
