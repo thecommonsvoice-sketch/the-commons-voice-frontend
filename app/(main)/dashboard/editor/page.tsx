@@ -32,6 +32,7 @@ import { motion } from "framer-motion";
 import { useUserStore } from "@/store/useUserStore";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { PublishDateDialog } from "@/components/PublishDateDialog";
 
 type ArticlesResponse = {
   data: Article[];
@@ -71,6 +72,13 @@ export default function EditorDashboard() {
   const [publishedToday, setPublishedToday] = useState(0);
   const [selectedArticles, setSelectedArticles] = useState<string[]>([]);
 
+  // Publish date dialog state
+  const [publishDialogOpen, setPublishDialogOpen] = useState(false);
+  const [pendingPublishStatus, setPendingPublishStatus] = useState<{
+    ids: string[];
+    status: string;
+  } | null>(null);
+
   useEffect(() => {
     fetchArticles();
   }, [articlePage, articleSearch, articleLimit]);
@@ -105,6 +113,12 @@ export default function EditorDashboard() {
   }, [articleSearchInput]);
 
   const updateArticleStatus = async (articleId: string, status: string) => {
+    if (status === "PUBLISHED") {
+      setPendingPublishStatus({ ids: [articleId], status });
+      setPublishDialogOpen(true);
+      return;
+    }
+
     try {
       await api.patch(`/articles/status/${articleId}`, { status });
       setArticles((prev) =>
@@ -118,6 +132,28 @@ export default function EditorDashboard() {
     } catch {
       toast.error("Failed to update status");
     }
+  };
+
+  const handleSinglePublishConfirm = async (publishedAt: string | null) => {
+    if (!pendingPublishStatus || pendingPublishStatus.ids.length !== 1) return;
+
+    try {
+      await api.patch(`/articles/status/${pendingPublishStatus.ids[0]}`, {
+        status: pendingPublishStatus.status,
+        publishedAt,
+      });
+      setArticles((prev) =>
+        prev.map((article) =>
+          article.id === pendingPublishStatus.ids[0]
+            ? { ...article, status: "PUBLISHED" as Article["status"] }
+            : article
+        )
+      );
+      toast.success("Article published");
+    } catch {
+      toast.error("Failed to update status");
+    }
+    setPendingPublishStatus(null);
   };
 
   const deleteArticle = async (articleId: string) => {
@@ -148,6 +184,12 @@ export default function EditorDashboard() {
   const handleBulkStatusUpdate = async (status: string) => {
     if (!selectedArticles.length) return;
 
+    if (status === "PUBLISHED") {
+      setPendingPublishStatus({ ids: selectedArticles, status });
+      setPublishDialogOpen(true);
+      return;
+    }
+
     try {
       await api.patch("/articles/bulk-status", { ids: selectedArticles, status });
       toast.success(`${selectedArticles.length} articles updated to ${status}`);
@@ -156,6 +198,24 @@ export default function EditorDashboard() {
     } catch {
       toast.error("Failed to bulk update status");
     }
+  };
+
+  const handleBulkPublishConfirm = async (publishedAt: string | null) => {
+    if (!pendingPublishStatus) return;
+
+    try {
+      await api.patch("/articles/bulk-status", {
+        ids: pendingPublishStatus.ids,
+        status: pendingPublishStatus.status,
+        publishedAt,
+      });
+      toast.success(`${pendingPublishStatus.ids.length} articles published`);
+      setSelectedArticles([]);
+      fetchArticles();
+    } catch {
+      toast.error("Failed to bulk update status");
+    }
+    setPendingPublishStatus(null);
   };
 
   const toggleArticleSelection = (id: string) => {
@@ -449,6 +509,13 @@ export default function EditorDashboard() {
           )}
         </CardContent>
       </Card>
+
+      <PublishDateDialog
+        open={publishDialogOpen}
+        onOpenChange={setPublishDialogOpen}
+        onConfirm={pendingPublishStatus?.ids.length === 1 ? handleSinglePublishConfirm : handleBulkPublishConfirm}
+        articleCount={pendingPublishStatus?.ids.length || 1}
+      />
     </div>
   );
 }

@@ -35,6 +35,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { useUserStore } from "@/store/useUserStore";
 import { useRouter } from "next/navigation";
+import { PublishDateDialog } from "@/components/PublishDateDialog";
 
 type Pagination = {
   total: number;
@@ -107,6 +108,13 @@ export default function AdminDashboard() {
   const [draftsCount, setDraftsCount] = useState(0);
   const [selectedArticles, setSelectedArticles] = useState<string[]>([]);
   const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
+
+  // Publish date dialog state
+  const [publishDialogOpen, setPublishDialogOpen] = useState(false);
+  const [pendingPublishStatus, setPendingPublishStatus] = useState<{
+    ids: string[];
+    status: Article["status"];
+  } | null>(null);
 
   // Active tab
   const [activeTab, setActiveTab] = useState<"users" | "articles">("users");
@@ -185,6 +193,12 @@ export default function AdminDashboard() {
   const handleBulkStatusUpdate = async (status: Article["status"]) => {
     if (!selectedArticles.length) return;
 
+    if (status === "PUBLISHED") {
+      setPendingPublishStatus({ ids: selectedArticles, status });
+      setPublishDialogOpen(true);
+      return;
+    }
+
     try {
       await api.patch("/admin/articles/bulk-status", { ids: selectedArticles, status });
       toast.success(`${selectedArticles.length} articles updated to ${status}`);
@@ -193,6 +207,24 @@ export default function AdminDashboard() {
     } catch {
       toast.error("Failed to bulk update status");
     }
+  };
+
+  const handlePublishConfirm = async (publishedAt: string | null) => {
+    if (!pendingPublishStatus) return;
+
+    try {
+      await api.patch("/admin/articles/bulk-status", {
+        ids: pendingPublishStatus.ids,
+        status: pendingPublishStatus.status,
+        publishedAt,
+      });
+      toast.success(`${pendingPublishStatus.ids.length} articles published`);
+      setSelectedArticles([]);
+      refreshArticles();
+    } catch {
+      toast.error("Failed to bulk update status");
+    }
+    setPendingPublishStatus(null);
   };
 
   const toggleArticleSelection = (id: string) => {
@@ -303,13 +335,35 @@ export default function AdminDashboard() {
   };
 
   const updateArticleStatus = async (articleId: string, status: Article["status"]) => {
+    if (status === "PUBLISHED") {
+      setPendingPublishStatus({ ids: [articleId], status });
+      setPublishDialogOpen(true);
+      return;
+    }
+
     try {
       await api.patch(`/admin/articles/${articleId}/status`, { status });
       toast.success("Article status updated");
-      refreshArticles(); // Refresh to update all counts and list
+      refreshArticles();
     } catch {
       toast.error("Failed to update status");
     }
+  };
+
+  const handleSinglePublishConfirm = async (publishedAt: string | null) => {
+    if (!pendingPublishStatus || pendingPublishStatus.ids.length !== 1) return;
+
+    try {
+      await api.patch(`/admin/articles/${pendingPublishStatus.ids[0]}/status`, {
+        status: pendingPublishStatus.status,
+        publishedAt,
+      });
+      toast.success("Article published");
+      refreshArticles();
+    } catch {
+      toast.error("Failed to update status");
+    }
+    setPendingPublishStatus(null);
   };
 
   const deleteArticle = async (articleId: string) => {
@@ -872,6 +926,13 @@ export default function AdminDashboard() {
           </Card>
         </motion.div>
       )}
+
+      <PublishDateDialog
+        open={publishDialogOpen}
+        onOpenChange={setPublishDialogOpen}
+        onConfirm={pendingPublishStatus?.ids.length === 1 ? handleSinglePublishConfirm : handlePublishConfirm}
+        articleCount={pendingPublishStatus?.ids.length || 1}
+      />
     </div>
   );
 }
