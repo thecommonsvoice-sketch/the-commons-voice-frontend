@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import UttarakhandSVGMap from "@/components/UttarakhandSVGMap";
 import { Mail, Instagram, Facebook, type LucideIcon } from "lucide-react";
 
@@ -79,7 +80,7 @@ export default function AboutPage() {
             The Commons Voice
           </h1>
           <p className="text-xl sm:text-2xl md:text-3xl text-muted-foreground font-semibold max-w-3xl mx-auto px-2 italic animate-in fade-in slide-in-from-bottom-4 duration-1000 delay-200">
-            "We love to tell grounded stories and explore life."
+            &quot;We love to tell grounded stories and explore life.&quot;
           </p>
           
           <div className="max-w-4xl mx-auto mt-12 text-left animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-300">
@@ -163,7 +164,7 @@ export default function AboutPage() {
               </h2>
               
               <p className="text-lg sm:text-xl text-muted-foreground leading-relaxed max-w-2xl mx-auto">
-                Whether it's a personal journey, a community experience, or a voice from the ground — we would love to hear it and share it with the world.
+                Whether it&apos;s a personal journey, a community experience, or a voice from the ground — we would love to hear it and share it with the world.
               </p>
               
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 pt-4">
@@ -209,10 +210,13 @@ export default function AboutPage() {
                 {social.kind === "icon" ? (
                   <social.icon className="w-6 h-6 sm:w-8 sm:h-8 transition-transform duration-500 group-hover:rotate-[360deg]" />
                 ) : (
-                  <img
+                  <Image
                     src={social.imageSrc}
                     alt={social.label}
+                    width={32}
+                    height={32}
                     className="w-6 h-6 sm:w-8 sm:h-8 transition-transform duration-500 group-hover:scale-110 dark:invert"
+                    unoptimized
                   />
                 )}
               </a>

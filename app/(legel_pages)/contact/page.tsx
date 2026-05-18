@@ -180,32 +180,31 @@ export default function ContactPage() {
                 <Mail className="h-4 w-4 sm:h-5 sm:w-5 text-primary mt-1 sm:mt-0 flex-shrink-0" />
                 <div>
                   <p className="font-medium text-sm sm:text-base">Email</p>
-                  <p className="text-xs sm:text-sm text-muted-foreground break-all">contact@thecommonvoice.com</p>
+                  <p className="text-xs sm:text-sm text-muted-foreground break-all">contact@thecommonsvoice.com</p>
                 </div>
               </div>
 
-              <div className="flex items-start sm:items-center space-x-3">
+              {/* <div className="flex items-start sm:items-center space-x-3">
                 <Phone className="h-4 w-4 sm:h-5 sm:w-5 text-primary mt-1 sm:mt-0 flex-shrink-0" />
                 <div>
                   <p className="font-medium text-sm sm:text-base">Phone</p>
                   <p className="text-xs sm:text-sm text-muted-foreground">+1 (555) 123-4567</p>
                 </div>
-              </div>
+              </div> */}
 
               <div className="flex items-start space-x-3">
                 <MapPin className="h-4 w-4 sm:h-5 sm:w-5 text-primary mt-1 flex-shrink-0" />
                 <div>
                   <p className="font-medium text-sm sm:text-base">Address</p>
                   <p className="text-xs sm:text-sm text-muted-foreground">
-                    123 News Avenue<br />
-                    New York, NY 10001
+                  86, Ln 1, Rajeshwar Nagar Phase-I, Aman Vihar, Dehradun, Uttarakhand 248013, India
                   </p>
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card>
+          {/* <Card>
             <CardHeader>
               <CardTitle className="text-base sm:text-lg">Newsroom</CardTitle>
             </CardHeader>
@@ -223,7 +222,7 @@ export default function ContactPage() {
                 <p className="text-xs sm:text-sm text-muted-foreground break-all">press@thecommonvoice.com</p>
               </div>
             </CardContent>
-          </Card>
+          </Card> */}
         </div>
       </div>
     </div>
