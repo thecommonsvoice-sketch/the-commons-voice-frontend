@@ -23,7 +23,7 @@ import {
 } from "@/components/ui/select";
 import { Mail, Phone, MapPin, Send } from "lucide-react";
 import { toast } from "sonner";
-import { api } from "@/lib/api";
+import emailjs from "@emailjs/browser";
 
 // ✅ Validation schema
 const schema = z.object({
@@ -62,18 +62,24 @@ export default function ContactPage() {
   const onSubmit = async (data: FormSchema) => {
     setIsSubmitting(true);
     try {
-      const response = await api.post("/contact/send", data);
-      
-      if (response.data?.success || response.status === 200) {
-        toast.success(response.data?.message || "Message sent successfully! We'll get back to you soon.");
-        reset();
-      } else {
-        throw new Error(response.data?.message || "Failed to send message");
-      }
-    } catch (err: any) {
-      console.error("Contact form error:", err);
-      const errorMessage = err.response?.data?.message || err.message || "Failed to send message. Please try again.";
-      toast.error(errorMessage);
+      await emailjs.send(
+        process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID!,
+        process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID!,
+        {
+          name: data.name,
+          email: data.email,
+          category: data.category,
+          subject: data.subject,
+          message: data.message,
+        },
+        process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!
+      );
+
+      toast.success("Message sent successfully!");
+      reset();
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to send message");
     } finally {
       setIsSubmitting(false);
     }
