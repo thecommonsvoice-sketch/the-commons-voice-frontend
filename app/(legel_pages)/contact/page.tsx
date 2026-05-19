@@ -23,6 +23,7 @@ import {
 } from "@/components/ui/select";
 import { Mail, Phone, MapPin, Send } from "lucide-react";
 import { toast } from "sonner";
+import { api } from "@/lib/api";
 
 // ✅ Validation schema
 const schema = z.object({
@@ -43,21 +44,36 @@ export default function ContactPage() {
     handleSubmit,
     setValue,
     reset,
+    watch,
     formState: { errors },
   } = useForm<FormSchema>({
     resolver: zodResolver(schema),
+    defaultValues: {
+      name: "",
+      email: "",
+      subject: "",
+      category: "",
+      message: "",
+    },
   });
+
+  const categoryValue = watch("category");
 
   const onSubmit = async (data: FormSchema) => {
     setIsSubmitting(true);
-    console.log(data);
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      toast.success("Message sent successfully! We&rsquo;ll get back to you soon.");
-      reset();
-    } catch (err) {
+      const response = await api.post("/contact/send", data);
+      
+      if (response.data?.success || response.status === 200) {
+        toast.success(response.data?.message || "Message sent successfully! We'll get back to you soon.");
+        reset();
+      } else {
+        throw new Error(response.data?.message || "Failed to send message");
+      }
+    } catch (err: any) {
       console.error("Contact form error:", err);
-      toast.error("Failed to send message. Please try again.");
+      const errorMessage = err.response?.data?.message || err.message || "Failed to send message. Please try again.";
+      toast.error(errorMessage);
     } finally {
       setIsSubmitting(false);
     }
@@ -129,7 +145,10 @@ export default function ContactPage() {
 
                   <div className="space-y-2">
                     <Label htmlFor="category">Category</Label>
-                    <Select onValueChange={(value) => setValue("category", value)}>
+                    <Select
+                      value={categoryValue}
+                      onValueChange={(value) => setValue("category", value, { shouldValidate: true })}
+                    >
                       <SelectTrigger className={errors.category ? "border-red-500" : ""}>
                         <SelectValue placeholder="Select category" />
                       </SelectTrigger>
