@@ -114,7 +114,7 @@ export async function generateMetadata({
       title,
       description,
       type: "article",
-      publishedTime: article.createdAt,
+      publishedTime: article.publishedAt || article.createdAt,
       modifiedTime: article.updatedAt,
       // Pass the article's cover image or a default fallback
       images: article.coverImage
@@ -150,6 +150,8 @@ export default async function ArticlePage({
     notFound();
   }
 
+  const articleDate = article.publishedAt || article.createdAt;
+
   const [relatedArticles, adjacent] = await Promise.all([
     getRelatedArticles(slug),
     getAdjacentArticles(slug)
@@ -162,7 +164,7 @@ export default async function ArticlePage({
     headline: article.title,
     description: article.excerpt || "",
     image: article.coverImage || "",
-    datePublished: article.createdAt,
+    datePublished: articleDate || article.createdAt,
     dateModified: article.updatedAt,
     author: {
       "@type": "Person",
@@ -224,13 +226,13 @@ export default async function ArticlePage({
                   </span>
                 </div>
               )}
-              {article.createdAt && (
+              {articleDate && (
                 <>
                   <Separator orientation="vertical" className="h-4" />
-                  <time dateTime={article.createdAt} className="font-medium">
+                  <time dateTime={articleDate} className="font-medium">
                     {(() => {
                       try {
-                        return format(new Date(article.createdAt), "MMMM d, yyyy");
+                        return format(new Date(articleDate), "MMMM d, yyyy");
                       } catch (e) {
                         return "Date unavailable";
                       }

@@ -27,7 +27,7 @@ export async function GET() {
       return `
   <url>
     <loc>${baseUrl}/articles/${article.slug}</loc>
-    <lastmod>${new Date(article.updatedAt || article.createdAt).toISOString()}</lastmod>
+    <lastmod>${new Date(article.updatedAt || article.publishedAt || article.createdAt).toISOString()}</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>`;
