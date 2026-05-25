@@ -1,12 +1,54 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { ArticleCard } from "@/components/ArticleCard";
 import type { Article, Category } from "@/lib/types";
 import { api } from "@/lib/api";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Search } from "lucide-react";
+
+const CATEGORY_BACKGROUNDS: Record<string, string> = {
+  // General News
+  general: "https://images.unsplash.com/photo-1495020689067-958852a6565d?auto=format&fit=crop&w=1200&q=80",
+  
+  // Politics
+  politics: "https://images.unsplash.com/photo-1541872703-74c5e44368f9?auto=format&fit=crop&w=1200&q=80",
+  
+  // Science and Technology
+  "science-and-technology": "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=80",
+  "science-technology": "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=80",
+  science: "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=80",
+  technology: "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=80",
+  tech: "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=80",
+  
+  // Sports and Entertainment
+  "sports-and-entertainment": "https://images.unsplash.com/photo-1461896836934-ffe607ba8211?auto=format&fit=crop&w=1200&q=80",
+  "sports-entertainment": "https://images.unsplash.com/photo-1461896836934-ffe607ba8211?auto=format&fit=crop&w=1200&q=80",
+  sports: "https://images.unsplash.com/photo-1461896836934-ffe607ba8211?auto=format&fit=crop&w=1200&q=80",
+  sport: "https://images.unsplash.com/photo-1461896836934-ffe607ba8211?auto=format&fit=crop&w=1200&q=80",
+  entertainment: "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=1200&q=80",
+  
+  // Business
+  business: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1200&q=80",
+  finance: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1200&q=80",
+  
+  // World News
+  world: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1200&q=80",
+  
+  // Defence
+  defence: "https://images.unsplash.com/photo-1580137189272-c9379f8864fd?auto=format&fit=crop&w=1200&q=80",
+  defense: "https://images.unsplash.com/photo-1580137189272-c9379f8864fd?auto=format&fit=crop&w=1200&q=80",
+};
+
+const getCategoryBackground = (slug: string) => {
+  const normalizedSlug = slug.toLowerCase().trim();
+  if (CATEGORY_BACKGROUNDS[normalizedSlug]) {
+    return CATEGORY_BACKGROUNDS[normalizedSlug];
+  }
+  return "https://images.unsplash.com/photo-1557683316-973673baf926?auto=format&fit=crop&w=1200&q=80";
+};
 
 export default function CategoryClient({
   category,
@@ -53,12 +95,30 @@ export default function CategoryClient({
     fetchArticles(search, pageNum);
   };
 
+  const bgImage = category.image || category.coverImage || getCategoryBackground(category.slug);
+
   return (
     <div className="container mx-auto px-4 py-8">
       {/* Category Hero Banner */}
-      <div className="relative bg-muted/40 dark:bg-muted/10 rounded-3xl p-8 md:p-16 mb-12 overflow-hidden text-center border">
-        {/* Background Pattern */}
-        <div className="absolute inset-0 opacity-10 dark:opacity-5 pointer-events-none">
+      <div className="relative rounded-3xl p-8 md:p-16 mb-12 overflow-hidden text-center border bg-muted/20 dark:bg-muted/5 group">
+        {/* Background Image */}
+        {bgImage && (
+          <>
+            <Image
+              src={bgImage}
+              alt={category.name}
+              fill
+              priority
+              sizes="(max-width: 1200px) 100vw, 1200px"
+              className="absolute inset-0 w-full h-full object-cover pointer-events-none transition-transform duration-700 group-hover:scale-105"
+            />
+            {/* Elegant glassmorphic overlay gradient */}
+            <div className="absolute inset-0 bg-gradient-to-r from-background/90 via-background/60 to-background/90 dark:from-background/95 dark:via-background/80 dark:to-background/95 backdrop-blur-[1px] pointer-events-none" />
+          </>
+        )}
+
+        {/* Background Pattern SVG overlay */}
+        <div className="absolute inset-0 opacity-10 dark:opacity-5 pointer-events-none z-0">
           <svg className="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
             <path d="M0 100 C 20 0 50 0 100 100 Z" fill="currentColor" />
           </svg>

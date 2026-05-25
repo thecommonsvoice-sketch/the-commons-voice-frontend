@@ -18,6 +18,8 @@ export interface Category {
   slug: string;
   description?: string | null;
   isActive: boolean;
+  image?: string | null;
+  coverImage?: string | null;
   createdAt?: string;
   updatedAt?: string;
 }
