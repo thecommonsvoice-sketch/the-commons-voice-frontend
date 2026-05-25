@@ -1,6 +1,6 @@
 "use client"
 import { useEffect, useState, useRef } from "react";
-import { X, Send, Edit, Trash2, MoreHorizontal, MessageCircle } from "lucide-react";
+import { X, Send, Edit, MessageCircle } from "lucide-react";
 import { Button } from "./ui/button";
 import { api } from "@/lib/api";
 import { toast } from "sonner";
@@ -14,6 +14,7 @@ interface Comment {
   user?: { id: string; name: string };
   userName?: string;
   createdAt: string;
+  parentId?: string | null; // Added to support threading
 }
 
 interface CommentsSidebarProps {
@@ -57,9 +58,23 @@ export function CommentsSidebar({ articleId, onClose }: CommentsSidebarProps) {
   const [editingContent, setEditingContent] = useState("");
   const [loading, setLoading] = useState(true);
   const [posting, setPosting] = useState(false);
-  const [menuOpenId, setMenuOpenId] = useState<string | null>(null);
   const { user } = useUserStore();
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  // State to track who we are replying to
+  const [replyingTo, setReplyingTo] = useState<{
+    commentId: string;
+    displayName: string;
+  } | null>(null);
+
+  // State to track collapsed/expanded reply sections
+  const [expandedReplies, setExpandedReplies] = useState<Record<string, boolean>>({});
+
+  // Input ref to auto-focus when clicking "Reply"
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  // State to track the ID of the comment/reply that was just posted, for scrolling into view
+  const [justPostedCommentId, setJustPostedCommentId] = useState<string | null>(null);
 
   const fetchComments = async () => {
     try {
@@ -82,19 +97,56 @@ export function CommentsSidebar({ articleId, onClose }: CommentsSidebarProps) {
 
     setPosting(true);
     try {
-      const res = await api.post(`comments`, { articleId, content: newComment });
-      const postedComment = {
-        ...res.data.comment,
-        user: { id: user.id, name: user.name || user.email },
-        userName: user.name || user.email,
-      };
-      setComments((prev) => [postedComment, ...prev]);
-      setNewComment("");
-      toast.success("Comment posted!");
-      // Scroll to top to see the new comment
-      scrollRef.current?.scrollTo({ top: 0, behavior: "smooth" });
+      if (replyingTo) {
+        // Reply mode
+        const res = await api.put(`comments/${replyingTo.commentId}/reply`, {
+          content: newComment,
+        });
+        const postedReply = {
+          ...res.data.reply,
+          user: { id: user.id, name: user.name || user.email },
+          userName: user.name || user.email,
+        };
+        
+        // Append comment locally
+        setComments((prev) => [...prev, postedReply]);
+
+        // Auto-expand the replies drawer of the root comment in this thread
+        let parentComment = comments.find((c) => c.id === replyingTo.commentId);
+        let rootId = replyingTo.commentId;
+        while (parentComment && parentComment.parentId) {
+          const nextParentId = parentComment.parentId;
+          rootId = nextParentId;
+          parentComment = comments.find((c) => c.id === nextParentId);
+        }
+        setExpandedReplies((prev) => ({
+          ...prev,
+          [rootId]: true,
+        }));
+
+        // Set the ID of the newly posted reply to trigger smooth scroll
+        setJustPostedCommentId(postedReply.id);
+
+        setNewComment("");
+        setReplyingTo(null);
+        toast.success("Reply posted!");
+      } else {
+        // Standard comment mode
+        const res = await api.post(`comments`, { articleId, content: newComment });
+        const postedComment = {
+          ...res.data.comment,
+          user: { id: user.id, name: user.name || user.email },
+          userName: user.name || user.email,
+        };
+        setComments((prev) => [postedComment, ...prev]);
+        // Set the ID of the newly posted comment to trigger smooth scroll
+        setJustPostedCommentId(postedComment.id);
+        setNewComment("");
+        toast.success("Comment posted!");
+      }
     } catch (error) {
-      toast.error("Failed to post comment");
+      console.error("Failed to post comment/reply:", error);
+      toast.error(replyingTo ? "Failed to post reply" : "Failed to post comment");
     } finally {
       setPosting(false);
     }
@@ -112,7 +164,6 @@ export function CommentsSidebar({ articleId, onClose }: CommentsSidebarProps) {
         prev.map((c) => (c.id === id ? { ...c, content: editingContent } : c))
       );
       setEditingCommentId(null);
-      setMenuOpenId(null);
       toast.success("Comment updated!");
     } catch (error) {
       toast.error("Failed to update comment");
@@ -125,7 +176,6 @@ export function CommentsSidebar({ articleId, onClose }: CommentsSidebarProps) {
     try {
       await api.delete(`comments/${id}`);
       setComments((prev) => prev.filter((c) => c.id !== id));
-      setMenuOpenId(null);
       toast.success("Comment deleted!");
     } catch (error) {
       toast.error("Failed to delete comment");
@@ -151,6 +201,177 @@ export function CommentsSidebar({ articleId, onClose }: CommentsSidebarProps) {
     window.addEventListener("keydown", handleEsc);
     return () => window.removeEventListener("keydown", handleEsc);
   }, [onClose]);
+
+  // Scroll and highlight recently posted comment
+  useEffect(() => {
+    if (justPostedCommentId) {
+      const timer = setTimeout(() => {
+        const element = document.getElementById(`comment-${justPostedCommentId}`);
+        if (element) {
+          element.scrollIntoView({ behavior: "smooth", block: "center" });
+          element.classList.add("bg-primary/10", "dark:bg-primary/20");
+          setTimeout(() => {
+            element.classList.remove("bg-primary/10", "dark:bg-primary/20");
+          }, 1500);
+          setJustPostedCommentId(null);
+        }
+      }, 150);
+      return () => clearTimeout(timer);
+    }
+  }, [justPostedCommentId, comments]);
+
+  // Organize comments into root comments
+  const rootComments = comments.filter((c) => !c.parentId);
+
+  // Recursive renderer to build a YouTube/Reddit style nested comment section inside the sidebar
+  const renderCommentNode = (node: Comment, depth: number = 0): React.ReactNode => {
+    const displayName = getDisplayName(node);
+    const isOwner = user?.id === node.userId || user?.id === node.user?.id;
+    
+    // Find direct child replies of this comment
+    const nodeReplies = comments.filter((c) => c.parentId === node.id);
+    const hasReplies = nodeReplies.length > 0;
+    const isExpanded = !!expandedReplies[node.id];
+
+    // Sort replies chronologically
+    const sortedReplies = [...nodeReplies].sort(
+      (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+    );
+
+    return (
+      <div
+        id={`comment-${node.id}`}
+        key={node.id}
+        className={`py-2 px-2 rounded-lg transition-all duration-500 hover:bg-muted/10 ${
+          depth > 0 
+            ? "ml-4 md:ml-6 mt-1.5 pl-3 border-l-2 border-border" 
+            : "border-b border-border pb-3"
+        }`}
+      >
+        <div className="group flex gap-3">
+          {/* Avatar - slightly smaller for replies */}
+          <div className={`${
+            depth > 0 ? "w-6 h-6 text-[10px]" : "w-8 h-8 text-xs"
+          } rounded-full flex-shrink-0 flex items-center justify-center text-white font-bold ${getAvatarColor(displayName)}`}>
+            {getInitials(displayName)}
+          </div>
+
+          {/* Content */}
+          <div className="flex-1 min-w-0">
+            {editingCommentId === node.id ? (
+              /* Edit Mode */
+              <div className="space-y-2">
+                <input
+                  type="text"
+                  value={editingContent}
+                  onChange={(e) => setEditingContent(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") updateComment(node.id);
+                    if (e.key === "Escape") setEditingCommentId(null);
+                  }}
+                  autoFocus
+                  className="w-full bg-transparent border-b border-primary outline-none py-1 text-sm"
+                />
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => updateComment(node.id)}
+                    className="text-xs text-primary font-semibold hover:opacity-70"
+                  >
+                    Save
+                  </button>
+                  <button
+                    onClick={() => setEditingCommentId(null)}
+                    className="text-xs text-muted-foreground hover:text-foreground"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            ) : (
+              /* Display Mode */
+              <>
+                <p className="text-sm leading-relaxed">
+                  <span className="font-semibold text-foreground mr-1.5">
+                    {displayName}
+                  </span>
+                  <span className="text-foreground/80">
+                    {node.content}
+                  </span>
+                </p>
+                <div className="flex items-center gap-3 mt-1">
+                  <span className="text-[11px] text-muted-foreground">
+                    {formatDistanceToNow(new Date(node.createdAt), {
+                      addSuffix: false,
+                    })}
+                  </span>
+                  {user && !isOwner && (
+                    <button
+                      onClick={() => {
+                        setReplyingTo({
+                          commentId: node.id,
+                          displayName: displayName,
+                        });
+                        inputRef.current?.focus();
+                      }}
+                      className="text-[11px] text-muted-foreground hover:text-foreground font-semibold transition-colors"
+                    >
+                      Reply
+                    </button>
+                  )}
+                  {isOwner && (
+                    <>
+                      <button
+                        onClick={() => {
+                          setEditingCommentId(node.id);
+                          setEditingContent(node.content);
+                        }}
+                        className="text-[11px] text-muted-foreground hover:text-primary font-semibold transition-colors"
+                      >
+                        Edit
+                      </button>
+                      <button
+                        onClick={() => deleteComment(node.id)}
+                        className="text-[11px] text-red-500/80 hover:text-red-600 font-semibold transition-colors"
+                      >
+                        Delete
+                      </button>
+                    </>
+                  )}
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+
+        {/* Toggle replies button for root comment */}
+        {depth === 0 && hasReplies && (
+          <button
+            onClick={() => {
+              setExpandedReplies((prev) => ({
+                ...prev,
+                [node.id]: !prev[node.id],
+              }));
+            }}
+            className="flex items-center gap-2 mt-2 text-xs font-semibold text-primary hover:opacity-80 transition-opacity pl-11"
+          >
+            <span className="w-6 border-b border-primary/30" />
+            {isExpanded
+              ? "Hide replies"
+              : `View ${nodeReplies.length} repl${
+                  nodeReplies.length === 1 ? "y" : "ies"
+                }`}
+          </button>
+        )}
+
+        {/* Render child replies recursively */}
+        {((depth === 0 && isExpanded) || depth > 0) && hasReplies && (
+          <div className="space-y-1 mt-2">
+            {sortedReplies.map((reply) => renderCommentNode(reply, depth + 1))}
+          </div>
+        )}
+      </div>
+    );
+  };
 
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex justify-end z-50" onClick={onClose}>
@@ -197,114 +418,25 @@ export function CommentsSidebar({ articleId, onClose }: CommentsSidebarProps) {
               </p>
             </div>
           ) : (
-            comments.map((comment) => {
-              const displayName = getDisplayName(comment);
-              const isOwner = user?.id === comment.userId || user?.id === comment.user?.id;
-
-              return (
-                <div
-                  key={comment.id}
-                  className="group flex gap-3 py-3 hover:bg-muted/30 -mx-2 px-2 rounded-lg transition-colors"
-                >
-                  {/* Avatar */}
-                  <div className={`w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center text-white text-[10px] font-bold ${getAvatarColor(displayName)}`}>
-                    {getInitials(displayName)}
-                  </div>
-
-                  {/* Content */}
-                  <div className="flex-1 min-w-0">
-                    {editingCommentId === comment.id ? (
-                      <div className="space-y-2">
-                        <input
-                          type="text"
-                          value={editingContent}
-                          onChange={(e) => setEditingContent(e.target.value)}
-                          onKeyDown={(e) => {
-                            if (e.key === "Enter") updateComment(comment.id);
-                            if (e.key === "Escape") setEditingCommentId(null);
-                          }}
-                          autoFocus
-                          className="w-full bg-transparent border-b border-primary outline-none py-1 text-sm"
-                        />
-                        <div className="flex gap-2">
-                          <button
-                            onClick={() => updateComment(comment.id)}
-                            className="text-xs text-primary font-semibold hover:opacity-70"
-                          >
-                            Save
-                          </button>
-                          <button
-                            onClick={() => setEditingCommentId(null)}
-                            className="text-xs text-muted-foreground hover:text-foreground"
-                          >
-                            Cancel
-                          </button>
-                        </div>
-                      </div>
-                    ) : (
-                      <>
-                        <p className="text-sm leading-relaxed">
-                          <span className="font-semibold text-foreground mr-1.5">
-                            {displayName}
-                          </span>
-                          <span className="text-foreground/80">
-                            {comment.content}
-                          </span>
-                        </p>
-                        <span className="text-[11px] text-muted-foreground mt-1 inline-block">
-                          {formatDistanceToNow(new Date(comment.createdAt), {
-                            addSuffix: false,
-                          })}
-                        </span>
-                      </>
-                    )}
-                  </div>
-
-                  {/* Actions */}
-                  {isOwner && editingCommentId !== comment.id && (
-                    <div className="relative flex-shrink-0">
-                      <button
-                        onClick={() => setMenuOpenId(menuOpenId === comment.id ? null : comment.id)}
-                        className="opacity-0 group-hover:opacity-100 p-1 rounded-full hover:bg-muted transition-all"
-                      >
-                        <MoreHorizontal size={14} className="text-muted-foreground" />
-                      </button>
-
-                      {menuOpenId === comment.id && (
-                        <>
-                          <div
-                            className="fixed inset-0 z-10"
-                            onClick={() => setMenuOpenId(null)}
-                          />
-                          <div className="absolute right-0 top-7 z-20 bg-background border rounded-lg shadow-lg py-1 min-w-[110px]">
-                            <button
-                              onClick={() => {
-                                setEditingCommentId(comment.id);
-                                setEditingContent(comment.content);
-                                setMenuOpenId(null);
-                              }}
-                              className="w-full flex items-center gap-2 px-3 py-2 text-sm hover:bg-muted transition-colors"
-                            >
-                              <Edit size={13} />
-                              Edit
-                            </button>
-                            <button
-                              onClick={() => deleteComment(comment.id)}
-                              className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-muted transition-colors"
-                            >
-                              <Trash2 size={13} />
-                              Delete
-                            </button>
-                          </div>
-                        </>
-                      )}
-                    </div>
-                  )}
-                </div>
-              );
-            })
+            rootComments.map((comment) => renderCommentNode(comment, 0))
           )}
         </div>
+
+        {/* Replying-to Banner */}
+        {replyingTo && (
+          <div className="mx-4 my-2 flex items-center justify-between bg-muted/50 border border-muted px-3 py-2 rounded-lg text-xs text-muted-foreground animate-in fade-in slide-in-from-top-1 duration-200">
+            <span className="flex items-center gap-1.5">
+              <MessageCircle size={14} className="text-primary/70" />
+              Replying to <span className="font-semibold text-foreground">@{replyingTo.displayName}</span>
+            </span>
+            <button
+              onClick={() => setReplyingTo(null)}
+              className="hover:text-foreground p-0.5 rounded-full hover:bg-muted transition-colors"
+            >
+              <X size={14} />
+            </button>
+          </div>
+        )}
 
         {/* Comment Input (fixed at bottom) */}
         {user ? (
@@ -314,8 +446,9 @@ export function CommentsSidebar({ articleId, onClose }: CommentsSidebarProps) {
             </div>
             <div className="flex-1 relative">
               <input
+                ref={inputRef}
                 type="text"
-                placeholder="Add a comment..."
+                placeholder={replyingTo ? `Reply to @${replyingTo.displayName}...` : "Add a comment..."}
                 value={newComment}
                 onChange={(e) => setNewComment(e.target.value)}
                 onKeyDown={handleKeyDown}
