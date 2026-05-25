@@ -23,6 +23,7 @@ export function BentoGridHero({ articles }: BentoGridHeroProps) {
     // Ensure we have at least 1 article
     const mainArticle = articles[0];
     const sideArticles = articles.slice(1, 3); // Get next 2 articles
+    const mainArticleDate = mainArticle.publishedAt || mainArticle.createdAt;
 
     return (
         <section className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-12">
@@ -64,11 +65,11 @@ export function BentoGridHero({ articles }: BentoGridHeroProps) {
                                 </span>
                             )}
 
-                            {mainArticle.createdAt && (
+                            {mainArticleDate && (
                                 <>
                                     <span>•</span>
                                     <time>
-                                        {formatDistanceToNow(new Date(mainArticle.createdAt), { addSuffix: true })}
+                                        {formatDistanceToNow(new Date(mainArticleDate), { addSuffix: true })}
                                     </time>
                                 </>
                             )}
@@ -79,12 +80,14 @@ export function BentoGridHero({ articles }: BentoGridHeroProps) {
 
             {/* Side Column - Stack of 2 smaller articles */}
             <div className="flex flex-col gap-6 lg:h-[500px]">
-                {sideArticles.map((article, idx) => (
-                    <Link
-                        key={article.id}
-                        href={`/articles/${article.slug}`}
-                        className="group relative flex-1 overflow-hidden rounded-2xl shadow-lg min-h-[200px]"
-                    >
+                {sideArticles.map((article, idx) => {
+                    const articleDate = article.publishedAt || article.createdAt;
+                    return (
+                        <Link
+                            key={article.id}
+                            href={`/articles/${article.slug}`}
+                            className="group relative flex-1 overflow-hidden rounded-2xl shadow-lg min-h-[200px]"
+                        >
                         <div className="absolute inset-0">
                             <img
                                 src={optimizeImageUrl(article.coverImage, 600)}
@@ -105,15 +108,16 @@ export function BentoGridHero({ articles }: BentoGridHeroProps) {
                                 {article.title}
                             </h3>
                             <div className="flex items-center gap-2 text-xs text-gray-300">
-                                {article.createdAt && (
+                                {articleDate && (
                                     <time>
-                                        {formatDistanceToNow(new Date(article.createdAt), { addSuffix: true })}
+                                        {formatDistanceToNow(new Date(articleDate), { addSuffix: true })}
                                     </time>
                                 )}
                             </div>
                         </div>
                     </Link>
-                ))}
+                    );
+                })}
 
                 {/* Fill empty space if less than 2 side articles */}
                 {sideArticles.length < 2 && (

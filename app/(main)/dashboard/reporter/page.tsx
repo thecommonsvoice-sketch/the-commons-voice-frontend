@@ -372,9 +372,10 @@ export default function ReporterDashboard() {
                         </span>
                       )}
                       <span className="text-[10px] text-muted-foreground">
-                        {article.createdAt
-                          ? new Date(article.createdAt).toLocaleDateString()
-                          : ""}
+                        {(() => {
+                          const articleDate = article.publishedAt || article.createdAt;
+                          return articleDate ? new Date(articleDate).toLocaleDateString() : "";
+                        })()}
                       </span>
                     </div>
                   </div>

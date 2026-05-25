@@ -38,8 +38,9 @@ export function ArticleCard({ article, variant = "default", show = true }: Artic
   const isCompact = variant === "compact";
   const isHorizontal = variant === "horizontal";
 
-  const publishedDate = article.createdAt
-    ? formatDistanceToNow(new Date(article.createdAt), { addSuffix: true })
+  const dateStr = article.publishedAt || article.createdAt;
+  const publishedDate = dateStr
+    ? formatDistanceToNow(new Date(dateStr), { addSuffix: true })
     : "";
 
   const changeBookmarkStatus = async (e: React.MouseEvent) => {

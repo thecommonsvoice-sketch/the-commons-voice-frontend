@@ -101,12 +101,15 @@ export default function ArticlePage() {
               {article.author?.name && (
                 <span>By <span className="font-medium">{article.author.name}</span></span>
               )}
-              {article.createdAt && (
-                <>
-                  <Separator orientation="vertical" className="h-4" />
-                  <span>{formatDistanceToNow(new Date(article.createdAt), { addSuffix: true })}</span>
-                </>
-              )}
+              {(() => {
+                const articleDate = article.publishedAt || article.createdAt;
+                return articleDate && (
+                  <>
+                    <Separator orientation="vertical" className="h-4" />
+                    <span>{formatDistanceToNow(new Date(articleDate), { addSuffix: true })}</span>
+                  </>
+                );
+              })()}
             </div>
           </header>
 

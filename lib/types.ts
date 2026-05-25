@@ -48,6 +48,7 @@ export interface Article {
   deletedAt?: string | null;
   createdAt?: string;
   updatedAt?: string;
+  publishedAt?: string | null;
 
   author?: Pick<User, "id" | "name">;
   category?: Pick<Category, "id" | "name" | "slug">;

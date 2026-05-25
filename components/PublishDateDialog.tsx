@@ -26,19 +26,24 @@ export function PublishDateDialog({
   onConfirm,
   articleCount = 1,
 }: PublishDateDialogProps) {
-  const [useCurrentDate, setUseCurrentDate] = useState(true);
+  const [dateOption, setDateOption] = useState<"original" | "current" | "custom">("original");
   const [customDate, setCustomDate] = useState("");
 
   const handleConfirm = () => {
-    const publishedAt = useCurrentDate ? null : customDate || null;
+    let publishedAt: string | null = null;
+    if (dateOption === "original") {
+      publishedAt = "original";
+    } else if (dateOption === "custom") {
+      publishedAt = customDate || null;
+    } // if "current", it remains null
     onConfirm(publishedAt);
-    setUseCurrentDate(true);
+    setDateOption("original");
     setCustomDate("");
     onOpenChange(false);
   };
 
   const handleCancel = () => {
-    setUseCurrentDate(true);
+    setDateOption("original");
     setCustomDate("");
     onOpenChange(false);
   };
@@ -51,10 +56,6 @@ export function PublishDateDialog({
     hour: "2-digit",
     minute: "2-digit",
   });
-
-  const minDateTime = new Date(now.getTime() - now.getTimezoneOffset() * 60000)
-    .toISOString()
-    .slice(0, 16);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -71,14 +72,31 @@ export function PublishDateDialog({
         </DialogHeader>
 
         <div className="space-y-4 py-2">
+          {/* Option 1: Original Creation Time */}
+          <div className="flex items-center gap-3">
+            <input
+              type="radio"
+              id="use-original"
+              name="date-option"
+              checked={dateOption === "original"}
+              onChange={() => setDateOption("original")}
+              className="h-4 w-4 accent-primary cursor-pointer"
+            />
+            <Label htmlFor="use-original" className="cursor-pointer flex-1">
+              <span className="text-sm font-medium">Use original creation time</span>
+              <p className="text-xs text-muted-foreground">Keep the time when the reporter created the article</p>
+            </Label>
+          </div>
+
+          {/* Option 2: Current Time */}
           <div className="flex items-center gap-3">
             <input
               type="radio"
               id="use-current"
               name="date-option"
-              checked={useCurrentDate}
-              onChange={() => setUseCurrentDate(true)}
-              className="h-4 w-4 accent-primary"
+              checked={dateOption === "current"}
+              onChange={() => setDateOption("current")}
+              className="h-4 w-4 accent-primary cursor-pointer"
             />
             <Label htmlFor="use-current" className="cursor-pointer flex-1">
               <span className="text-sm font-medium">Use current time</span>
@@ -86,14 +104,15 @@ export function PublishDateDialog({
             </Label>
           </div>
 
+          {/* Option 3: Custom Date */}
           <div className="flex items-center gap-3">
             <input
               type="radio"
               id="use-custom"
               name="date-option"
-              checked={!useCurrentDate}
-              onChange={() => setUseCurrentDate(false)}
-              className="h-4 w-4 accent-primary"
+              checked={dateOption === "custom"}
+              onChange={() => setDateOption("custom")}
+              className="h-4 w-4 accent-primary cursor-pointer"
             />
             <Label htmlFor="use-custom" className="cursor-pointer flex-1">
               <span className="text-sm font-medium">Set custom date</span>
@@ -103,12 +122,11 @@ export function PublishDateDialog({
             </Label>
           </div>
 
-          {!useCurrentDate && (
+          {dateOption === "custom" && (
             <div className="ml-7">
               <Input
                 type="datetime-local"
                 value={customDate}
-                min={minDateTime}
                 onChange={(e) => setCustomDate(e.target.value)}
                 className="w-full"
               />
@@ -122,7 +140,7 @@ export function PublishDateDialog({
           </Button>
           <Button
             onClick={handleConfirm}
-            disabled={!useCurrentDate && !customDate}
+            disabled={dateOption === "custom" && !customDate}
           >
             Publish
           </Button>
