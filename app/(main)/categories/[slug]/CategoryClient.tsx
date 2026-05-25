@@ -11,7 +11,7 @@ import { Search } from "lucide-react";
 
 const CATEGORY_BACKGROUNDS: Record<string, string> = {
   // General News
-  general: "https://images.unsplash.com/photo-1495020689067-958852a6565d?auto=format&fit=crop&w=1200&q=80",
+  general: "https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&w=1200&q=80",
   
   // Politics
   politics: "https://images.unsplash.com/photo-1541872703-74c5e44368f9?auto=format&fit=crop&w=1200&q=80",
@@ -35,11 +35,11 @@ const CATEGORY_BACKGROUNDS: Record<string, string> = {
   finance: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1200&q=80",
   
   // World News
-  world: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1200&q=80",
+  world: "https://images.unsplash.com/photo-1614730321146-b6fa6a46bcb4?auto=format&fit=crop&w=1200&q=80",
   
   // Defence
-  defence: "https://images.unsplash.com/photo-1580137189272-c9379f8864fd?auto=format&fit=crop&w=1200&q=80",
-  defense: "https://images.unsplash.com/photo-1580137189272-c9379f8864fd?auto=format&fit=crop&w=1200&q=80",
+  defence: "https://images.unsplash.com/photo-1517976487492-5750f3195933?auto=format&fit=crop&w=1200&q=80",
+  defense: "https://images.unsplash.com/photo-1517976487492-5750f3195933?auto=format&fit=crop&w=1200&q=80",
 };
 
 const getCategoryBackground = (slug: string) => {
@@ -100,7 +100,7 @@ export default function CategoryClient({
   return (
     <div className="container mx-auto px-4 py-8">
       {/* Category Hero Banner */}
-      <div className="relative rounded-3xl p-8 md:p-16 mb-12 overflow-hidden text-center border bg-muted/20 dark:bg-muted/5 group">
+      <div className="relative rounded-3xl p-8 md:p-16 mb-12 overflow-hidden text-center border border-slate-200/80 dark:border-slate-800 bg-slate-950 group shadow-xl">
         {/* Background Image */}
         {bgImage && (
           <>
@@ -112,24 +112,24 @@ export default function CategoryClient({
               sizes="(max-width: 1200px) 100vw, 1200px"
               className="absolute inset-0 w-full h-full object-cover pointer-events-none transition-transform duration-700 group-hover:scale-105"
             />
-            {/* Elegant glassmorphic overlay gradient */}
-            <div className="absolute inset-0 bg-gradient-to-r from-background/90 via-background/60 to-background/90 dark:from-background/95 dark:via-background/80 dark:to-background/95 backdrop-blur-[1px] pointer-events-none" />
+            {/* Elegant cinematic dark gradient overlay for ultimate contrast */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/35 to-black/70 pointer-events-none z-10" />
           </>
         )}
 
         {/* Background Pattern SVG overlay */}
-        <div className="absolute inset-0 opacity-10 dark:opacity-5 pointer-events-none z-0">
+        <div className="absolute inset-0 opacity-10 dark:opacity-5 pointer-events-none z-0 text-white">
           <svg className="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
             <path d="M0 100 C 20 0 50 0 100 100 Z" fill="currentColor" />
           </svg>
         </div>
 
-        <div className="relative z-10 max-w-2xl mx-auto space-y-4">
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-black font-serif tracking-tight text-primary">
+        <div className="relative z-20 max-w-2xl mx-auto space-y-4">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-black font-serif tracking-tight text-white drop-shadow-md">
             {category.name}
           </h1>
           {category.description && (
-            <p className="text-lg md:text-xl text-muted-foreground leading-relaxed">
+            <p className="text-lg md:text-xl text-slate-200/90 leading-relaxed font-medium drop-shadow-sm">
               {category.description}
             </p>
           )}
@@ -137,17 +137,17 @@ export default function CategoryClient({
           {/* Search Bar */}
           <div className="pt-6 flex gap-2 max-w-md mx-auto">
             <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
               <Input
                 type="text"
                 placeholder={`Search in ${category.name}...`}
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-                className="pl-9 bg-background/80 backdrop-blur"
+                className="pl-9 bg-white/95 text-slate-900 border-none shadow-lg placeholder:text-slate-500 focus-visible:ring-2 focus-visible:ring-black"
               />
             </div>
-            <Button onClick={handleSearch}>
+            <Button onClick={handleSearch} className="bg-white text-black hover:bg-white/90 shadow-lg font-semibold border-none">
               Search
             </Button>
           </div>
