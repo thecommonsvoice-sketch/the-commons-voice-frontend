@@ -121,3 +121,39 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Google Translate Widget UI Premium Customizations */
+iframe.skiptranslate,
+.skiptranslate {
+  display: none !important;
+  visibility: hidden !important;
+}
+
+body {
+  top: 0px !important;
+}
+
+.goog-te-banner-frame.skiptranslate {
+  display: none !important;
+  visibility: hidden !important;
+}
+
+.goog-te-gadget,
+.goog-te-gadget-simple {
+  display: none !important;
+  visibility: hidden !important;
+}
+
+.goog-tooltip,
+.goog-tooltip:hover {
+  display: none !important;
+  visibility: hidden !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+.goog-text-highlight {
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}

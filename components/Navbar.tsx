@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Menu, X, User, Settings, LogOut, ChevronDown, MoreHorizontal } from "lucide-react";
+import LanguageSelector from "./LanguageSelector";
 import { api } from "@/lib/api";
 import { toast } from "sonner";
 import {
@@ -80,7 +81,7 @@ export default function Navbar() {
             {/* Logo */}
             <Link href="/" className="flex items-center gap-2">
               {/* <span className="font-serif text-2xl sm:text-3xl font-black tracking-tighter text-primary">TCV</span> */}
-              <span className="font-serif font-bold text-base sm:text-lg tracking-tight text-foreground/90 whitespace-nowrap">The Commons Voice</span>
+              <span className="notranslate font-serif font-bold text-base sm:text-lg tracking-tight text-foreground/90 whitespace-nowrap" translate="no">The Commons Voice</span>
             </Link>
 
             {/* Desktop Navigation */}
@@ -115,6 +116,9 @@ export default function Navbar() {
 
             {/* Right side */}
             <div className="flex items-center space-x-1 sm:space-x-2">
+              <div className="hidden md:block">
+                <LanguageSelector />
+              </div>
               <div className="hidden sm:block">
                 <ThemeToggle />
               </div>
@@ -179,8 +183,13 @@ export default function Navbar() {
         {mobileMenuOpen && (
           <div className="lg:hidden border-t bg-background">
             <div className="container mx-auto px-4 py-3 sm:py-4 space-y-1 sm:space-y-2 max-h-[calc(100vh-3.5rem)] sm:max-h-[calc(100vh-4rem)] overflow-y-auto">
-              <div className="sm:hidden pb-3 border-b mb-2">
-                <ThemeToggle />
+              <div className="pb-3 border-b mb-2 flex items-center justify-between gap-4">
+                <div className="sm:hidden">
+                  <ThemeToggle />
+                </div>
+                <div className="block md:hidden">
+                  <LanguageSelector />
+                </div>
               </div>
               {categories.map((category) => (
                 <Link

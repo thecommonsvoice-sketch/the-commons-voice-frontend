@@ -72,7 +72,7 @@ const Footer = () => {
       <div className="container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
           <div>
-            <h3 className="font-semibold mb-3">The Commons Voice</h3>
+            <h3 className="notranslate font-semibold mb-3" translate="no">The Commons Voice</h3>
             <p className="text-sm text-muted-foreground mb-4">
               We love to tell grounded stories and explore life.
             </p>
@@ -131,7 +131,7 @@ const Footer = () => {
           </div>
         </div>
         <div className="mt-8 pt-8 border-t text-center text-sm text-muted-foreground">
-          <p>&copy; 2026 The Commons Voice. All rights reserved.</p>
+          <p>&copy; 2026 <span className="notranslate" translate="no">The Commons Voice</span>. All rights reserved.</p>
         </div>
       </div>
     </footer>
