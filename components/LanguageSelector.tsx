@@ -6,25 +6,25 @@ import { Globe, ChevronDown } from "lucide-react";
 // Famous international languages + regional Indian languages
 const languages = [
   { code: "en", name: "English" },
-  { code: "es", name: "Español (Spanish)" },
-  { code: "fr", name: "Français (French)" },
-  { code: "de", name: "Deutsch (German)" },
-  { code: "zh-CN", name: "简体中文 (Chinese)" },
-  { code: "ja", name: "日本語 (Japanese)" },
-  { code: "ar", name: "العربية (Arabic)" },
-  { code: "pt", name: "Português (Portuguese)" },
-  { code: "ru", name: "Русский (Russian)" },
-  { code: "hi", name: "हिंदी (Hindi)" },
-  { code: "bn", name: "বাংলা (Bengali)" },
-  { code: "pa", name: "ਪੰਜਾਬੀ (Punjabi)" },
-  { code: "mr", name: "मराठी (Marathi)" },
-  { code: "gu", name: "ગુજરાતી (Gujarati)" },
-  { code: "ta", name: "தமிழ் (Tamil)" },
-  { code: "te", name: "తెలుగు (Telugu)" },
-  { code: "kn", name: "ಕನ್ನಡ (Kannada)" },
-  { code: "ml", name: "മലയാളം (Malayalam)" },
-  { code: "or", name: "ଓଡ଼ିଆ (Odia)" },
-  { code: "ur", name: "اردو (Urdu)" },
+  { code: "es", name: "Español" },
+  { code: "fr", name: "Français" },
+  { code: "de", name: "Deutsch" },
+  { code: "zh-CN", name: "中文" },
+  { code: "ja", name: "日本語" },
+  { code: "ar", name: "العربية" },
+  { code: "pt", name: "Português" },
+  { code: "ru", name: "Русский" },
+  { code: "hi", name: "हिंदी" },
+  { code: "bn", name: "বাংলা" },
+  { code: "pa", name: "ਪੰਜਾਬੀ" },
+  { code: "mr", name: "मराठी" },
+  { code: "gu", name: "ગુજરાતી" },
+  { code: "ta", name: "தமிழ்" },
+  { code: "te", name: "తెలుగు" },
+  { code: "kn", name: "ಕನ್ನಡ" },
+  { code: "ml", name: "മലയാളം" },
+  { code: "or", name: "ଓଡ଼ିଆ" },
+  { code: "ur", name: "اردو" },
 ];
 
 declare global {
@@ -114,7 +114,7 @@ export default function LanguageSelector() {
         <select
           value={selectedLanguage}
           onChange={(e) => changeLanguage(e.target.value)}
-          className="notranslate appearance-none bg-transparent pr-6 pl-1 py-0.5 text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 outline-none border-none cursor-pointer w-full focus:ring-0"
+          className="notranslate appearance-none bg-transparent pr-6 pl-1 py-0.5 text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 outline-none border-none cursor-pointer w-[60px] sm:w-[72px] focus:ring-0 truncate"
           translate="no"
         >
           {languages.map((lng) => (
