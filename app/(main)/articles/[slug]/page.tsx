@@ -266,8 +266,7 @@ export default async function ArticlePage({
             prose-a:text-primary prose-a:no-underline hover:prose-a:underline
             prose-blockquote:border-l-4 prose-blockquote:border-primary prose-blockquote:pl-6 prose-blockquote:italic prose-blockquote:text-gray-700 dark:prose-blockquote:text-gray-300
             prose-img:rounded-xl prose-img:shadow-lg prose-img:my-8
-            prose-li:marker:text-primary
-            first-letter:text-5xl first-letter:font-bold first-letter:mr-3 first-letter:float-left first-letter:font-serif"
+            prose-li:marker:text-primary"
             dangerouslySetInnerHTML={{ 
                 __html: article.content 
             }}
