@@ -260,7 +260,7 @@ export default async function ArticlePage({
           {/* Content */}
           <div
             className="prose prose-lg sm:prose-xl prose-slate dark:prose-invert max-w-none 
-            font-serif text-gray-800 dark:text-gray-200 leading-loose
+            font-serif text-gray-800 dark:text-gray-200 leading-loose article-content
             prose-headings:font-sans prose-headings:font-bold prose-headings:tracking-tight 
             prose-p:leading-loose prose-p:mb-6
             prose-a:text-primary prose-a:no-underline hover:prose-a:underline
