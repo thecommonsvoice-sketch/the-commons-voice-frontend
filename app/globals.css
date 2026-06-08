@@ -157,3 +157,18 @@ body {
   border: none !important;
   box-shadow: none !important;
 }
+
+/* Drop-cap only when content starts with a paragraph
+   (avoids breaking headings like <h2>) */
+.article-content > p:first-child::first-letter {
+  font-size: 3rem;
+  font-weight: 700;
+  float: left;
+  margin-right: 0.75rem;
+  font-family: var(--font-serif);
+  line-height: 1;
+}
+
+.dark .article-content > p:first-child::first-letter {
+  color: inherit;
+}
