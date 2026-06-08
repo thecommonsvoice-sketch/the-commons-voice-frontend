@@ -66,7 +66,7 @@ export function BreakingNewsTicker() {
     <div
       className={`bg-red-600 text-white h-10 px-4 overflow-hidden whitespace-nowrap flex items-center gap-4 ${oxanium.className}`}
     >
-      <strong className="flex-shrink-0">Breaking:</strong>
+      <strong className="flex-shrink-0">Breaking News:</strong>
       <div className="overflow-hidden flex-1">
         {headlines.length > 0 && (
           <div
