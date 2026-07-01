@@ -109,12 +109,12 @@ export default function LanguageSelector() {
     <div className="relative inline-block text-left">
       <div id="google_translate_element" className="hidden" style={{ display: "none" }}></div>
 
-      <div className="relative flex items-center gap-1 bg-white dark:bg-black border border-gray-200 dark:border-gray-800 rounded-full px-3 py-1 sm:py-1.5 shadow-sm hover:shadow-md hover:border-blue-400 dark:hover:border-blue-500 transition-all duration-300">
-        <Globe className="h-4 w-4 text-blue-500 flex-shrink-0 animate-pulse" />
+      <div className="relative flex items-center gap-1 bg-white dark:bg-black border border-gray-200 dark:border-gray-800 rounded-full px-2 py-0.5 shadow-sm hover:shadow-md hover:border-blue-400 dark:hover:border-blue-500 transition-all duration-300">
+        <Globe className="h-3.5 w-3.5 text-blue-500 flex-shrink-0 animate-pulse" />
         <select
           value={selectedLanguage}
           onChange={(e) => changeLanguage(e.target.value)}
-          className="notranslate appearance-none bg-transparent pr-6 pl-1 py-0.5 text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 outline-none border-none cursor-pointer w-[60px] sm:w-[72px] focus:ring-0 truncate"
+          className="notranslate appearance-none bg-transparent pr-4 pl-0.5 py-0 text-[10px] sm:text-xs font-medium text-gray-700 dark:text-gray-300 outline-none border-none cursor-pointer w-[50px] sm:w-[58px] focus:ring-0 truncate"
           translate="no"
         >
           {languages.map((lng) => (
@@ -123,7 +123,7 @@ export default function LanguageSelector() {
             </option>
           ))}
         </select>
-        <ChevronDown className="h-3 w-3 text-gray-400 absolute right-3 pointer-events-none" />
+        <ChevronDown className="h-2.5 w-2.5 text-gray-400 absolute right-2 pointer-events-none" />
       </div>
     </div>
   );

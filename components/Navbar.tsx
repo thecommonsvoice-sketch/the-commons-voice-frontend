@@ -25,6 +25,17 @@ export default function Navbar() {
 
   const router = useRouter();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [currentDate, setCurrentDate] = useState<string>("");
+
+  useEffect(() => {
+    const options: Intl.DateTimeFormatOptions = {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    };
+    setCurrentDate(new Date().toLocaleDateString("en-US", options));
+  }, []);
 
   const logout = async () => {
     try {
@@ -116,9 +127,6 @@ export default function Navbar() {
 
             {/* Right side */}
             <div className="flex items-center space-x-1 sm:space-x-2">
-              <div className="hidden md:block">
-                <LanguageSelector />
-              </div>
               <div className="hidden sm:block">
                 <ThemeToggle />
               </div>
@@ -177,6 +185,16 @@ export default function Navbar() {
               </Button>
             </div>
           </nav>
+          {/* Date & Language Selector below existing nav on the left side */}
+          <div className="pb-2 flex items-center gap-3 text-[11px] sm:text-xs">
+            {currentDate && (
+              <>
+                <span className="text-muted-foreground font-medium">{currentDate}</span>
+                <span className="text-muted-foreground/30">•</span>
+              </>
+            )}
+            <LanguageSelector />
+          </div>
         </div>
 
         {/* Mobile menu */}
@@ -186,9 +204,6 @@ export default function Navbar() {
               <div className="pb-3 border-b mb-2 flex items-center justify-between gap-4">
                 <div className="sm:hidden">
                   <ThemeToggle />
-                </div>
-                <div className="block md:hidden">
-                  <LanguageSelector />
                 </div>
               </div>
               {categories.map((category) => (
