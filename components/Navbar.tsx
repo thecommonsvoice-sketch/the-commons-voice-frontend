@@ -185,13 +185,12 @@ export default function Navbar() {
               </Button>
             </div>
           </nav>
-          {/* Date & Language Selector below existing nav on the left side */}
-          <div className="pb-2 flex items-center gap-3 text-[11px] sm:text-xs">
-            {currentDate && (
-              <>
-                <span className="text-muted-foreground font-medium">{currentDate}</span>
-                <span className="text-muted-foreground/30">•</span>
-              </>
+          {/* Date & Language Selector below existing nav */}
+          <div className="pb-2 flex items-center justify-between gap-4 text-[11px] sm:text-xs">
+            {currentDate ? (
+              <span className="text-muted-foreground font-medium">{currentDate}</span>
+            ) : (
+              <span />
             )}
             <LanguageSelector />
           </div>
