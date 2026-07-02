@@ -192,7 +192,9 @@ export default function Navbar() {
             ) : (
               <span />
             )}
-            <LanguageSelector />
+            <div className="pr-1.5 sm:pr-3">
+              <LanguageSelector />
+            </div>
           </div>
         </div>
 
