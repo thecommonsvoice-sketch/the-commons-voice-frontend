@@ -58,26 +58,17 @@ export function HierarchicalCategorySelect({
         fetchCategories();
     }, []);
 
-    // Wait for categories to load before rendering Select so that
-    // Radix UI has all items registered when it receives the controlled value.
-    if (loading) {
-        return (
-            <Select disabled>
-                <SelectTrigger>
-                    <SelectValue placeholder="Loading categories..." />
-                </SelectTrigger>
-            </Select>
-        );
-    }
-
     // Group categories by parent
     const parentCategories = categories.filter(c => !c.parentId);
     const childCategories = categories.filter(c => c.parentId);
 
+    // Use a single Select instance so Radix UI keeps the same component
+    // identity across loading → loaded transitions. This ensures the
+    // controlled `value` is picked up correctly regardless of fetch order.
     return (
-        <Select value={value} onValueChange={onChange} disabled={disabled}>
+        <Select value={value} onValueChange={onChange} disabled={disabled || loading}>
             <SelectTrigger>
-                <SelectValue placeholder="Select category" />
+                <SelectValue placeholder={loading ? "Loading categories..." : "Select category"} />
             </SelectTrigger>
             <SelectContent>
                 {parentCategories.map((parent) => {
