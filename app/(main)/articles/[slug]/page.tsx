@@ -8,6 +8,7 @@ import { Separator } from "@/components/ui/separator";
 // import { AdSlot } from "@/components/AdSlot";
 import Link from "next/link";
 import { ArticleCommentsClient } from "@/components/ArticleCommentsClient";
+import DOMPurify from "isomorphic-dompurify";
 
 
 // ISR Configuration
@@ -198,7 +199,7 @@ export default async function ArticlePage({
           {/* Header */}
           <header className="space-y-3 sm:space-y-4">
             {article.category?.slug && (
-              <Link href={`/categories/${article.category.slug}`} prefetch={false}>
+              <Link href={`/categories/${article.category.slug}`}>
                  <Badge variant="secondary" className="mb-2 cursor-pointer">
                    {article.category.name}
                  </Badge>
@@ -268,7 +269,7 @@ export default async function ArticlePage({
             prose-img:rounded-xl prose-img:shadow-lg prose-img:my-8
             prose-li:marker:text-primary"
             dangerouslySetInnerHTML={{ 
-                __html: article.content 
+                __html: DOMPurify.sanitize(article.content) 
             }}
           />
 
@@ -279,7 +280,6 @@ export default async function ArticlePage({
                 <Link
                   key={tag}
                   href={`/articles?q=${encodeURIComponent(tag)}`}
-                  prefetch={false}
                   className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
                 >
                   #{tag}
@@ -332,13 +332,13 @@ export default async function ArticlePage({
           {(next || prev) && (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-12 border-t pt-8">
               {prev ? (
-                <Link href={`/articles/${prev.slug}`} prefetch={false} className="group flex flex-col p-4 rounded-lg border hover:bg-muted/50 transition">
+                <Link href={`/articles/${prev.slug}`} className="group flex flex-col p-4 rounded-lg border hover:bg-muted/50 transition">
                   <span className="text-sm text-muted-foreground mb-1">← Previous Article</span>
                   <span className="font-medium group-hover:text-primary line-clamp-2">{prev.title}</span>
                 </Link>
               ) : <div />}
               {next ? (
-                <Link href={`/articles/${next.slug}`} prefetch={false} className="group flex flex-col items-end text-right p-4 rounded-lg border hover:bg-muted/50 transition">
+                <Link href={`/articles/${next.slug}`} className="group flex flex-col items-end text-right p-4 rounded-lg border hover:bg-muted/50 transition">
                   <span className="text-sm text-muted-foreground mb-1">Next Article →</span>
                   <span className="font-medium group-hover:text-primary line-clamp-2">{next.title}</span>
                 </Link>
@@ -359,7 +359,6 @@ export default async function ArticlePage({
                     <Link
                       key={related.id}
                       href={`/articles/${related.slug}`}
-                      prefetch={false}
                       className="group flex flex-col bg-card rounded-xl border shadow-sm hover:shadow-md transition overflow-hidden"
                     >
                       {related.coverImage && (

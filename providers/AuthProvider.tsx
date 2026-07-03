@@ -39,6 +39,20 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
     hydrate();
   }, [setUser, clearUser, setHydrated]);
 
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === "tcv_token" && !e.newValue) {
+        clearUser();
+        window.location.reload();
+      }
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+    return () => window.removeEventListener("storage", handleStorageChange);
+  }, [clearUser]);
+
   /* 
      Content renders immediately for SEO.
      Guard components (RequireAuth, SpecialRoutes) wait for 
