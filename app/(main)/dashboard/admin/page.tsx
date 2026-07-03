@@ -19,6 +19,7 @@ import {
   FileText,
   Search,
   Eye,
+  Edit,
   TrendingUp,
   Clock,
   Trash2,
@@ -101,6 +102,13 @@ export default function AdminDashboard() {
   const [articleSearchInput, setArticleSearchInput] = useState("");
   const [articleTotalPages, setArticleTotalPages] = useState(1);
 
+  // New Article Filtering & Sorting states
+  const [articleStatusFilter, setArticleStatusFilter] = useState<string>("ALL");
+  const [articleCategoryFilter, setArticleCategoryFilter] = useState<string>("ALL");
+  const [articleSortBy, setArticleSortBy] = useState<string>("createdAt");
+  const [articleSortOrder, setArticleSortOrder] = useState<string>("desc");
+  const [categories, setCategories] = useState<any[]>([]);
+
   // Stats
   const [userCount, setUserCount] = useState(0);
   const [articleCount, setArticleCount] = useState(0);
@@ -118,6 +126,19 @@ export default function AdminDashboard() {
 
   // Active tab
   const [activeTab, setActiveTab] = useState<"users" | "articles">("users");
+
+  // Fetch categories on mount
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const { data } = await api.get("/categories");
+        setCategories(data?.categories || []);
+      } catch (err) {
+        console.error("Failed to load categories", err);
+      }
+    };
+    fetchCategories();
+  }, []);
 
   // Fetch users
   useEffect(() => {
@@ -144,8 +165,17 @@ export default function AdminDashboard() {
     const fetchArticles = async () => {
       setArticleLoading(true);
       try {
+        const params = new URLSearchParams({
+          page: articlePage.toString(),
+          limit: articleLimit.toString(),
+          search: articleSearch,
+          status: articleStatusFilter,
+          categoryId: articleCategoryFilter,
+          sortBy: articleSortBy,
+          sortOrder: articleSortOrder,
+        });
         const { data }: { data: ArticlesResponse } = await api.get(
-          `/admin/articles?page=${articlePage}&limit=${articleLimit}&search=${encodeURIComponent(articleSearch)}`
+          `/admin/articles?${params.toString()}`
         );
         setArticles(data?.articles);
         setArticleTotalPages(data?.totalPages);
@@ -159,12 +189,29 @@ export default function AdminDashboard() {
       }
     };
     fetchArticles();
-  }, [articlePage, articleSearch, articleLimit]);
+  }, [
+    articlePage,
+    articleSearch,
+    articleLimit,
+    articleStatusFilter,
+    articleCategoryFilter,
+    articleSortBy,
+    articleSortOrder,
+  ]);
 
   const refreshArticles = async () => {
     try {
+      const params = new URLSearchParams({
+        page: articlePage.toString(),
+        limit: articleLimit.toString(),
+        search: articleSearch,
+        status: articleStatusFilter,
+        categoryId: articleCategoryFilter,
+        sortBy: articleSortBy,
+        sortOrder: articleSortOrder,
+      });
       const { data }: { data: ArticlesResponse } = await api.get(
-        `/admin/articles?page=${articlePage}&limit=${articleLimit}&search=${encodeURIComponent(articleSearch)}`
+        `/admin/articles?${params.toString()}`
       );
       setArticles(data?.articles);
       setArticleTotalPages(data?.totalPages);
@@ -703,7 +750,7 @@ export default function AdminDashboard() {
                 <FileText className="h-5 w-5 text-muted-foreground" />
                 Article Management
               </CardTitle>
-              <div className="flex items-center gap-2 mt-3">
+              <div className="flex flex-wrap items-center gap-2 mt-3">
                 <Input
                   placeholder="Search articles..."
                   value={articleSearchInput}
@@ -714,6 +761,71 @@ export default function AdminDashboard() {
                 <Button variant="outline" size="sm" onClick={handleArticleSearch} className="h-9">
                   <Search className="h-3.5 w-3.5" />
                 </Button>
+                
+                {/* Status Filter */}
+                <Select
+                  value={articleStatusFilter}
+                  onValueChange={(val) => {
+                    setArticleStatusFilter(val);
+                    setArticlePage(1);
+                  }}
+                >
+                  <SelectTrigger className="w-32 h-9 text-xs">
+                    <SelectValue placeholder="Status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="ALL">All Status</SelectItem>
+                    <SelectItem value="DRAFT">Draft</SelectItem>
+                    <SelectItem value="PUBLISHED">Published</SelectItem>
+                    <SelectItem value="ARCHIVED">Archived</SelectItem>
+                    <SelectItem value="DELETED">Deleted/Trash</SelectItem>
+                  </SelectContent>
+                </Select>
+
+                {/* Category Filter */}
+                <Select
+                  value={articleCategoryFilter}
+                  onValueChange={(val) => {
+                    setArticleCategoryFilter(val);
+                    setArticlePage(1);
+                  }}
+                >
+                  <SelectTrigger className="w-36 h-9 text-xs">
+                    <SelectValue placeholder="Category" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="ALL">All Categories</SelectItem>
+                    {categories.map((cat) => (
+                      <SelectItem key={cat.id} value={cat.id}>
+                        {cat.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+
+                {/* Sort Option */}
+                <Select
+                  value={`${articleSortBy}:${articleSortOrder}`}
+                  onValueChange={(val) => {
+                    const [field, order] = val.split(":");
+                    setArticleSortBy(field);
+                    setArticleSortOrder(order);
+                    setArticlePage(1);
+                  }}
+                >
+                  <SelectTrigger className="w-36 h-9 text-xs">
+                    <SelectValue placeholder="Sort By" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="createdAt:desc">Newest First</SelectItem>
+                    <SelectItem value="createdAt:asc">Oldest First</SelectItem>
+                    <SelectItem value="updatedAt:desc">Recently Updated</SelectItem>
+                    <SelectItem value="title:asc">Title A-Z</SelectItem>
+                    <SelectItem value="title:desc">Title Z-A</SelectItem>
+                    <SelectItem value="status:asc">Status</SelectItem>
+                  </SelectContent>
+                </Select>
+
                 <Select
                   value={articleLimit.toString()}
                   onValueChange={(val) => {
@@ -865,6 +977,15 @@ export default function AdminDashboard() {
                           >
                             <Eye className="h-3 w-3 mr-1" />
                             Preview
+                          </Link>
+                        </Button>
+                        <Button asChild size="sm" variant="ghost" className="h-8 px-2 text-xs">
+                          <Link
+                            href={`/articles/special-access/${article.slug}/edit`}
+                            prefetch={false}
+                          >
+                            <Edit className="h-3 w-3 mr-1" />
+                            Edit
                           </Link>
                         </Button>
                         <Select
