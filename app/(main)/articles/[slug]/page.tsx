@@ -8,12 +8,11 @@ import { Separator } from "@/components/ui/separator";
 // import { AdSlot } from "@/components/AdSlot";
 import Link from "next/link";
 import { ArticleCommentsClient } from "@/components/ArticleCommentsClient";
-import DOMPurify from "isomorphic-dompurify";
+import { SanitizedContent } from "@/components/SanitizedContent";
 
 
 // ISR Configuration
 export const revalidate = 60; // Revalidate every 60 seconds
-export const dynamic = 'force-static'; // Force static generation
 export const dynamicParams = true; // Allow dynamic params not in generateStaticParams
 
 // --- Generate Static Params for ISR ---
@@ -259,7 +258,8 @@ export default async function ArticlePage({
           )}
 
           {/* Content */}
-          <div
+          <SanitizedContent
+            html={article.content}
             className="prose prose-lg sm:prose-xl prose-slate dark:prose-invert max-w-none 
             font-serif text-gray-800 dark:text-gray-200 leading-loose article-content
             prose-headings:font-sans prose-headings:font-bold prose-headings:tracking-tight 
@@ -268,9 +268,6 @@ export default async function ArticlePage({
             prose-blockquote:border-l-4 prose-blockquote:border-primary prose-blockquote:pl-6 prose-blockquote:italic prose-blockquote:text-gray-700 dark:prose-blockquote:text-gray-300
             prose-img:rounded-xl prose-img:shadow-lg prose-img:my-8
             prose-li:marker:text-primary"
-            dangerouslySetInnerHTML={{ 
-                __html: DOMPurify.sanitize(article.content) 
-            }}
           />
 
           {/* Tags */}

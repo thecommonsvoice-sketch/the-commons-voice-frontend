@@ -5,7 +5,6 @@ import type { Article, Category } from "@/lib/types";
 
 // ISR Configuration
 export const revalidate = 120; // Revalidate every 2 minutes (categories change less frequently)
-export const dynamic = 'force-static';
 export const dynamicParams = true;
 
 // --- Generate Static Params for ISR ---
