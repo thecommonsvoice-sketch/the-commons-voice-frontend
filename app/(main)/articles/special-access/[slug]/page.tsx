@@ -12,7 +12,7 @@ import SpecialRoutes from "@/components/specialRoutes";
 import { toast } from "sonner";
 import { isAxiosError } from "axios";
 import { ArticleCommentsClient } from "@/components/ArticleCommentsClient";
-import DOMPurify from "isomorphic-dompurify";
+import { SanitizedContent } from "@/components/SanitizedContent";
 
 export default function ArticlePage() {
   const params = useParams();
@@ -132,9 +132,9 @@ export default function ArticlePage() {
           )}
 
           {/* Article content */}
-          <div 
+          <SanitizedContent
+            html={article.content}
             className="prose prose-lg prose-neutral max-w-none dark:prose-invert prose-headings:font-semibold prose-a:text-primary prose-a:no-underline hover:prose-a:underline"
-            dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(article.content) }}
           />
 
           {/* Videos */}

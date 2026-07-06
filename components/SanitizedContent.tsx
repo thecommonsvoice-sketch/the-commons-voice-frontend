@@ -1,6 +1,7 @@
 "use client";
 
-import DOMPurify from "isomorphic-dompurify";
+import { useEffect, useState } from "react";
+import DOMPurify from "dompurify";
 
 interface SanitizedContentProps {
   html: string;
@@ -8,11 +9,17 @@ interface SanitizedContentProps {
 }
 
 export function SanitizedContent({ html, className }: SanitizedContentProps) {
+  const [sanitizedHtml, setSanitizedHtml] = useState(html);
+
+  useEffect(() => {
+    setSanitizedHtml(DOMPurify.sanitize(html));
+  }, [html]);
+
   return (
     <div
       className={className}
       dangerouslySetInnerHTML={{
-        __html: DOMPurify.sanitize(html),
+        __html: sanitizedHtml,
       }}
     />
   );
