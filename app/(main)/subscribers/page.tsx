@@ -4,8 +4,29 @@ import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { ShieldCheck, Video, Newspaper, RefreshCw, KeyRound, Play, Flame, Film, Eye, Sparkles } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  ShieldCheck,
+  Video,
+  Newspaper,
+  RefreshCw,
+  KeyRound,
+  Play,
+  Flame,
+  Film,
+  Eye,
+  Search,
+  CheckCircle2,
+  Lock,
+  Filter,
+  FileText,
+  Clock,
+  Sparkles,
+  Share2,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
 import { UniversalVideoPlayer, VideoThumbnailPreview, parseMediaUrl } from "@/components/UniversalVideoPlayer";
 import ArticleLock from "@/components/ArticleLock";
 import { ArticleCard } from "@/components/ArticleCard";
@@ -39,6 +60,8 @@ function SubscribersContent() {
   const [loading, setLoading] = useState(true);
   const [activeVideo, setActiveVideo] = useState<ArticleVideo | null>(null);
   const [feedFilter, setFeedFilter] = useState<FeedFilter>("all");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [selectedArticleModal, setSelectedArticleModal] = useState<Article | null>(null);
 
   const fetchStatusAndContent = async () => {
@@ -118,11 +141,31 @@ function SubscribersContent() {
       articleSlug,
       articleObj,
     });
-    window.scrollTo({ top: 300, behavior: "smooth" });
+    window.scrollTo({ top: 280, behavior: "smooth" });
   };
 
-  // Collect all video items from articles
-  const allVideoItems = articles.flatMap((article) => {
+  // Unique categories list
+  const categoryNames = Array.from(
+    new Set(articles.map((a) => a.category?.name).filter(Boolean) as string[])
+  );
+
+  // Search & Category Filtering
+  const searchedArticles = articles.filter((item) => {
+    const matchesSearch =
+      !searchQuery.trim() ||
+      item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (item.content && item.content.toLowerCase().includes(searchQuery.toLowerCase())) ||
+      (item.excerpt && item.excerpt.toLowerCase().includes(searchQuery.toLowerCase()));
+
+    const matchesCategory =
+      selectedCategory === "all" ||
+      (item.category && item.category.name.toLowerCase() === selectedCategory.toLowerCase());
+
+    return matchesSearch && matchesCategory;
+  });
+
+  // Collect all video items from searched articles
+  const allVideoItems = searchedArticles.flatMap((article) => {
     if (!article.videos || article.videos.length === 0) return [];
     return article.videos.map((v) => ({
       ...v,
@@ -130,13 +173,13 @@ function SubscribersContent() {
       articleSlug: article.slug,
       coverImage: article.coverImage,
       publishedAt: article.publishedAt || article.createdAt,
-      author: article.author?.name || "TCV Media",
+      author: article.author?.name || "TCV Investigative Desk",
       articleObj: article,
     }));
   });
 
-  // Filter articles based on feedFilter (exclude video items on "all" tab to prevent duplicate rendering)
-  const filteredArticles = articles.filter((item) => {
+  // Filter non-video articles for bottom feed (exclude video items on "all" tab to prevent duplicate rendering)
+  const filteredArticles = searchedArticles.filter((item) => {
     const isShortNote = !item.content || item.content.length < 600 || (item.excerpt && item.excerpt.length > 50);
     const hasVideo = item.videos && item.videos.length > 0;
 
@@ -148,66 +191,86 @@ function SubscribersContent() {
   });
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      {/* Editorial Header Section */}
-      <div className="border-b border-border bg-card py-10 sm:py-14 px-4 sm:px-6">
-        <div className="container mx-auto max-w-4xl text-center">
-          <p className="text-xs font-bold tracking-widest text-primary uppercase flex items-center justify-center gap-1.5">
-            <Flame className="h-3.5 w-3.5 fill-primary" /> Exclusive Video Vault & Wire
-          </p>
+    <div className="min-h-screen bg-background text-foreground font-sans selection:bg-primary/20 selection:text-primary">
+      {/* Newspaper Editorial Header Section */}
+      <motion.div
+        initial={{ opacity: 0, y: -15 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4 }}
+        className="border-b border-border bg-card/60 py-10 sm:py-14 px-4 sm:px-6 backdrop-blur-xs"
+      >
+        <div className="container mx-auto max-w-5xl text-center space-y-4">
+          <div className="flex items-center justify-center gap-2">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-primary/20 bg-primary/5 text-[11px] font-bold text-primary uppercase tracking-widest">
+              <ShieldCheck className="h-3.5 w-3.5" /> The Commons Voice • Insider Vault
+            </span>
+          </div>
 
-          <h1 className="mt-3 font-serif text-3xl font-extrabold tracking-tight sm:text-5xl text-foreground">
-            Instagram Subscriber Lounge
+          <h1 className="font-serif text-3xl font-extrabold tracking-tight sm:text-5xl text-foreground">
+            Restricted Dispatches & Media Vault
           </h1>
-          <p className="mx-auto mt-3 max-w-2xl text-sm sm:text-base text-muted-foreground leading-relaxed">
-            Raw unedited video drops, investigative media streams, and restricted reports reserved for active Instagram subscribers.
+          <p className="mx-auto max-w-2xl text-sm sm:text-base text-muted-foreground leading-relaxed">
+            Unedited video drops, reporter voice notes, and investigative files reserved exclusively for verified subscribers and newsroom members.
           </p>
 
-          {/* Status Indicator Banner */}
-          <div className="mt-6 flex justify-center">
+          {/* Member Access Indicator Banner */}
+          <div className="pt-2 flex justify-center">
             {isSubscriber ? (
-              <div className="inline-flex items-center gap-2 rounded-lg border border-emerald-500/30 bg-emerald-50 dark:bg-emerald-950/30 px-4 py-2 text-xs sm:text-sm font-medium text-emerald-800 dark:text-emerald-300 shadow-xs">
-                <ShieldCheck className="h-4 w-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
-                <span>30-Day Subscriber Membership Active</span>
+              <div className="inline-flex items-center gap-2.5 rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-4 py-2 text-xs sm:text-sm font-semibold text-emerald-700 dark:text-emerald-300">
+                <span className="relative flex h-2.5 w-2.5">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+                </span>
+                <span>Member Access Granted • 30-Day Pass Active</span>
                 {expiresAt && (
-                  <span className="text-muted-foreground border-l border-emerald-300 dark:border-emerald-800 pl-2 ml-1">
+                  <span className="text-muted-foreground border-l border-emerald-500/20 pl-2.5 ml-1 text-xs font-normal">
                     Expires {formatDate(expiresAt)}
                   </span>
                 )}
               </div>
             ) : (
               <div className="inline-flex items-center gap-2 rounded-lg border border-border bg-muted/60 px-4 py-2 text-xs sm:text-sm font-medium text-muted-foreground">
-                <KeyRound className="h-4 w-4 text-primary shrink-0" />
-                <span>Passcode required to view restricted video drops</span>
+                <Lock className="h-4 w-4 text-primary shrink-0" />
+                <span>Subscriber passcode required to unlock restricted dispatches</span>
               </div>
             )}
           </div>
         </div>
-      </div>
+      </motion.div>
 
-      {/* Main Content Area */}
-      <div className="container mx-auto max-w-6xl px-4 py-8 sm:px-6">
+      {/* Main Content Container */}
+      <div className="container mx-auto max-w-6xl px-4 py-8 sm:px-6 space-y-10">
         {loading ? (
-          <div className="flex flex-col items-center justify-center py-20">
-            <RefreshCw className="h-6 w-6 text-primary animate-spin" />
-            <p className="mt-3 text-xs text-muted-foreground">Loading video drops...</p>
+          <div className="flex flex-col items-center justify-center py-24 space-y-3">
+            <RefreshCw className="h-7 w-7 text-primary animate-spin" />
+            <p className="text-xs text-muted-foreground font-medium">Decrypting Vault Files...</p>
           </div>
         ) : !isSubscriber && !(user && (user.role === "ADMIN" || user.role === "EDITOR" || user.role === "REPORTER")) ? (
-          /* Locked State */
-          <div className="mx-auto max-w-xl my-6">
+          /* Locked Paywall State */
+          <motion.div
+            initial={{ opacity: 0, scale: 0.96 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.3 }}
+            className="mx-auto max-w-xl my-6"
+          >
             <ArticleLock initialCode={codeParam} onUnlocked={fetchStatusAndContent} />
-          </div>
+          </motion.div>
         ) : (
-          /* Unlocked State - YouTube / Media Vault Layout */
+          /* Unlocked Member Vault Layout */
           <div className="space-y-12">
-            {/* Top Spotlight Cinema Player */}
+            {/* Top Spotlight Cinema Player ("The Desk Spotlight") */}
             {activeVideo && (
-              <div className="rounded-2xl border border-border bg-card p-4 sm:p-6 shadow-xl max-w-4xl mx-auto space-y-4">
+              <motion.div
+                initial={{ opacity: 0, scale: 0.97 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.4 }}
+                className="rounded-2xl border border-border bg-card p-4 sm:p-6 shadow-sm max-w-4xl mx-auto space-y-4"
+              >
                 <div className="flex items-center justify-between pb-3 border-b border-border">
-                  <span className="text-xs font-bold text-primary uppercase tracking-wider flex items-center gap-1.5">
-                    <Film className="h-4 w-4" /> Now Playing: Spotlight Media Drop
+                  <span className="text-xs font-bold text-primary uppercase tracking-widest flex items-center gap-1.5">
+                    <Film className="h-4 w-4" /> Spotlight Media Stream
                   </span>
-                  <span className="text-[11px] font-semibold text-muted-foreground bg-muted px-2.5 py-1 rounded-md">
+                  <span className="text-[11px] font-semibold text-muted-foreground bg-muted/80 px-2.5 py-1 rounded-md border border-border">
                     {parseMediaUrl(activeVideo.url).label}
                   </span>
                 </div>
@@ -227,7 +290,7 @@ function SubscribersContent() {
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-2">
                   <div>
                     {activeVideo.title && (
-                      <h3 className="font-serif text-lg sm:text-2xl font-bold text-foreground">
+                      <h3 className="font-serif text-lg sm:text-2xl font-bold text-foreground leading-snug">
                         {activeVideo.title}
                       </h3>
                     )}
@@ -238,69 +301,115 @@ function SubscribersContent() {
                       variant="outline"
                       size="sm"
                       onClick={() => setSelectedArticleModal(activeVideo.articleObj!)}
-                      className="gap-1.5 text-xs font-medium shrink-0"
+                      className="gap-1.5 text-xs font-semibold shrink-0 border-primary/30 text-primary hover:bg-primary/5 cursor-pointer"
                     >
-                      <Eye className="h-3.5 w-3.5 text-primary" />
-                      <span>View Full Drop Details</span>
+                      <Eye className="h-3.5 w-3.5" />
+                      <span>Open Full Dispatch File</span>
                     </Button>
                   )}
                 </div>
-              </div>
+              </motion.div>
             )}
 
-            {/* Format Filter Tabs & Header */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border pb-4">
-              <div>
-                <h2 className="font-serif text-xl sm:text-2xl font-bold text-foreground flex items-center gap-2">
-                  <Video className="h-5 w-5 text-primary" /> Exclusive Media Vault
-                </h2>
-                <p className="text-xs text-muted-foreground mt-0.5">
-                  {allVideoItems.length} video drops • {articles.length} total posts unlocked
-                </p>
+            {/* Filter Controls: Live Search, Categories, & Format Tabs */}
+            <div className="space-y-4 border-b border-border pb-6">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                {/* Search Bar */}
+                <div className="relative flex-1 max-w-md">
+                  <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    type="text"
+                    placeholder="Search case files, video drops, or wire dispatches..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="pl-10 h-10 text-sm bg-card border-border"
+                  />
+                  {searchQuery && (
+                    <button
+                      onClick={() => setSearchQuery("")}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground hover:text-foreground cursor-pointer"
+                    >
+                      Clear
+                    </button>
+                  )}
+                </div>
+
+                {/* Format Filter Tabs */}
+                <div className="flex items-center gap-2 overflow-x-auto pb-1 md:pb-0">
+                  <div className="inline-flex rounded-lg border border-border bg-card p-1 text-xs font-medium">
+                    {(
+                      [
+                        { id: "all", label: "🔥 All Dispatches" },
+                        { id: "videos", label: "🎥 Video Drops" },
+                        { id: "wire", label: "🎙️ Wire Briefs" },
+                        { id: "articles", label: "📜 Restricted Reports" },
+                      ] as const
+                    ).map((tab) => (
+                      <button
+                        key={tab.id}
+                        onClick={() => setFeedFilter(tab.id)}
+                        className={`px-3 py-1.5 rounded-md transition-all whitespace-nowrap cursor-pointer ${
+                          feedFilter === tab.id
+                            ? "bg-primary text-primary-foreground font-semibold shadow-xs"
+                            : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                        }`}
+                      >
+                        {tab.label}
+                      </button>
+                    ))}
+                  </div>
+
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={fetchStatusAndContent}
+                    className="text-xs h-9 px-2.5"
+                    title="Refresh Vault"
+                  >
+                    <RefreshCw className="h-3.5 w-3.5" />
+                  </Button>
+                </div>
               </div>
 
-              {/* Format Filter Tabs */}
-              <div className="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0">
-                <div className="inline-flex rounded-lg border bg-card p-1 text-xs font-medium">
-                  {(
-                    [
-                      { id: "all", label: "All Updates" },
-                      { id: "videos", label: "🎥 Video Drops" },
-                      { id: "wire", label: "Short Notes" },
-                      { id: "articles", label: "Articles" },
-                    ] as const
-                  ).map((tab) => (
+              {/* Category Filter Chips (if multiple exist) */}
+              {categoryNames.length > 0 && (
+                <div className="flex items-center gap-2 overflow-x-auto pt-1 text-xs">
+                  <span className="text-muted-foreground font-medium text-[11px] uppercase tracking-wider shrink-0 flex items-center gap-1">
+                    <Filter className="h-3 w-3" /> Topic:
+                  </span>
+                  <button
+                    onClick={() => setSelectedCategory("all")}
+                    className={`px-2.5 py-1 rounded-md text-xs font-medium transition-colors cursor-pointer ${
+                      selectedCategory === "all"
+                        ? "bg-secondary text-secondary-foreground font-semibold"
+                        : "text-muted-foreground hover:text-foreground bg-card border border-border/60"
+                    }`}
+                  >
+                    All Topics
+                  </button>
+                  {categoryNames.map((cat) => (
                     <button
-                      key={tab.id}
-                      onClick={() => setFeedFilter(tab.id)}
-                      className={`px-3 py-1.5 rounded-md transition-colors whitespace-nowrap cursor-pointer ${
-                        feedFilter === tab.id
-                          ? "bg-primary text-primary-foreground font-semibold shadow-xs"
-                          : "text-muted-foreground hover:text-foreground"
+                      key={cat}
+                      onClick={() => setSelectedCategory(cat)}
+                      className={`px-2.5 py-1 rounded-md text-xs font-medium transition-colors cursor-pointer ${
+                        selectedCategory.toLowerCase() === cat.toLowerCase()
+                          ? "bg-secondary text-secondary-foreground font-semibold"
+                          : "text-muted-foreground hover:text-foreground bg-card border border-border/60"
                       }`}
                     >
-                      {tab.label}
+                      {cat}
                     </button>
                   ))}
                 </div>
-
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={fetchStatusAndContent}
-                  className="text-xs h-9 px-2.5"
-                >
-                  <RefreshCw className="h-3.5 w-3.5" />
-                </Button>
-              </div>
+              )}
             </div>
 
             {/* YouTube-Style Video Drops Gallery Grid */}
             {(feedFilter === "all" || feedFilter === "videos") && allVideoItems.length > 0 && (
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-sm font-bold text-primary uppercase tracking-wider flex items-center gap-1.5">
-                    <Sparkles className="h-4 w-4" /> Video & Media Vault Drops ({allVideoItems.length})
+                  <h3 className="text-xs font-bold text-primary uppercase tracking-widest flex items-center gap-1.5">
+                    <Video className="h-4 w-4 text-primary" /> Video & Media Vault Drops ({allVideoItems.length})
                   </h3>
                 </div>
 
@@ -308,13 +417,24 @@ function SubscribersContent() {
                   {allVideoItems.map((vid, idx) => {
                     const mediaInfo = parseMediaUrl(vid.url);
                     return (
-                      <div
+                      <motion.div
                         key={idx}
-                        className="group relative flex flex-col overflow-hidden rounded-xl border border-border bg-card hover:border-primary/40 transition-all shadow-xs"
+                        initial={{ opacity: 0, y: 15 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.3, delay: idx * 0.05 }}
+                        className="group relative flex flex-col overflow-hidden rounded-xl border border-border bg-card hover:border-primary/50 transition-all shadow-xs"
                       >
-                        {/* Video Thumbnail Box */}
+                        {/* Video Thumbnail Box with Frame Extractor */}
                         <div
-                          onClick={() => handlePlayVideo(vid.url, vid.title || vid.articleTitle, vid.coverImage, vid.articleSlug, vid.articleObj)}
+                          onClick={() =>
+                            handlePlayVideo(
+                              vid.url,
+                              vid.title || vid.articleTitle,
+                              vid.coverImage,
+                              vid.articleSlug,
+                              vid.articleObj
+                            )
+                          }
                           className="relative aspect-video w-full overflow-hidden bg-black cursor-pointer"
                         >
                           <VideoThumbnailPreview
@@ -329,7 +449,7 @@ function SubscribersContent() {
                             </div>
                           </div>
 
-                          <div className="absolute bottom-2 left-2 px-2.5 py-1 rounded-md bg-black/80 text-[11px] font-medium text-white flex items-center gap-1 border border-white/10">
+                          <div className="absolute bottom-2 left-2 px-2.5 py-1 rounded-md bg-black/85 text-[11px] font-medium text-white flex items-center gap-1 border border-white/10">
                             <span>{mediaInfo.label}</span>
                           </div>
                         </div>
@@ -347,15 +467,23 @@ function SubscribersContent() {
                             <span>{vid.author}</span>
                             <div className="flex items-center gap-2">
                               <button
-                                onClick={() => handlePlayVideo(vid.url, vid.title || vid.articleTitle, vid.coverImage, vid.articleSlug, vid.articleObj)}
+                                onClick={() =>
+                                  handlePlayVideo(
+                                    vid.url,
+                                    vid.title || vid.articleTitle,
+                                    vid.coverImage,
+                                    vid.articleSlug,
+                                    vid.articleObj
+                                  )
+                                }
                                 className="text-primary font-semibold hover:underline cursor-pointer"
                               >
-                                Play Spotlight ▶
+                                Play Stream ▶
                               </button>
                               {vid.articleObj && (
                                 <button
                                   onClick={() => setSelectedArticleModal(vid.articleObj)}
-                                  className="text-foreground/80 hover:text-primary cursor-pointer"
+                                  className="text-foreground/80 hover:text-primary cursor-pointer font-medium"
                                 >
                                   Details
                                 </button>
@@ -363,7 +491,7 @@ function SubscribersContent() {
                             </div>
                           </div>
                         </div>
-                      </div>
+                      </motion.div>
                     );
                   })}
                 </div>
@@ -375,20 +503,20 @@ function SubscribersContent() {
               filteredArticles.length === 0 ? (
                 feedFilter !== "all" ? (
                   <div className="rounded-xl border border-border bg-card p-12 text-center max-w-3xl mx-auto">
-                    <h3 className="font-serif text-lg font-semibold text-foreground">No Items Match this Filter</h3>
+                    <h3 className="font-serif text-lg font-semibold text-foreground">No Dispatches Found</h3>
                     <p className="mt-1 text-xs text-muted-foreground">
-                      No {feedFilter === "wire" ? "short wire notes" : "full articles"} available right now.
+                      No matching {feedFilter === "wire" ? "wire briefs" : "restricted reports"} found for your query.
                     </p>
                   </div>
                 ) : null
               ) : (
                 <div className="space-y-6 max-w-3xl mx-auto">
                   <div className="flex items-center justify-between pb-2 border-b border-border">
-                    <h3 className="text-sm font-bold text-foreground uppercase tracking-wider flex items-center gap-1.5">
-                      <Newspaper className="h-4 w-4 text-primary" /> Subscriber Wire Notes & Reports ({filteredArticles.length})
+                    <h3 className="text-xs font-bold text-foreground uppercase tracking-widest flex items-center gap-1.5">
+                      <Newspaper className="h-4 w-4 text-primary" /> Subscriber Wire Notes & Investigative Dispatches ({filteredArticles.length})
                     </h3>
                   </div>
-                  {filteredArticles.map((item) => {
+                  {filteredArticles.map((item, idx) => {
                     const isShortWire =
                       feedFilter === "wire" ||
                       !item.content ||
@@ -397,16 +525,31 @@ function SubscribersContent() {
 
                     if (isShortWire) {
                       return (
-                        <SubscriberWireCard
+                        <motion.div
                           key={item.id}
-                          article={item}
-                          onPlayVideo={(url, title) => handlePlayVideo(url, title, item.coverImage, item.slug, item)}
-                          onOpenModal={(art) => setSelectedArticleModal(art)}
-                        />
+                          initial={{ opacity: 0, y: 15 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ duration: 0.3, delay: idx * 0.05 }}
+                        >
+                          <SubscriberWireCard
+                            article={item}
+                            onPlayVideo={(url, title) => handlePlayVideo(url, title, item.coverImage, item.slug, item)}
+                            onOpenModal={(art) => setSelectedArticleModal(art)}
+                          />
+                        </motion.div>
                       );
                     }
 
-                    return <ArticleCard key={item.id} article={item} />;
+                    return (
+                      <motion.div
+                        key={item.id}
+                        initial={{ opacity: 0, y: 15 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.3, delay: idx * 0.05 }}
+                      >
+                        <ArticleCard article={item} />
+                      </motion.div>
+                    );
                   })}
                 </div>
               )
@@ -415,7 +558,7 @@ function SubscribersContent() {
         )}
       </div>
 
-      {/* Subscriber Item Detail Modal Reader */}
+      {/* Confidential Dispatch Detail Reader Modal */}
       {selectedArticleModal && (
         <SubscriberItemModal
           article={selectedArticleModal}
@@ -428,7 +571,7 @@ function SubscribersContent() {
 
 export default function SubscribersPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-background flex items-center justify-center text-foreground">Loading...</div>}>
+    <Suspense fallback={<div className="min-h-screen bg-background flex items-center justify-center text-foreground">Decrypting Vault...</div>}>
       <SubscribersContent />
     </Suspense>
   );
