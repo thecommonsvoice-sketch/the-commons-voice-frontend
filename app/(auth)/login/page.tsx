@@ -1,6 +1,6 @@
 "use client";
-import { useEffect, useState } from "react";
-import { useRouter, usePathname } from "next/navigation";
+import { useEffect, useState, Suspense } from "react";
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -21,18 +21,20 @@ const schema = z.object({
 });
 type FormSchema = z.infer<typeof schema>;
 
-export default function LoginPage() {
+function LoginContent() {
   const router = useRouter();
   const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const redirectParam = searchParams.get("redirect");
   const { user, setUser } = useUserStore();
   const [error, setError] = useState("");
 
   useEffect(() => {
     if (user && pathname === "/login") {
-      const t = setTimeout(() => redirectByRole(router), 0);
+      const t = setTimeout(() => redirectByRole(router, redirectParam), 0);
       return () => clearTimeout(t);
     }
-  }, [user, pathname, router]);
+  }, [user, pathname, router, redirectParam]);
 
   const {
     register,
@@ -55,7 +57,7 @@ export default function LoginPage() {
       
       setUser(data.user);
       toast.success("Login successful!");
-      redirectByRole(router);
+      redirectByRole(router, redirectParam);
     } catch (err) {
       const axiosErr = err as AxiosError<{ message?: string }>;
       const errorMessage = axiosErr.response?.data?.message ?? "Login failed";
@@ -72,6 +74,10 @@ export default function LoginPage() {
     );
   }
 
+  const signupLink = redirectParam
+    ? `/signup?redirect=${encodeURIComponent(redirectParam)}`
+    : "/signup";
+
   return (
     <div className="container mx-auto max-w-md px-4 sm:px-6 py-8 sm:py-12">
       <Card>
@@ -80,7 +86,7 @@ export default function LoginPage() {
             Sign in to your account
           </CardTitle>
           <CardDescription className="text-sm">
-            Enter your email and password to access your dashboard
+            Enter your email and password to access your account
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -126,7 +132,7 @@ export default function LoginPage() {
 
           <div className="mt-4 sm:mt-6 text-center text-xs sm:text-sm">
             <span className="text-muted-foreground">Don&rsquo;t have an account? </span>
-            <Link href="/signup" className="text-primary hover:underline font-medium">
+            <Link href={signupLink} className="text-primary hover:underline font-medium">
               Sign up
             </Link>
           </div>
@@ -135,3 +141,11 @@ export default function LoginPage() {
     </div>
   );
 }
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<div className="flex h-[50vh] items-center justify-center text-sm text-muted-foreground">Loading...</div>}>
+      <LoginContent />
+    </Suspense>
+  );
+}

@@ -1,6 +1,6 @@
 "use client";
-import { useEffect, useState } from "react";
-import { useRouter, usePathname } from "next/navigation";
+import { useEffect, useState, Suspense } from "react";
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -27,18 +27,20 @@ const schema = z.object({
 
 type FormSchema = z.infer<typeof schema>;
 
-export default function SignupPage() {
+function SignupContent() {
   const router = useRouter();
   const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const redirectParam = searchParams.get("redirect");
   const { user, setUser } = useUserStore();
   const [error, setError] = useState("");
 
   useEffect(() => {
     if (user && pathname === "/signup") {
-      const t = setTimeout(() => redirectByRole(router), 0);
+      const t = setTimeout(() => redirectByRole(router, redirectParam), 0);
       return () => clearTimeout(t);
     }
-  }, [user, pathname, router]);
+  }, [user, pathname, router, redirectParam]);
 
   const { 
     register, 
@@ -62,7 +64,7 @@ export default function SignupPage() {
       
       setUser(data.user);
       toast.success("Account created successfully!");
-      redirectByRole(router);
+      redirectByRole(router, redirectParam);
     } catch (err) {
       const axiosErr = err as AxiosError<{ message?: string }>;
       const errorMessage = axiosErr.response?.data?.message ?? "Registration failed";
@@ -78,6 +80,10 @@ export default function SignupPage() {
       </div>
     );
   }
+
+  const loginLink = redirectParam
+    ? `/login?redirect=${encodeURIComponent(redirectParam)}`
+    : "/login";
 
   return (
     <div className="container mx-auto max-w-md px-4 sm:px-6 py-8 sm:py-12">
@@ -161,7 +167,7 @@ export default function SignupPage() {
 
           <div className="mt-4 sm:mt-6 text-center text-xs sm:text-sm">
             <span className="text-muted-foreground">Already have an account? </span>
-            <Link href="/login" className="text-primary hover:underline font-medium">
+            <Link href={loginLink} className="text-primary hover:underline font-medium">
               Sign in
             </Link>
           </div>
@@ -170,3 +176,11 @@ export default function SignupPage() {
     </div>
   );
 }
+
+export default function SignupPage() {
+  return (
+    <Suspense fallback={<div className="flex h-[50vh] items-center justify-center text-sm text-muted-foreground">Loading...</div>}>
+      <SignupContent />
+    </Suspense>
+  );
+}

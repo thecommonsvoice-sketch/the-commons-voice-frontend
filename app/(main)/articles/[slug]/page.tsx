@@ -9,6 +9,7 @@ import { Separator } from "@/components/ui/separator";
 import Link from "next/link";
 import { ArticleCommentsClient } from "@/components/ArticleCommentsClient";
 import { SanitizedContent } from "@/components/SanitizedContent";
+import ArticleLock from "@/components/ArticleLock";
 
 
 // ISR Configuration
@@ -257,18 +258,22 @@ export default async function ArticlePage({
             </div>
           )}
 
-          {/* Content */}
-          <SanitizedContent
-            html={article.content}
-            className="prose prose-lg sm:prose-xl prose-slate dark:prose-invert max-w-none 
-            font-serif text-gray-800 dark:text-gray-200 leading-loose article-content
-            prose-headings:font-sans prose-headings:font-bold prose-headings:tracking-tight 
-            prose-p:leading-loose prose-p:mb-6
-            prose-a:text-primary prose-a:no-underline hover:prose-a:underline
-            prose-blockquote:border-l-4 prose-blockquote:border-primary prose-blockquote:pl-6 prose-blockquote:italic prose-blockquote:text-gray-700 dark:prose-blockquote:text-gray-300
-            prose-img:rounded-xl prose-img:shadow-lg prose-img:my-8
-            prose-li:marker:text-primary"
-          />
+          {/* Content or Subscriber Lock */}
+          {article.content ? (
+            <SanitizedContent
+              html={article.content}
+              className="prose prose-lg sm:prose-xl prose-slate dark:prose-invert max-w-none 
+              font-serif text-gray-800 dark:text-gray-200 leading-loose article-content
+              prose-headings:font-sans prose-headings:font-bold prose-headings:tracking-tight 
+              prose-p:leading-loose prose-p:mb-6
+              prose-a:text-primary prose-a:no-underline hover:prose-a:underline
+              prose-blockquote:border-l-4 prose-blockquote:border-primary prose-blockquote:pl-6 prose-blockquote:italic prose-blockquote:text-gray-700 dark:prose-blockquote:text-gray-300
+              prose-img:rounded-xl prose-img:shadow-lg prose-img:my-8
+              prose-li:marker:text-primary"
+            />
+          ) : (
+            <ArticleLock />
+          )}
 
           {/* Tags */}
           {Array.isArray(article.tags) && article.tags.length > 0 && (

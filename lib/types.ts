@@ -25,7 +25,7 @@ export interface Category {
 }
 
 export interface VideoData {
-  type: "upload" | "embed";
+  type: "upload" | "embed" | "audio" | "video" | string;
   url: string;
   title?: string;
   description?: string;

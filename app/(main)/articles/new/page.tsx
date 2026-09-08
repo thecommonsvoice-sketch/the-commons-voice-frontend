@@ -31,6 +31,7 @@ export default function NewArticlePage() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [imageUploading, setImageUploading] = useState<boolean>(false);
   const [videos, setVideos] = useState<VideoData[]>([]);
+  const [isSubscriberOnly, setIsSubscriberOnly] = useState<boolean>(false);
   const [refreshKey, setRefreshKey] = useState<number>(0);
   const { user } = useUserStore();
 
@@ -92,6 +93,7 @@ export default function NewArticlePage() {
         metaDescription: metaDescription || undefined,
         tags: tags.length > 0 ? tags : undefined,
         videos: validVideos.length > 0 ? validVideos : undefined,
+        isSubscriberOnly,
       });
 
       toast.success("Article created!");
@@ -224,6 +226,20 @@ export default function NewArticlePage() {
             videos={videos}
             onChange={setVideos}
           />
+
+          {/* Subscriber Exclusive Toggle */}
+          <div className="flex items-center gap-3 rounded-xl border border-rose-500/30 bg-rose-500/10 p-4">
+            <input
+              type="checkbox"
+              id="isSubscriberOnly"
+              checked={isSubscriberOnly}
+              onChange={(e) => setIsSubscriberOnly(e.target.checked)}
+              className="h-4 w-4 accent-rose-600 rounded cursor-pointer"
+            />
+            <label htmlFor="isSubscriberOnly" className="cursor-pointer text-sm sm:text-base font-semibold text-foreground flex items-center gap-2">
+              ⭐ Mark as Instagram Subscriber Exclusive (Gated for Passcode Holders)
+            </label>
+          </div>
 
           {/* Submit Button */}
           <Button

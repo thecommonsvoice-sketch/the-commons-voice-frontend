@@ -436,9 +436,20 @@ export default function AdminDashboard() {
             Manage users, content, and platform settings.
           </p>
         </div>
-        <Button asChild size="sm">
-          <Link href="/dashboard/admin/categories">Manage Categories</Link>
-        </Button>
+        <div className="flex flex-wrap items-center gap-2">
+          <Button asChild size="sm" variant="outline">
+            <Link href="/dashboard/admin/subscriber-content">Subscriber Studio</Link>
+          </Button>
+          <Button asChild size="sm" variant="outline">
+            <Link href="/dashboard/admin/subscribers">Subscriber Users</Link>
+          </Button>
+          <Button asChild size="sm" variant="outline">
+            <Link href="/dashboard/admin/subscriber-codes">Passcode Generator</Link>
+          </Button>
+          <Button asChild size="sm">
+            <Link href="/dashboard/admin/categories">Manage Categories</Link>
+          </Button>
+        </div>
       </div>
 
       {/* Stats */}

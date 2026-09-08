@@ -8,7 +8,7 @@ import { useUserStore } from "@/store/useUserStore";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ThemeToggle";
-import { Menu, X, User, Settings, LogOut, ChevronDown, MoreHorizontal } from "lucide-react";
+import { Menu, X, User, Settings, LogOut, ChevronDown, MoreHorizontal, Sparkles } from "lucide-react";
 import LanguageSelector from "./LanguageSelector";
 import { api } from "@/lib/api";
 import { toast } from "sonner";
@@ -90,43 +90,67 @@ export default function Navbar() {
 
           <nav className="flex h-14 sm:h-16 items-center justify-between">
             {/* Logo */}
-            <Link href="/" className="flex items-center gap-2">
-              {/* <span className="font-serif text-2xl sm:text-3xl font-black tracking-tighter text-primary">TCV</span> */}
+            <Link href="/" className="flex items-center gap-2 shrink-0">
               <span className="notranslate font-serif font-bold text-base sm:text-lg tracking-tight text-foreground/90 whitespace-nowrap" translate="no">The Commons Voice</span>
             </Link>
 
             {/* Desktop Navigation */}
-            <div className="hidden lg:flex items-center space-x-3 xl:space-x-6">
-              {visibleCategories.map((category) => (
-                <Link
-                  key={category.name}
-                  href={category.href}
-                  className="text-sm font-semibold text-muted-foreground hover:text-primary transition-colors whitespace-nowrap"
-                >
-                  {category.name}
-                </Link>
-              ))}
-              {hiddenCategories.length > 0 && (
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className="flex items-center space-x-1 text-xs xl:text-sm px-2">
-                      <MoreHorizontal className="h-3 w-3 xl:h-4 xl:w-4" />
-                      <span className="hidden xl:inline">More</span>
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent>
-                    {hiddenCategories.map((category) => (
-                      <DropdownMenuItem asChild key={category.name}>
+            <div className="hidden lg:flex items-center space-x-2 xl:space-x-4 2xl:space-x-6 min-w-0 overflow-hidden">
+              <Link
+                href="/subscribers"
+                className="text-xs xl:text-sm font-semibold text-foreground hover:text-primary transition-colors whitespace-nowrap shrink-0"
+              >
+                Subscribers
+              </Link>
+              {categories.map((category, index) => {
+                // Show top 4 categories on lg, top 5 on xl, all on 2xl
+                const visibilityClass =
+                  index < 3
+                    ? "inline-block"
+                    : index < 5
+                    ? "hidden xl:inline-block"
+                    : "hidden 2xl:inline-block";
+
+                return (
+                  <Link
+                    key={category.name}
+                    href={category.href}
+                    className={`text-xs xl:text-sm font-semibold text-muted-foreground hover:text-primary transition-colors whitespace-nowrap ${visibilityClass}`}
+                  >
+                    {category.name}
+                  </Link>
+                );
+              })}
+              
+              {/* More Dropdown for items hidden on smaller desktop screens */}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="flex items-center space-x-1 text-xs xl:text-sm px-2 h-8">
+                    <MoreHorizontal className="h-4 w-4" />
+                    <span>More</span>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="start" className="w-48">
+                  {categories.map((category, index) => {
+                    const dropdownVisibilityClass =
+                      index < 3
+                        ? "2xl:hidden"
+                        : index < 5
+                        ? "xl:hidden"
+                        : "";
+
+                    return (
+                      <DropdownMenuItem asChild key={category.name} className={dropdownVisibilityClass}>
                         <Link href={category.href}>{category.name}</Link>
                       </DropdownMenuItem>
-                    ))}
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              )}
+                    );
+                  })}
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
 
-            {/* Right side */}
-            <div className="flex items-center space-x-1 sm:space-x-2">
+            {/* Right side controls */}
+            <div className="flex items-center space-x-1 sm:space-x-2 shrink-0">
               <div className="hidden sm:block">
                 <ThemeToggle />
               </div>
@@ -136,7 +160,7 @@ export default function Navbar() {
                   <DropdownMenuTrigger asChild>
                     <Button variant="ghost" className="flex items-center space-x-1 sm:space-x-2 text-xs sm:text-sm px-2 sm:px-3">
                       <User className="h-3 w-3 sm:h-4 sm:w-4" />
-                      <span className="hidden md:inline text-xs sm:text-sm truncate max-w-[100px]">{user.name || user.email}</span>
+                      <span className="hidden md:inline text-xs sm:text-sm truncate max-w-[80px] lg:max-w-[100px] xl:max-w-[140px]">{user.name || user.email}</span>
                       <ChevronDown className="h-3 w-3 sm:h-4 sm:w-4" />
                     </Button>
                   </DropdownMenuTrigger>

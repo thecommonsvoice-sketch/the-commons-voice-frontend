@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import { ArticleCard } from "@/components/ArticleCard";
+import { Pagination } from "@/components/Pagination";
 import type { Article, Category } from "@/lib/types";
 import { api } from "@/lib/api";
 import { Input } from "@/components/ui/input";
@@ -183,30 +184,11 @@ export default function CategoryClient({
 
       {/* Pagination */}
       {!loading && pagination.totalPages > 1 && (
-        <div className="mt-12 flex justify-center items-center gap-2">
-          <Button
-            variant="outline"
-            disabled={page <= 1}
-            onClick={() => handlePagination(page - 1)}
-          >
-            Previous
-          </Button>
-
-          <div className="flex items-center gap-1 mx-2">
-            <span className="text-sm font-medium px-4 py-2 bg-muted rounded-md min-w-[3rem] text-center">
-              {page}
-            </span>
-            <span className="text-muted-foreground text-sm">of {pagination.totalPages}</span>
-          </div>
-
-          <Button
-            variant="outline"
-            disabled={page >= pagination.totalPages}
-            onClick={() => handlePagination(page + 1)}
-          >
-            Next
-          </Button>
-        </div>
+        <Pagination
+          currentPage={page}
+          totalPages={pagination.totalPages}
+          onPageChange={handlePagination}
+        />
       )}
     </div>
   );

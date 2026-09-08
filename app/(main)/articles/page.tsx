@@ -4,9 +4,9 @@ import { Metadata } from "next";
 import { ArticleCard } from "@/components/ArticleCard";
 import { Skeleton } from "@/components/ui/loading-skeleton";
 import { Card, CardContent } from "@/components/ui/card";
-// import { AdSlot } from "@/components/AdSlot";
-import { SearchBar } from "@/components/SearchBar"; // New reusable search bar
-import type { Article } from "@/lib/types";
+import { SearchBar } from "@/components/SearchBar";
+import { Pagination } from "@/components/Pagination";
+import type { Article, Category } from "@/lib/types";
 
 // --- SEO Metadata ---
 export const metadata: Metadata = {
@@ -24,7 +24,7 @@ export const metadata: Metadata = {
   },
 };
 
-async function getArticles(page: number, search = ""): Promise<{
+async function getArticles(page: number, search = "", category = ""): Promise<{
   articles: Article[];
   pagination: { total: number; totalPages: number };
 }> {
@@ -34,12 +34,12 @@ async function getArticles(page: number, search = ""): Promise<{
     const cookieHeader = cookieStore.toString();
 
     const base = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000/api";
-    const url = `${base}/articles?page=${page}&limit=12&search=${encodeURIComponent(search)}`;
+    let url = `${base}/articles?page=${page}&limit=12&search=${encodeURIComponent(search)}`;
+    if (category) url += `&category=${encodeURIComponent(category)}`;
+
     const res = await fetch(url, {
       cache: "no-store",
-      headers: {
-        Cookie: cookieHeader
-      }
+      headers: { Cookie: cookieHeader },
     });
 
     if (!res.ok) return { articles: [], pagination: { total: 0, totalPages: 1 } };
@@ -51,6 +51,18 @@ async function getArticles(page: number, search = ""): Promise<{
     };
   } catch {
     return { articles: [], pagination: { total: 0, totalPages: 1 } };
+  }
+}
+
+async function getCategories(): Promise<Category[]> {
+  try {
+    const base = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000/api";
+    const res = await fetch(`${base}/categories`, { next: { revalidate: 120 } });
+    if (!res.ok) return [];
+    const data = await res.json();
+    return Array.isArray(data?.categories) ? data.categories : [];
+  } catch {
+    return [];
   }
 }
 
@@ -74,86 +86,157 @@ function ArticlesSkeleton() {
 export default async function ArticlesPage({
   searchParams,
 }: {
-  searchParams: Promise<{ page?: string; q?: string }>;
+  searchParams: Promise<{ page?: string; q?: string; category?: string }>;
 }) {
   const params = await searchParams;
   const page = parseInt(params.page || "1", 10);
   const search = params.q || "";
+  const categorySlug = params.category || "";
 
   return (
-    <div className="container mx-auto px-4 sm:px-6 pt-2 pb-6 sm:pt-4 sm:pb-8 space-y-6 sm:space-y-8">
-      {/* Header section starts immediately now to avoid blank space from ads */}
+    <div className="container mx-auto px-4 sm:px-6 pt-2 pb-8 sm:pt-4 sm:pb-12 space-y-6">
+      {/* Editorial Header */}
+      <header className="border-b border-border pb-6 space-y-5">
+        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+          <div>
+            <p className="text-xs font-bold tracking-widest text-primary uppercase mb-1">
+              Browse & Discover
+            </p>
+            <h1 className="text-3xl sm:text-4xl font-bold font-serif tracking-tight text-foreground">
+              All Articles
+            </h1>
+            <p className="mt-1.5 text-sm text-muted-foreground max-w-lg">
+              Stay updated with breaking news, trending stories, and in-depth analysis from our newsroom.
+            </p>
+          </div>
 
-      <div className="mb-6 sm:mb-8">
-        <h1 className="text-2xl sm:text-3xl font-bold mb-2">All Articles</h1>
-        <p className="text-sm sm:text-base text-muted-foreground">
-          Stay updated with the latest breaking news, trending stories, and in-depth analysis.
-        </p>
-      </div>
+          {/* Search Bar - aligned right on desktop */}
+          <div className="shrink-0 w-full sm:w-auto">
+            <SearchBar placeholder="Search articles…" defaultValue={search} />
+          </div>
+        </div>
 
-      {/* Search Bar */}
-      <SearchBar placeholder="Search articles..." defaultValue={search} />
+        {/* Category Filter Pills */}
+        <Suspense fallback={null}>
+          <CategoryFilters activeCategory={categorySlug} search={search} />
+        </Suspense>
+      </header>
 
+      {/* Active Filter Indicator */}
+      {(search || categorySlug) && (
+        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+          <span>Showing results</span>
+          {search && (
+            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-primary/10 text-primary text-xs font-medium">
+              &quot;{search}&quot;
+              <Link href={`/articles?page=1${categorySlug ? `&category=${categorySlug}` : ""}`} className="ml-0.5 hover:text-primary/70">×</Link>
+            </span>
+          )}
+          {categorySlug && (
+            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-primary/10 text-primary text-xs font-medium capitalize">
+              {categorySlug.replace(/-/g, " ")}
+              <Link href={`/articles?page=1${search ? `&q=${encodeURIComponent(search)}` : ""}`} className="ml-0.5 hover:text-primary/70">×</Link>
+            </span>
+          )}
+          <Link href="/articles" className="text-xs text-muted-foreground hover:text-primary underline ml-1">
+            Clear all
+          </Link>
+        </div>
+      )}
+
+      {/* Articles Grid */}
       <Suspense fallback={<ArticlesSkeleton />}>
-        <ArticlesList page={page} search={search} />
+        <ArticlesList page={page} search={search} category={categorySlug} />
       </Suspense>
-
-      {/* Bottom Ad */}
-      {/* <AdSlot slot="3456789012" height={90} className="mx-auto my-8" /> */}
     </div>
   );
 }
 
-async function ArticlesList({ page, search }: { page: number; search: string }) {
-  const { articles, pagination } = await getArticles(page, search);
+async function CategoryFilters({ activeCategory, search }: { activeCategory: string; search: string }) {
+  const categories = await getCategories();
+  const activeCategories = categories.filter(c => c.isActive);
+
+  if (activeCategories.length === 0) return null;
+
+  return (
+    <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-hide -mx-1 px-1">
+      <Link
+        href={`/articles?page=1${search ? `&q=${encodeURIComponent(search)}` : ""}`}
+        className={`shrink-0 px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all border whitespace-nowrap
+          ${!activeCategory
+            ? "bg-primary text-primary-foreground border-primary shadow-sm"
+            : "bg-card text-muted-foreground border-border hover:border-primary/40 hover:text-foreground"
+          }`}
+      >
+        All Topics
+      </Link>
+      {activeCategories.map((cat) => (
+        <Link
+          key={cat.id}
+          href={`/articles?page=1&category=${cat.slug}${search ? `&q=${encodeURIComponent(search)}` : ""}`}
+          className={`shrink-0 px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all border whitespace-nowrap
+            ${activeCategory === cat.slug
+              ? "bg-primary text-primary-foreground border-primary shadow-sm"
+              : "bg-card text-muted-foreground border-border hover:border-primary/40 hover:text-foreground"
+            }`}
+        >
+          {cat.name}
+        </Link>
+      ))}
+    </div>
+  );
+}
+
+async function ArticlesList({ page, search, category }: { page: number; search: string; category: string }) {
+  const { articles, pagination } = await getArticles(page, search, category);
 
   if (articles.length === 0) {
     return (
-      <div className="text-center py-12">
-        <p className="text-muted-foreground">No articles found at the moment.</p>
-        <Link href="/" className="text-primary underline mt-2 block">
-          Go back to homepage
-        </Link>
+      <div className="text-center py-16 rounded-xl border-2 border-dashed border-border bg-muted/20">
+        <p className="text-lg font-medium text-foreground mb-1">No articles found</p>
+        <p className="text-sm text-muted-foreground mb-4">
+          {search || category ? "Try adjusting your search or filters." : "No articles published yet."}
+        </p>
+        {(search || category) && (
+          <Link href="/articles" className="text-sm text-primary hover:underline font-medium">
+            ← View all articles
+          </Link>
+        )}
       </div>
     );
   }
 
+  // First article gets featured treatment on page 1 when not searching
+  const showFeatured = page === 1 && !search && !category && articles.length > 2;
+  const featuredArticle = showFeatured ? articles[0] : null;
+  const gridArticles = showFeatured ? articles.slice(1) : articles;
+
   return (
     <>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-        {articles.map((article) => (
+      {/* Featured Lead Article (page 1 only) */}
+      {featuredArticle && (
+        <div className="mb-8">
+          <ArticleCard article={featuredArticle} variant="featured" />
+        </div>
+      )}
+
+      {/* Articles Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
+        {gridArticles.map((article) => (
           <div key={article.id}>
-            {/* Insert inline ads after every 6 articles */}
-            {/* {index > 0 && index % 6 === 0 && (
-              <AdSlot slot={`inline-${index}`} width={300} height={250} className="my-4" />
-            )} */}
             <ArticleCard article={article} variant="default" />
           </div>
         ))}
       </div>
 
       {/* Pagination */}
-      {pagination.totalPages > 1 && (
-        <div className="mt-6 sm:mt-8 flex flex-col sm:flex-row justify-center items-center gap-3 sm:gap-4">
-          <Link
-            href={`/articles?page=${page - 1}${search ? `&q=${encodeURIComponent(search)}` : ""}`}
-            className={`w-full sm:w-auto px-4 py-2 border rounded-md text-center text-sm sm:text-base ${page <= 1 ? "opacity-50 pointer-events-none" : ""
-              }`}
-          >
-            Previous
-          </Link>
-          <span className="text-xs sm:text-sm text-muted-foreground">
-            Page {page} of {pagination.totalPages}
-          </span>
-          <Link
-            href={`/articles?page=${page + 1}${search ? `&q=${encodeURIComponent(search)}` : ""}`}
-            className={`w-full sm:w-auto px-4 py-2 border rounded-md text-center text-sm sm:text-base ${page >= pagination.totalPages ? "opacity-50 pointer-events-none" : ""
-              }`}
-          >
-            Next
-          </Link>
-        </div>
-      )}
+      <Pagination
+        currentPage={page}
+        totalPages={pagination.totalPages}
+        basePath="/articles"
+        searchQuery={search || undefined}
+        extraParams={category ? { category } : undefined}
+      />
     </>
   );
 }
