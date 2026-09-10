@@ -258,8 +258,22 @@ export default async function ArticlePage({
             </div>
           )}
 
-          {/* Content or Subscriber Lock */}
-          {article.content ? (
+          {/* Content or Subscriber Paywall Lock */}
+          {article.isSubscriberOnly || (article as any).locked || !article.content ? (
+            <div className="space-y-6">
+              {/* Editorial Teaser Text Preview with Fade Overlay */}
+              {article.excerpt && (
+                <div className="relative font-serif text-lg sm:text-xl text-foreground/80 leading-relaxed max-w-none">
+                  <p className="line-clamp-3 leading-relaxed">
+                    {article.excerpt}
+                  </p>
+                  <div className="absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-background to-transparent pointer-events-none" />
+                </div>
+              )}
+
+              <ArticleLock />
+            </div>
+          ) : (
             <SanitizedContent
               html={article.content}
               className="prose prose-lg sm:prose-xl prose-slate dark:prose-invert max-w-none 
@@ -271,8 +285,6 @@ export default async function ArticlePage({
               prose-img:rounded-xl prose-img:shadow-lg prose-img:my-8
               prose-li:marker:text-primary"
             />
-          ) : (
-            <ArticleLock />
           )}
 
           {/* Tags */}
@@ -294,7 +306,7 @@ export default async function ArticlePage({
           {/* <AdSlot slot="article-inline" width={728} height={90} className="mx-auto my-8" /> */}
 
           {/* Videos */}
-          {Array.isArray(article.videos) && article.videos.length > 0 && (
+          {!article.isSubscriberOnly && !(article as any).locked && Array.isArray(article.videos) && article.videos.length > 0 && (
             <section className="space-y-6">
               <h2 className="text-2xl font-semibold">Videos</h2>
               {article.videos.map((vid, idx) => (

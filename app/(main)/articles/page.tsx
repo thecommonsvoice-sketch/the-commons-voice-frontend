@@ -45,8 +45,9 @@ async function getArticles(page: number, search = "", category = ""): Promise<{
     if (!res.ok) return { articles: [], pagination: { total: 0, totalPages: 1 } };
     const data = await res.json();
 
+    const list: Article[] = Array.isArray(data?.data) ? data.data : [];
     return {
-      articles: Array.isArray(data?.data) ? data.data : [],
+      articles: list.filter((a) => !a.isSubscriberOnly),
       pagination: data.pagination ?? { total: 0, totalPages: 1 },
     };
   } catch {

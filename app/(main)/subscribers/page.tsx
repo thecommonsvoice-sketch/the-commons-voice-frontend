@@ -32,6 +32,8 @@ import ArticleLock from "@/components/ArticleLock";
 import { ArticleCard } from "@/components/ArticleCard";
 import { SubscriberWireCard } from "@/components/SubscriberWireCard";
 import { SubscriberItemModal } from "@/components/SubscriberItemModal";
+import { SubscriberMasthead } from "@/components/SubscriberMasthead";
+import { ScrollReveal } from "@/components/ScrollReveal";
 import { useUserStore } from "@/store/useUserStore";
 import { api } from "@/lib/api";
 import type { Article } from "@/lib/types";
@@ -68,41 +70,50 @@ function SubscribersContent() {
     setLoading(true);
     try {
       // 1. Check Subscriber Status
-      const statusRes = await api.get("/subscribers/status");
-      const subActive = statusRes.data?.isSubscriber || false;
-      setIsSubscriber(subActive);
-      if (statusRes.data?.subscriberExpiresAt) {
-        setExpiresAt(statusRes.data.subscriberExpiresAt);
+      let subActive = false;
+      try {
+        const statusRes = await api.get("/subscribers/status");
+        subActive = statusRes.data?.isSubscriber || false;
+        setIsSubscriber(subActive);
+        if (statusRes.data?.subscriberExpiresAt) {
+          setExpiresAt(statusRes.data.subscriberExpiresAt);
+        }
+      } catch {
+        setIsSubscriber(false);
       }
 
       // 2. Fetch Subscriber Articles if unlocked or user is staff
       const isStaff = user && (user.role === "ADMIN" || user.role === "EDITOR" || user.role === "REPORTER");
       if (subActive || isStaff) {
-        const articlesRes = await api.get("/articles?subscriberOnly=true");
-        const list: Article[] = articlesRes.data?.data || articlesRes.data?.articles || [];
-        setArticles(list);
+        try {
+          const articlesRes = await api.get("/subscribers/dispatches");
+          const list: Article[] = articlesRes.data?.dispatches || articlesRes.data?.data || [];
+          setArticles(list);
 
-        // Check if query param specifies a specific post
-        if (postParam) {
-          const matched = list.find((a) => a.id === postParam || a.slug === postParam);
-          if (matched) setSelectedArticleModal(matched);
-        }
-
-        // Auto-select latest video for top cinema player
-        for (const item of list) {
-          if (item.videos && item.videos.length > 0) {
-            const v = item.videos[0];
-            setActiveVideo({
-              id: v.url,
-              type: v.type,
-              url: v.url,
-              title: v.title || item.title,
-              coverImage: item.coverImage || undefined,
-              articleSlug: item.slug,
-              articleObj: item,
-            });
-            break;
+          // Check if query param specifies a specific post
+          if (postParam) {
+            const matched = list.find((a) => a.id === postParam || a.slug === postParam);
+            if (matched) setSelectedArticleModal(matched);
           }
+          // Auto-select latest video for top cinema player
+          for (const item of list) {
+            if (item.videos && item.videos.length > 0) {
+              const v = item.videos[0];
+              setActiveVideo({
+                id: v.url,
+                type: v.type,
+                url: v.url,
+                title: v.title || item.title,
+                coverImage: item.coverImage || undefined,
+                articleSlug: item.slug,
+                articleObj: item,
+              });
+              break;
+            }
+          }
+        } catch (err) {
+          console.warn("Could not fetch subscriber dispatches:", err);
+          setArticles([]);
         }
       }
     } catch (err) {
@@ -192,51 +203,18 @@ function SubscribersContent() {
 
   return (
     <div className="min-h-screen bg-background text-foreground font-sans selection:bg-primary/20 selection:text-primary">
-      {/* Newspaper Editorial Header Section */}
-      <motion.div
-        initial={{ opacity: 0, y: -15 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4 }}
-        className="border-b border-border bg-card/60 py-10 sm:py-14 px-4 sm:px-6 backdrop-blur-xs"
-      >
-        <div className="container mx-auto max-w-5xl text-center space-y-4">
-          <div className="flex items-center justify-center gap-2">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-primary/20 bg-primary/5 text-[11px] font-bold text-primary uppercase tracking-widest">
-              <ShieldCheck className="h-3.5 w-3.5" /> The Commons Voice • Insider Vault
-            </span>
-          </div>
-
-          <h1 className="font-serif text-3xl font-extrabold tracking-tight sm:text-5xl text-foreground">
-            Restricted Dispatches & Media Vault
-          </h1>
-          <p className="mx-auto max-w-2xl text-sm sm:text-base text-muted-foreground leading-relaxed">
-            Unedited video drops, reporter voice notes, and investigative files reserved exclusively for verified subscribers and newsroom members.
-          </p>
-
-          {/* Member Access Indicator Banner */}
-          <div className="pt-2 flex justify-center">
-            {isSubscriber ? (
-              <div className="inline-flex items-center gap-2.5 rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-4 py-2 text-xs sm:text-sm font-semibold text-emerald-700 dark:text-emerald-300">
-                <span className="relative flex h-2.5 w-2.5">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
-                </span>
-                <span>Member Access Granted • 30-Day Pass Active</span>
-                {expiresAt && (
-                  <span className="text-muted-foreground border-l border-emerald-500/20 pl-2.5 ml-1 text-xs font-normal">
-                    Expires {formatDate(expiresAt)}
-                  </span>
-                )}
-              </div>
-            ) : (
-              <div className="inline-flex items-center gap-2 rounded-lg border border-border bg-muted/60 px-4 py-2 text-xs sm:text-sm font-medium text-muted-foreground">
-                <Lock className="h-4 w-4 text-primary shrink-0" />
-                <span>Subscriber passcode required to unlock restricted dispatches</span>
-              </div>
-            )}
-          </div>
-        </div>
-      </motion.div>
+      {/* Cinematic Editorial Masthead */}
+      <SubscriberMasthead
+        isSubscriber={isSubscriber}
+        expiresAt={expiresAt}
+        totalDispatches={articles.length}
+        totalVideos={allVideoItems.length}
+        unlockSlot={
+          !isSubscriber && !(user && (user.role === "ADMIN" || user.role === "EDITOR" || user.role === "REPORTER")) ? (
+            <ArticleLock initialCode={codeParam} onUnlocked={fetchStatusAndContent} />
+          ) : undefined
+        }
+      />
 
       {/* Main Content Container */}
       <div className="container mx-auto max-w-6xl px-4 py-8 sm:px-6 space-y-10">
@@ -246,15 +224,7 @@ function SubscribersContent() {
             <p className="text-xs text-muted-foreground font-medium">Decrypting Vault Files...</p>
           </div>
         ) : !isSubscriber && !(user && (user.role === "ADMIN" || user.role === "EDITOR" || user.role === "REPORTER")) ? (
-          /* Locked Paywall State */
-          <motion.div
-            initial={{ opacity: 0, scale: 0.96 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.3 }}
-            className="mx-auto max-w-xl my-6"
-          >
-            <ArticleLock initialCode={codeParam} onUnlocked={fetchStatusAndContent} />
-          </motion.div>
+          null
         ) : (
           /* Unlocked Member Vault Layout */
           <div className="space-y-12">
@@ -312,6 +282,7 @@ function SubscribersContent() {
             )}
 
             {/* Filter Controls: Live Search, Categories, & Format Tabs */}
+            <ScrollReveal direction="up" delay={0.1}>
             <div className="space-y-4 border-b border-border pb-6">
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 {/* Search Bar */}
@@ -403,9 +374,11 @@ function SubscribersContent() {
                 </div>
               )}
             </div>
+            </ScrollReveal>
 
             {/* YouTube-Style Video Drops Gallery Grid */}
             {(feedFilter === "all" || feedFilter === "videos") && allVideoItems.length > 0 && (
+              <ScrollReveal direction="up" delay={0.15}>
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <h3 className="text-xs font-bold text-primary uppercase tracking-widest flex items-center gap-1.5">
@@ -496,6 +469,7 @@ function SubscribersContent() {
                   })}
                 </div>
               </div>
+              </ScrollReveal>
             )}
 
             {/* Wire Notes & Articles Feed */}
@@ -510,6 +484,7 @@ function SubscribersContent() {
                   </div>
                 ) : null
               ) : (
+                <ScrollReveal direction="up" delay={0.2}>
                 <div className="space-y-6 max-w-3xl mx-auto">
                   <div className="flex items-center justify-between pb-2 border-b border-border">
                     <h3 className="text-xs font-bold text-foreground uppercase tracking-widest flex items-center gap-1.5">
@@ -552,6 +527,7 @@ function SubscribersContent() {
                     );
                   })}
                 </div>
+                </ScrollReveal>
               )
             )}
           </div>

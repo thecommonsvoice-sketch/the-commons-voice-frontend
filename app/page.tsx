@@ -94,8 +94,8 @@ async function getCategories(): Promise<Category[]> {
 export default async function HomePage() {
   const [articles, categories] = await Promise.all([getArticles(), getCategories()]);
 
-  // Only show published articles
-  const publishedArticles = articles.filter(a => a.status === "PUBLISHED");
+  // Only show public published articles (exclude subscriber-only)
+  const publishedArticles = articles.filter(a => a.status === "PUBLISHED" && !a.isSubscriberOnly);
   const featuredArticles = publishedArticles.slice(0, 5);
   const recentArticles = publishedArticles.slice(5, 17);
   const trendingCategories = categories.filter(c => c.isActive).slice(0, 6);

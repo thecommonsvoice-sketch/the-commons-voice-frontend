@@ -53,6 +53,8 @@ export interface Article {
   author?: Pick<User, "id" | "name">;
   category?: Pick<Category, "id" | "name" | "slug">;
   videos?: VideoData[];
+  isSubscriberOnly?: boolean;
+  locked?: boolean;
   isBookmarked?: boolean;
 }
 

@@ -88,20 +88,9 @@ export default function AdminSubscriberContentPage() {
   const fetchSubscriberDrops = async () => {
     setLoadingDrops(true);
     try {
-      const res = await api.get("/articles?subscriberOnly=true&status=all");
-      const list: Article[] = res.data?.data || res.data?.articles || [];
+      const res = await api.get("/subscribers/dispatches");
+      const list: Article[] = res.data?.dispatches || res.data?.data || [];
       setSubscriberDrops(list);
-
-      // Auto-publish any draft drops created in studio
-      for (const item of list) {
-        if (item.status === "DRAFT") {
-          try {
-            await api.patch(`/articles/status/${item.id}`, { status: "PUBLISHED" });
-          } catch (err) {
-            console.error(`Failed to auto-publish drop ${item.id}:`, err);
-          }
-        }
-      }
     } catch (err) {
       console.error("Failed to load subscriber drops:", err);
     } finally {
@@ -163,7 +152,7 @@ export default function AdminSubscriberContentPage() {
         ? [{ url: vUrl, title: vTitle, type: "video" }]
         : undefined;
 
-      await api.post("/articles", {
+      await api.post("/subscribers/dispatches", {
         title: title.trim(),
         content: description.trim() || title.trim(),
         excerpt: description.trim() || undefined,
@@ -173,7 +162,6 @@ export default function AdminSubscriberContentPage() {
         videoTitle: vTitle,
         videoType: "video",
         videos,
-        isSubscriberOnly: true,
         status: "PUBLISHED",
       });
 
@@ -195,7 +183,7 @@ export default function AdminSubscriberContentPage() {
   const handleToggleStatus = async (item: Article) => {
     const nextStatus = item.status === "PUBLISHED" ? "DRAFT" : "PUBLISHED";
     try {
-      await api.patch(`/articles/status/${item.id}`, { status: nextStatus });
+      await api.patch(`/subscribers/dispatches/${item.id}/status`, { status: nextStatus });
       toast.success(nextStatus === "PUBLISHED" ? "Drop published to subscribers!" : "Drop saved as draft (hidden from subscribers)");
       setSubscriberDrops((prev) =>
         prev.map((d) => (d.id === item.id ? { ...d, status: nextStatus as any } : d))
@@ -227,7 +215,7 @@ export default function AdminSubscriberContentPage() {
     setUpdating(true);
     try {
       const vUrl = editVideoUrl.trim();
-      await api.put(`/articles/${editingDrop.id}`, {
+      await api.post(`/subscribers/dispatches`, {
         title: editTitle.trim(),
         content: editDescription.trim() || editTitle.trim(),
         excerpt: editDescription.trim() || undefined,
@@ -253,7 +241,7 @@ export default function AdminSubscriberContentPage() {
     if (!confirm(`Are you sure you want to delete subscriber drop "${dropTitle}"?`)) return;
 
     try {
-      await api.delete(`/admin/articles/${id}`);
+      await api.delete(`/subscribers/dispatches/${id}`);
       toast.success("Subscriber drop deleted");
       setSubscriberDrops((prev) => prev.filter((item) => item.id !== id));
     } catch (err: any) {

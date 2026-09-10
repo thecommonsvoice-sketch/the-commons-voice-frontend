@@ -91,25 +91,25 @@ export default function ArticleLock({ initialCode = "", onUnlocked }: ArticleLoc
   const signupUrl = `/signup?redirect=${encodeURIComponent(targetUrl)}`;
 
   return (
-    <div className="my-8 rounded-xl border border-border bg-card p-6 sm:p-10 text-card-foreground shadow-sm">
+    <div className="my-2 rounded-2xl border border-white/20 bg-black/65 backdrop-blur-xl p-5 sm:p-7 text-white shadow-2xl">
       <div className="flex flex-col items-center text-center max-w-lg mx-auto">
         {/* Lock / Shield Icon */}
-        <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-primary/10 text-primary">
+        <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/30">
           {success ? (
-            <CheckCircle2 className="h-7 w-7 text-emerald-600 dark:text-emerald-400" />
+            <CheckCircle2 className="h-6 w-6 text-emerald-400" />
           ) : (
-            <Lock className="h-7 w-7 text-primary" />
+            <Lock className="h-6 w-6 text-amber-400" />
           )}
         </div>
 
         {/* Title */}
-        <h3 className="font-serif text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-          {success ? "Subscriber Access Activated" : "Instagram Subscriber Access"}
+        <h3 className="font-serif text-xl sm:text-2xl font-bold tracking-tight text-white">
+          {success ? "Subscriber Access Activated" : "Unlock Member Access"}
         </h3>
-        <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
+        <p className="mt-1.5 text-xs sm:text-sm text-white/70 leading-relaxed">
           {success
-            ? "Your 30-day subscriber access is active. Refreshing story content..."
-            : "This article is exclusive to TCV Instagram Subscribers. Enter your passcode or log in to unlock 30-day access across all your devices."}
+            ? "Your 30-day subscriber access is active. Refreshing Vault content..."
+            : "Sign in or enter your Instagram subscriber passcode below to unlock 30-day access instantly."}
         </p>
 
         {/* Action Form */}
@@ -124,27 +124,43 @@ export default function ArticleLock({ initialCode = "", onUnlocked }: ArticleLoc
             )}
 
             {!user ? (
-              <div className="rounded-lg border border-border/80 bg-muted/30 p-5 text-center">
-                <p className="text-xs text-muted-foreground mb-4">
-                  Please sign in or create an account to redeem your passcode and link access to your profile.
-                </p>
-                <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                  <Button
-                    asChild
-                    className="font-medium"
-                  >
-                    <Link href={loginUrl}>
-                      <LogIn className="mr-2 h-4 w-4" />
-                      Sign In to Unlock
-                    </Link>
-                  </Button>
-                  <Button
-                    asChild
-                    variant="outline"
-                  >
-                    <Link href={signupUrl}>Create Account</Link>
-                  </Button>
+              <div className="space-y-3 pt-1">
+                <div className="rounded-xl border border-white/10 bg-white/[0.05] p-4 text-center space-y-3">
+                  <p className="text-xs text-white/70">
+                    Sign in to your account or enter your Instagram passcode to unlock member dispatches.
+                  </p>
+                  <div className="flex flex-col sm:flex-row gap-2.5 justify-center">
+                    <Button asChild className="font-semibold bg-white text-black hover:bg-white/90 shadow-sm text-xs h-9">
+                      <Link href={loginUrl}>
+                        <LogIn className="mr-1.5 h-3.5 w-3.5" />
+                        Sign In
+                      </Link>
+                    </Button>
+                    <Button asChild variant="outline" className="font-medium border-white/20 text-white hover:bg-white/10 text-xs h-9">
+                      <Link href={signupUrl}>Create Account</Link>
+                    </Button>
+                  </div>
                 </div>
+
+                {/* Passcode Direct Input for Guest Requesters */}
+                <form onSubmit={handleFormSubmit} className="space-y-2.5 pt-1">
+                  <div className="relative">
+                    <KeyRound className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-white/50" />
+                    <Input
+                      type="text"
+                      placeholder="Have a Passcode? (e.g. TCV-8F92A1)"
+                      value={code}
+                      onChange={(e) => {
+                        setCode(e.target.value.toUpperCase());
+                        if (error) setError(null);
+                      }}
+                      className="h-10 border-white/20 bg-white/10 pl-10 font-mono text-xs tracking-wider uppercase text-white placeholder:text-white/40 focus:border-amber-400"
+                    />
+                  </div>
+                  <Button type="submit" disabled={loading} className="w-full h-9 font-semibold text-xs bg-amber-500 hover:bg-amber-400 text-black">
+                    {loading ? <RefreshCw className="mr-1.5 h-3.5 w-3.5 animate-spin" /> : "Redeem Passcode"}
+                  </Button>
+                </form>
               </div>
             ) : (
               <form onSubmit={handleFormSubmit} className="space-y-3">

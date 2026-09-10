@@ -147,18 +147,28 @@ function SignupContent() {
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.4 }}
-          className="hidden lg:flex lg:col-span-5 flex-col justify-between p-8 sm:p-10 bg-muted/40 border-r border-border/80 relative"
+          className="hidden lg:flex lg:col-span-5 flex-col justify-between p-8 sm:p-10 text-white relative overflow-hidden"
         >
-          <div className="space-y-6">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-primary/20 bg-primary/5 text-xs font-bold text-primary uppercase tracking-widest">
-              <ShieldCheck className="h-3.5 w-3.5" /> Join The Newsroom
+          {/* Editorial Background Image */}
+          <div className="absolute inset-0 z-0">
+            <img
+              src="/images/press-conference-bg.png"
+              alt=""
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/80 to-black/85" />
+          </div>
+
+          <div className="relative z-10 space-y-6">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-white/20 bg-white/10 backdrop-blur-sm text-xs font-bold text-white uppercase tracking-widest">
+              <ShieldCheck className="h-3.5 w-3.5 text-emerald-400" /> Join The Newsroom
             </div>
 
             <div className="space-y-3">
-              <h2 className="font-serif text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground leading-snug">
+              <h2 className="font-serif text-2xl sm:text-3xl font-extrabold tracking-tight text-white leading-snug">
                 Become a Member of The Commons Voice
               </h2>
-              <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
+              <p className="text-xs sm:text-sm text-white/70 leading-relaxed">
                 Create your reader account to bookmark investigative reports, post comments, and unlock exclusive subscriber vault drops.
               </p>
             </div>
@@ -171,8 +181,8 @@ function SignupContent() {
                 { label: "Unlock Instagram & Vault Passcodes" },
                 { label: "Receive Breaking Wire Alerts" },
               ].map((perk, idx) => (
-                <div key={idx} className="flex items-center gap-2.5 text-xs text-foreground/90 font-medium">
-                  <div className="h-5 w-5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
+                <div key={idx} className="flex items-center gap-2.5 text-xs text-white/90 font-medium">
+                  <div className="h-5 w-5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center shrink-0">
                     <Check className="h-3 w-3" />
                   </div>
                   <span>{perk.label}</span>
@@ -182,9 +192,9 @@ function SignupContent() {
           </div>
 
           {/* Guarantee Badge */}
-          <div className="pt-8 border-t border-border/60">
-            <div className="flex items-center gap-2 text-xs font-semibold text-foreground font-serif uppercase tracking-wider">
-              <ShieldCheck className="h-4 w-4 text-primary" /> Free Reader Account • No Credit Card Required
+          <div className="relative z-10 pt-8 border-t border-white/15">
+            <div className="flex items-center gap-2 text-xs font-semibold text-white/90 font-serif uppercase tracking-wider">
+              <ShieldCheck className="h-4 w-4 text-emerald-400" /> Free Reader Account • No Credit Card Required
             </div>
           </div>
         </motion.div>
