@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { BreakingNewsTicker } from "@/components/BreakingNewsTicker";
 import { RecommendedWidget } from "@/components/RecommendedWidget";
 import { LeftPortalNav } from "@/components/LeftPortalNav";
+import { ScrollReveal } from "@/components/ScrollReveal";
 
 // Homepage metadata - optimized for SEO
 export const metadata: Metadata = {
@@ -154,7 +155,11 @@ export default async function HomePage() {
         <BreakingNewsTicker />
 
         {/* Bento Grid Hero */}
-        {featuredArticles.length > 0 && <BentoGridHero articles={featuredArticles} />}
+        {featuredArticles.length > 0 && (
+          <ScrollReveal direction="up" delay={0.1}>
+            <BentoGridHero articles={featuredArticles} />
+          </ScrollReveal>
+        )}
 
         {/* Responsive Grid */}
         <div className="grid grid-cols-1 md:grid-cols-12 gap-4 sm:gap-6 lg:gap-8 mt-4 sm:mt-6">
@@ -168,58 +173,9 @@ export default async function HomePage() {
 
           {/* Main Content */}
           <main className="md:col-span-9 lg:col-span-6 space-y-6 sm:space-y-8 order-2 md:order-2">
-
-            {/* Mobile/Tablet Trending - Shown here because Right Sidebar is hidden on Tablet or pushed down on Mobile */}
-            <div className="lg:hidden space-y-4 mb-6">
-              <h2 className="text-lg font-bold font-serif border-l-4 border-primary pl-3">Trending</h2>
-              <div className="flex flex-wrap gap-2">
-                {trendingCategories.map((category) => (
-                  <Link key={category.id} href={`/categories/${category.slug}`}>
-                    <Badge
-                      variant="secondary"
-                      className="hover:bg-primary hover:text-white transition-colors"
-                    >
-                      {category.name}
-                    </Badge>
-                  </Link>
-                ))}
-              </div>
-            </div>
-
-            <section>
-              <div className="flex items-center justify-between mb-4 sm:mb-6">
-                <h2 className="text-xl sm:text-2xl font-bold border-b-2 border-primary pb-2">
-                  Latest News
-                </h2>
-                <Link href="/articles" className="text-xs sm:text-sm text-primary hover:underline">
-                  View all
-                </Link>
-              </div>
-
-              <div className="grid grid-cols-1 gap-6">
-                {recentArticles.length > 0 ? (
-                  recentArticles.map((article) => (
-                    <ArticleCard key={article.id} article={article} variant="horizontal" />
-                  ))
-                ) : ( // ... skeletons
-                  Array.from({ length: 6 }).map((_, i) => (
-                    <Card key={i}>
-                      <Skeleton className="h-48 bg-gray-200 dark:bg-gray-800" />
-                      <CardContent className="p-4 space-y-2">
-                        <Skeleton className="h-4 w-3/4 bg-gray-200 dark:bg-gray-800" />
-                        <Skeleton className="h-4 w-1/2 bg-gray-200 dark:bg-gray-800" />
-                      </CardContent>
-                    </Card>
-                  ))
-                )}
-              </div>
-            </section>
-          </main>
-
-          {/* Right Sidebar - Stacked on Mobile, Hidden on Tablet, Visible on Desktop */}
-          <aside className="block md:hidden lg:block lg:col-span-3 space-y-8 order-3 md:order-3">
-            <div className="sticky top-24 space-y-8">
-              <div className="hidden lg:block space-y-4">
+            <ScrollReveal direction="up" delay={0.15}>
+              {/* Mobile/Tablet Trending */}
+              <div className="lg:hidden space-y-4 mb-6">
                 <h2 className="text-lg font-bold font-serif border-l-4 border-primary pl-3">Trending</h2>
                 <div className="flex flex-wrap gap-2">
                   {trendingCategories.map((category) => (
@@ -235,25 +191,77 @@ export default async function HomePage() {
                 </div>
               </div>
 
-              <RecommendedWidget items={recommendedItems} />
+              <section>
+                <div className="flex items-center justify-between mb-4 sm:mb-6">
+                  <h2 className="text-xl sm:text-2xl font-bold border-b-2 border-primary pb-2">
+                    Latest News
+                  </h2>
+                  <Link href="/articles" className="text-xs sm:text-sm text-primary hover:underline">
+                    View all
+                  </Link>
+                </div>
 
-              <div className="bg-muted/30 p-5 rounded-xl border border-border/50">
-                <h2 className="text-lg font-bold font-serif mb-2">Subscribe</h2>
-                <p className="text-sm text-muted-foreground mb-4">
-                  Get the latest news delivered.
-                </p>
-                <div className="space-y-2">
-                  <input
-                    type="email"
-                    placeholder="Email address"
-                    className="w-full px-3 py-2 text-sm border rounded-md bg-background"
-                  />
-                  <button className="w-full bg-primary text-primary-foreground px-3 py-2 text-sm rounded-md hover:bg-primary/90 transition-colors font-medium">
-                    Join Now
-                  </button>
+                <div className="grid grid-cols-1 gap-6">
+                  {recentArticles.length > 0 ? (
+                    recentArticles.map((article) => (
+                      <ArticleCard key={article.id} article={article} variant="horizontal" />
+                    ))
+                  ) : (
+                    Array.from({ length: 6 }).map((_, i) => (
+                      <Card key={i}>
+                        <Skeleton className="h-48 bg-gray-200 dark:bg-gray-800" />
+                        <CardContent className="p-4 space-y-2">
+                          <Skeleton className="h-4 w-3/4 bg-gray-200 dark:bg-gray-800" />
+                          <Skeleton className="h-4 w-1/2 bg-gray-200 dark:bg-gray-800" />
+                        </CardContent>
+                      </Card>
+                    ))
+                  )}
+                </div>
+              </section>
+            </ScrollReveal>
+          </main>
+
+          {/* Right Sidebar - Stacked on Mobile, Hidden on Tablet, Visible on Desktop */}
+          <aside className="block md:hidden lg:block lg:col-span-3 space-y-8 order-3 md:order-3">
+            <ScrollReveal direction="up" delay={0.2}>
+              <div className="sticky top-24 space-y-8">
+                <div className="hidden lg:block space-y-4">
+                  <h2 className="text-lg font-bold font-serif border-l-4 border-primary pl-3">Trending</h2>
+                  <div className="flex flex-wrap gap-2">
+                    {trendingCategories.map((category) => (
+                      <Link key={category.id} href={`/categories/${category.slug}`}>
+                        <Badge
+                          variant="secondary"
+                          className="hover:bg-primary hover:text-white transition-colors"
+                        >
+                          {category.name}
+                        </Badge>
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+
+                <RecommendedWidget items={recommendedItems} />
+
+                <div className="bg-muted/30 p-5 rounded-xl border border-border/50">
+                  <h2 className="text-lg font-bold font-serif mb-2">Subscribe</h2>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    Get the latest news delivered.
+                  </p>
+                  <div className="space-y-2">
+                    <input
+                      type="email"
+                      placeholder="Email address"
+                      className="w-full px-3 py-2 text-sm border rounded-md bg-background"
+                    />
+                    <button className="w-full bg-primary text-primary-foreground px-3 py-2 text-sm rounded-md hover:bg-primary/90 transition-colors font-medium">
+                      Join Now
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
+            </ScrollReveal>
           </aside>
         </div>
       </div>

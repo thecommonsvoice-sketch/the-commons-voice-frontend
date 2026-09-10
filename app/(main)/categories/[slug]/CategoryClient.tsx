@@ -9,6 +9,7 @@ import { api } from "@/lib/api";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Search } from "lucide-react";
+import { ScrollReveal } from "@/components/ScrollReveal";
 
 const CATEGORY_BACKGROUNDS: Record<string, string> = {
   // General News
@@ -166,13 +167,15 @@ export default function CategoryClient({
 
       {/* Articles Grid */}
       {!loading && articles.length > 0 ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-          {articles.map((article) => (
-            <div key={article.id} className="h-full">
-              <ArticleCard article={article} />
-            </div>
-          ))}
-        </div>
+        <ScrollReveal direction="up" delay={0.1}>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+            {articles.map((article) => (
+              <div key={article.id} className="h-full">
+                <ArticleCard article={article} />
+              </div>
+            ))}
+          </div>
+        </ScrollReveal>
       ) : !loading ? (
         <div className="text-center py-20 rounded-xl border-2 border-dashed border-muted text-muted-foreground bg-muted/20">
           <p className="text-lg font-medium">No articles found in this category.</p>

@@ -6,6 +6,7 @@ import { Skeleton } from "@/components/ui/loading-skeleton";
 import { Card, CardContent } from "@/components/ui/card";
 import { SearchBar } from "@/components/SearchBar";
 import { Pagination } from "@/components/Pagination";
+import { ScrollReveal } from "@/components/ScrollReveal";
 import type { Article, Category } from "@/lib/types";
 
 // --- SEO Metadata ---
@@ -146,9 +147,11 @@ export default async function ArticlesPage({
       )}
 
       {/* Articles Grid */}
-      <Suspense fallback={<ArticlesSkeleton />}>
-        <ArticlesList page={page} search={search} category={categorySlug} />
-      </Suspense>
+      <ScrollReveal direction="up" delay={0.1}>
+        <Suspense fallback={<ArticlesSkeleton />}>
+          <ArticlesList page={page} search={search} category={categorySlug} />
+        </Suspense>
+      </ScrollReveal>
     </div>
   );
 }
