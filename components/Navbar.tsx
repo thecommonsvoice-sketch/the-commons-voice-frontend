@@ -97,20 +97,20 @@ export default function Navbar() {
 
             {/* Desktop Navigation */}
             <div className="hidden lg:flex items-center space-x-2 xl:space-x-4 2xl:space-x-6 min-w-0 overflow-hidden">
-              <Link
+              {/* <Link
                 href="/subscribers"
                 className="text-xs xl:text-sm font-semibold px-3 py-1 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-all whitespace-nowrap shrink-0"
               >
                 Subscribers Wire
-              </Link>
+              </Link> */}
               {categories.map((category, index) => {
                 // Show top 4 categories on lg, top 5 on xl, all on 2xl
                 const visibilityClass =
                   index < 3
                     ? "inline-block"
                     : index < 5
-                    ? "hidden xl:inline-block"
-                    : "hidden 2xl:inline-block";
+                      ? "hidden xl:inline-block"
+                      : "hidden 2xl:inline-block";
 
                 return (
                   <Link
@@ -122,7 +122,7 @@ export default function Navbar() {
                   </Link>
                 );
               })}
-              
+
               {/* More Dropdown for items hidden on smaller desktop screens */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -137,8 +137,8 @@ export default function Navbar() {
                       index < 3
                         ? "2xl:hidden"
                         : index < 5
-                        ? "xl:hidden"
-                        : "";
+                          ? "xl:hidden"
+                          : "";
 
                     return (
                       <DropdownMenuItem asChild key={category.name} className={dropdownVisibilityClass}>
