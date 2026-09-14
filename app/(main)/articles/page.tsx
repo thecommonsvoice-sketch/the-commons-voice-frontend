@@ -96,40 +96,51 @@ export default async function ArticlesPage({
   const categorySlug = params.category || "";
 
   return (
-    <div className="container mx-auto px-4 sm:px-6 pt-4 pb-12 space-y-8 bg-grid-pattern rounded-3xl">
-      {/* Editorial Header Banner */}
-      <header className="glass-card p-6 sm:p-8 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xs space-y-6">
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-          <div className="space-y-2 max-w-2xl">
-            <div className="flex items-center gap-2">
-              <span className="w-2 h-5 bg-primary rounded-full" />
-              <p className="text-xs font-bold tracking-widest text-primary uppercase">
-                Newsroom Dispatch & Archives
-              </p>
-            </div>
-            <h1 className="text-3xl sm:text-5xl font-bold font-serif tracking-tight text-slate-900 dark:text-slate-100">
-              Explore All Articles
-            </h1>
-            <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300 leading-relaxed">
-              Discover breaking reporting, investigative stories, opinion pieces, and in-depth analysis across all topics.
-            </p>
-          </div>
-
-          {/* Search Bar */}
-          <div className="shrink-0 w-full md:w-80">
-            <SearchBar placeholder="Search news and topics…" defaultValue={search} />
-          </div>
+    <div className="container mx-auto px-4 sm:px-6 py-6 sm:py-10 space-y-8">
+      {/* Editorial Header Banner with Background Image & Gradient */}
+      <header className="relative rounded-3xl p-6 sm:p-10 md:p-12 overflow-hidden border border-slate-200/80 dark:border-slate-800 bg-slate-950 text-white shadow-xl group">
+        {/* Background Wallpaper Image */}
+        <div className="absolute inset-0 z-0">
+          <img
+            src="https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&w=1600&q=80"
+            alt="Newsroom Dispatch"
+            className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105 opacity-30"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/90 to-slate-900/80" />
+          <div className="absolute top-0 right-0 w-[450px] h-[450px] bg-primary/25 blur-3xl rounded-full pointer-events-none" />
         </div>
 
-        {/* Category Filter Pills */}
-        <Suspense fallback={null}>
-          <CategoryFilters activeCategory={categorySlug} search={search} />
-        </Suspense>
+        <div className="relative z-10 space-y-6">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+            <div className="space-y-3 max-w-2xl">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-white border border-white/20 backdrop-blur-md text-xs font-bold uppercase tracking-wider">
+                <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+                The Commons Voice Archive
+              </div>
+              <h1 className="text-3xl sm:text-5xl font-black font-serif tracking-tight text-white drop-shadow-md">
+                Explore All Articles
+              </h1>
+              <p className="text-slate-200 text-sm sm:text-base leading-relaxed font-medium">
+                Browse breaking news, investigative journalism, in-depth reports, and expert analysis across every channel.
+              </p>
+            </div>
+
+            {/* Search Bar */}
+            <div className="shrink-0 w-full md:w-80">
+              <SearchBar placeholder="Search news and topics…" defaultValue={search} />
+            </div>
+          </div>
+
+          {/* Category Filter Pills */}
+          <Suspense fallback={null}>
+            <CategoryFilters activeCategory={categorySlug} search={search} />
+          </Suspense>
+        </div>
       </header>
 
       {/* Active Filter Indicator */}
       {(search || categorySlug) && (
-        <div className="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-300 bg-card p-3 rounded-xl border border-slate-200 dark:border-slate-800">
+        <div className="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-300 bg-card p-3.5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-2xs">
           <span className="font-semibold">Filtered results:</span>
           {search && (
             <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-primary text-white text-xs font-bold">
@@ -169,10 +180,10 @@ async function CategoryFilters({ activeCategory, search }: { activeCategory: str
     <div className="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar pt-2">
       <Link
         href={`/articles?page=1${search ? `&q=${encodeURIComponent(search)}` : ""}`}
-        className={`shrink-0 px-4 py-1.5 rounded-full text-xs font-bold transition-all border whitespace-nowrap shadow-2xs
+        className={`shrink-0 px-4 py-1.5 rounded-full text-xs font-bold transition-all border whitespace-nowrap backdrop-blur-md shadow-xs
           ${!activeCategory
-            ? "bg-primary text-white border-primary shadow-xs shadow-primary/20"
-            : "bg-card text-slate-800 dark:text-slate-200 border-slate-300 dark:border-slate-700 hover:border-primary/50 hover:bg-primary/10 hover:text-primary"
+            ? "bg-primary text-white border-primary shadow-md shadow-primary/30"
+            : "bg-white/10 text-slate-100 border-white/20 hover:bg-white/20 hover:text-white"
           }`}
       >
         All Topics
@@ -181,10 +192,10 @@ async function CategoryFilters({ activeCategory, search }: { activeCategory: str
         <Link
           key={cat.id}
           href={`/articles?page=1&category=${cat.slug}${search ? `&q=${encodeURIComponent(search)}` : ""}`}
-          className={`shrink-0 px-4 py-1.5 rounded-full text-xs font-bold transition-all border whitespace-nowrap shadow-2xs
+          className={`shrink-0 px-4 py-1.5 rounded-full text-xs font-bold transition-all border whitespace-nowrap backdrop-blur-md shadow-xs
             ${activeCategory === cat.slug
-              ? "bg-primary text-white border-primary shadow-xs shadow-primary/20"
-              : "bg-card text-slate-800 dark:text-slate-200 border-slate-300 dark:border-slate-700 hover:border-primary/50 hover:bg-primary/10 hover:text-primary"
+              ? "bg-primary text-white border-primary shadow-md shadow-primary/30"
+              : "bg-white/10 text-slate-100 border-white/20 hover:bg-white/20 hover:text-white"
             }`}
         >
           {cat.name}

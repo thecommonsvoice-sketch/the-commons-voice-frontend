@@ -115,7 +115,8 @@ export default function CategoryClient({
               className="absolute inset-0 w-full h-full object-cover pointer-events-none transition-transform duration-700 group-hover:scale-105"
             />
             {/* Elegant cinematic dark gradient overlay for ultimate contrast */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/35 to-black/70 pointer-events-none z-10" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/45 to-black/75 pointer-events-none z-10" />
+            <div className="absolute top-0 right-0 w-[450px] h-[450px] bg-primary/30 blur-3xl rounded-full pointer-events-none z-10" />
           </>
         )}
 
