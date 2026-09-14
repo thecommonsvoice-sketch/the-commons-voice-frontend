@@ -5,7 +5,7 @@ import type { Article } from "@/lib/types";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useUserStore } from "@/store/useUserStore";
-import { Bookmark, BookmarkCheck, MessageSquareMore } from "lucide-react";
+import { Bookmark, BookmarkCheck, MessageSquareMore, Clock } from "lucide-react";
 import { Button } from "./ui/button";
 import { useEffect, useState } from "react";
 import { api } from "@/lib/api";
@@ -55,6 +55,8 @@ export function ArticleCard({ article, variant = "default", show = true }: Artic
     ? formatDistanceToNow(new Date(dateStr), { addSuffix: true })
     : "";
 
+  const readTime = Math.max(2, Math.ceil((article.content?.length || 600) / 1000));
+
   const changeBookmarkStatus = async (e: React.MouseEvent) => {
     e.preventDefault(); // Prevent navigation
     e.stopPropagation();
@@ -99,12 +101,12 @@ export function ArticleCard({ article, variant = "default", show = true }: Artic
   return (
     <>
       <Card
-        className={`group border border-slate-200 dark:border-slate-800 hover:border-primary/50 shadow-xs hover:shadow-lg transition-all duration-300 bg-card rounded-xl overflow-hidden h-full flex flex-col 
-          ${isFeatured ? "sm:col-span-2 lg:col-span-2" : isHorizontal ? "flex-row h-auto min-h-[140px]" : ""}`}
+        className={`group relative border border-slate-200/80 dark:border-slate-800/80 hover:border-primary/60 shadow-xs hover:shadow-xl hover:shadow-primary/5 transition-all duration-300 bg-card rounded-2xl overflow-hidden h-full flex flex-col hover:-translate-y-0.5
+          ${isFeatured ? "sm:col-span-2 lg:col-span-2" : isHorizontal ? "flex-row h-auto min-h-[150px]" : ""}`}
       >
-        <Link href={`/articles/${article.slug}`} prefetch={false} className={`flex-1 flex ${isHorizontal ? "flex-row gap-4" : "flex-col"}`}>
+        <Link href={`/articles/${article.slug}`} prefetch={false} className={`flex-1 flex ${isHorizontal ? "flex-row gap-3 sm:gap-5" : "flex-col"}`}>
           {/* Image Container */}
-          <div className={`relative overflow-hidden ${isHorizontal ? "w-1/3 aspect-[4/3] sm:aspect-video h-auto shrink-0" : "aspect-video"}`}>
+          <div className={`relative overflow-hidden ${isHorizontal ? "w-2/5 sm:w-1/3 aspect-[4/3] sm:aspect-video h-auto shrink-0" : "aspect-video"}`}>
             {article.coverImage ? (
               <>
                 <img
@@ -116,14 +118,14 @@ export function ArticleCard({ article, variant = "default", show = true }: Artic
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-60 group-hover:opacity-40 transition-opacity"></div>
               </>
             ) : (
-              <div className="h-full w-full bg-muted flex items-center justify-center text-muted-foreground text-sm font-medium">
+              <div className="h-full w-full bg-slate-100 dark:bg-slate-800/80 flex items-center justify-center text-muted-foreground text-xs font-medium">
                 No image available
               </div>
             )}
 
             {article.category && (
               <Badge
-                className={`absolute top-3 left-3 border shadow-xs font-bold px-2.5 py-0.5 text-xs rounded-md ${getCategoryBadgeClass(article.category.name)}`}
+                className={`absolute top-3 left-3 border shadow-xs font-bold px-2.5 py-0.5 text-xs rounded-md backdrop-blur-md ${getCategoryBadgeClass(article.category.name)}`}
               >
                 {article.category.name}
               </Badge>
@@ -134,60 +136,71 @@ export function ArticleCard({ article, variant = "default", show = true }: Artic
           <CardContent className={`flex-1 flex flex-col ${isCompact ? "p-3" : isHorizontal ? "p-3 sm:p-4 justify-between" : "p-4 sm:p-5"}`}>
             <div>
               <h3
-                className={`font-bold font-serif leading-tight text-slate-900 dark:text-slate-100 group-hover:text-primary transition-colors mb-2 line-clamp-2 
-                  ${isFeatured ? "text-xl sm:text-2xl" : isCompact ? "text-base" : isHorizontal ? "text-lg sm:text-xl" : "text-lg sm:text-xl"}`}
+                className={`font-bold font-serif leading-snug text-slate-900 dark:text-slate-100 group-hover:text-primary transition-colors mb-2 line-clamp-2 
+                  ${isFeatured ? "text-xl sm:text-2xl" : isCompact ? "text-base" : isHorizontal ? "text-base sm:text-lg" : "text-base sm:text-lg"}`}
               >
                 {article.title}
               </h3>
 
               {!isCompact && article.excerpt && (
-                <p className={`text-sm text-slate-700 dark:text-slate-300 font-normal leading-relaxed ${isHorizontal ? "line-clamp-2 md:line-clamp-3 mb-2" : "line-clamp-2 mb-4"}`}>
+                <p className={`text-xs sm:text-sm text-slate-600 dark:text-slate-300 font-normal leading-relaxed ${isHorizontal ? "line-clamp-2 md:line-clamp-3 mb-2" : "line-clamp-2 mb-4"}`}>
                   {article.excerpt}
                 </p>
               )}
             </div>
 
-            <div className={`flex items-center justify-between mt-auto pt-2 text-xs sm:text-sm text-muted-foreground ${isHorizontal ? "" : "border-t border-border/50 w-full"}`}>
-              <div className="flex items-center gap-2">
+            {/* Metadata Footer Bar */}
+            <div className={`flex items-center justify-between mt-auto pt-3 text-xs text-slate-600 dark:text-slate-400 ${isHorizontal ? "" : "border-t border-slate-100 dark:border-slate-800/80 w-full"}`}>
+              <div className="flex items-center gap-2 flex-wrap">
                 {article.author?.name && (
-                  <span className="font-medium text-foreground/80">{article.author.name}</span>
+                  <span className="flex items-center gap-1.5 font-semibold text-slate-900 dark:text-slate-100">
+                    <span className="w-5 h-5 rounded-full bg-primary/10 text-primary text-[10px] font-bold flex items-center justify-center shrink-0">
+                      {article.author.name.charAt(0)}
+                    </span>
+                    <span className="truncate max-w-[100px] sm:max-w-[140px]">{article.author.name}</span>
+                  </span>
                 )}
                 {article.author?.name && publishedDate && <span>•</span>}
-                {publishedDate && <span>{publishedDate}</span>}
+                {publishedDate && (
+                  <span className="flex items-center gap-1">
+                    <Clock className="w-3 h-3 text-slate-400 shrink-0" />
+                    <span>{publishedDate}</span>
+                  </span>
+                )}
               </div>
+
+              {/* Action Buttons for Both Vertical and Horizontal Cards */}
+              {show && (
+                <div className="flex items-center gap-1 shrink-0">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-7 w-7 text-slate-500 hover:text-primary hover:bg-primary/10 transition-colors rounded-full"
+                    onClick={openComments}
+                    title="Comments"
+                    aria-label="Open comments"
+                  >
+                    <MessageSquareMore className="w-3.5 h-3.5" />
+                  </Button>
+
+                  {user && (
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className={`h-7 w-7 transition-colors rounded-full ${isBookmarked ? "text-primary bg-primary/10" : "text-slate-500 hover:text-primary hover:bg-primary/10"}`}
+                      onClick={changeBookmarkStatus}
+                      disabled={disable}
+                      title={isBookmarked ? "Remove Bookmark" : "Bookmark"}
+                      aria-label={isBookmarked ? "Remove bookmark" : "Bookmark this article"}
+                    >
+                      {isBookmarked ? <BookmarkCheck className="w-3.5 h-3.5" /> : <Bookmark className="w-3.5 h-3.5" />}
+                    </Button>
+                  )}
+                </div>
+              )}
             </div>
           </CardContent>
         </Link>
-
-        {/* Actions Footer */}
-        {show && !isHorizontal && (
-          <CardFooter className="p-0 px-4 pb-4 mt-0 pt-0 flex justify-end gap-2 border-t border-transparent group-hover:border-border/40 transition-colors">
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-8 w-8 text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors"
-              onClick={openComments}
-              title="Comments"
-              aria-label="Open comments"
-            >
-              <MessageSquareMore className="w-4 h-4" />
-            </Button>
-
-            {user && (
-              <Button
-                variant="ghost"
-                size="icon"
-                className={`h-8 w-8 transition-colors ${isBookmarked ? "text-primary bg-primary/10" : "text-muted-foreground hover:text-primary hover:bg-primary/10"}`}
-                onClick={changeBookmarkStatus}
-                disabled={disable}
-                title={isBookmarked ? "Remove Bookmark" : "Bookmark"}
-                aria-label={isBookmarked ? "Remove bookmark" : "Bookmark this article"}
-              >
-                {isBookmarked ? <BookmarkCheck className="w-4 h-4" /> : <Bookmark className="w-4 h-4" />}
-              </Button>
-            )}
-          </CardFooter>
-        )}
       </Card>
 
       {isCommentsOpen && (
