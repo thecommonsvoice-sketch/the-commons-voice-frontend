@@ -79,28 +79,29 @@ export default function Navbar() {
 
   return (
     <>
-      <header className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b">
+      {/* Subtle Editorial Top Accent Bar */}
+      <div className="h-1 w-full bg-gradient-to-r from-red-600 via-blue-600 to-indigo-600" />
+      <header className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80 border-b border-border/80 shadow-xs">
         <div className="container mx-auto px-2 sm:px-4">
-          {/* Breaking news ticker */}
-          {/* <div className="border-b border-red-600 bg-red-600 text-white py-1 px-2 text-[10px] sm:text-xs font-medium">
-            <div className="animate-marquee whitespace-nowrap">
-              🔴 BREAKING: Latest news updates • Stay informed with real-time reporting
-            </div>
-          </div> */}
 
           <nav className="flex h-14 sm:h-16 items-center justify-between">
             {/* Logo */}
-            <Link href="/" className="flex items-center gap-2 shrink-0">
-              <span className="notranslate font-serif font-bold text-base sm:text-lg tracking-tight text-foreground/90 whitespace-nowrap" translate="no">The Commons Voice</span>
+            <Link href="/" className="flex items-center gap-2.5 shrink-0 group">
+              <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-primary-foreground font-serif font-black text-lg shadow-sm group-hover:scale-105 transition-transform">
+                C
+              </div>
+              <span className="notranslate font-serif font-bold text-base sm:text-xl tracking-tight text-foreground whitespace-nowrap" translate="no">
+                The Commons Voice
+              </span>
             </Link>
 
             {/* Desktop Navigation */}
             <div className="hidden lg:flex items-center space-x-2 xl:space-x-4 2xl:space-x-6 min-w-0 overflow-hidden">
               <Link
                 href="/subscribers"
-                className="text-xs xl:text-sm font-semibold text-foreground hover:text-primary transition-colors whitespace-nowrap shrink-0"
+                className="text-xs xl:text-sm font-semibold px-3 py-1 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-all whitespace-nowrap shrink-0"
               >
-                Subscribers
+                Subscribers Wire
               </Link>
               {categories.map((category, index) => {
                 // Show top 4 categories on lg, top 5 on xl, all on 2xl

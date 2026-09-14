@@ -38,20 +38,25 @@ export function BentoGridHero({ articles }: BentoGridHeroProps) {
                             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                         />
                         {/* Gradient Overlay */}
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/65 to-black/10" />
                     </div>
 
                     <div className="absolute bottom-0 left-0 p-6 sm:p-8 w-full max-w-3xl">
-                        {mainArticle.category && (
-                            <Badge className="mb-3 bg-primary hover:bg-primary/90 text-white border-none">
-                                {mainArticle.category.name}
-                            </Badge>
-                        )}
-                        <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-3 leading-tight drop-shadow-sm">
+                        <div className="flex items-center gap-2 mb-3 flex-wrap">
+                            <span className="bg-red-600 text-white font-bold text-xs uppercase px-2.5 py-1 rounded-md shadow-xs tracking-wider">
+                                Featured
+                            </span>
+                            {mainArticle.category && (
+                                <Badge className="bg-white/20 text-white backdrop-blur-md border border-white/30 font-semibold px-2.5 py-1">
+                                    {mainArticle.category.name}
+                                </Badge>
+                            )}
+                        </div>
+                        <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold font-serif text-white mb-3 leading-tight drop-shadow-md group-hover:text-blue-200 transition-colors">
                             {mainArticle.title}
                         </h2>
                         {mainArticle.excerpt && (
-                            <p className="text-gray-200 text-lg line-clamp-2 md:line-clamp-3 mb-4 max-w-2xl font-medium">
+                            <p className="text-slate-100 text-base sm:text-lg line-clamp-2 md:line-clamp-3 mb-4 max-w-2xl font-medium drop-shadow-sm leading-relaxed">
                                 {mainArticle.excerpt}
                             </p>
                         )}

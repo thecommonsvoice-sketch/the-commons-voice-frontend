@@ -191,62 +191,81 @@ export default async function ArticlePage({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      <div className="container mx-auto px-4 sm:px-6 py-6 sm:py-8 max-w-4xl">
-        <article className="space-y-4 sm:space-y-6">
-          {/* Ad: Leaderboard */}
-          {/* <AdSlot slot="article-top" width={970} height={250} className="mx-auto mb-4 sm:mb-6 hidden md:block" /> */}
+      <div className="container mx-auto px-4 sm:px-6 py-6 sm:py-10 max-w-4xl bg-grid-pattern rounded-3xl">
+        <article className="space-y-6 sm:space-y-8 bg-card border border-slate-200 dark:border-slate-800 p-6 sm:p-10 rounded-3xl shadow-sm">
+          {/* Breadcrumb Navigation */}
+          <nav className="flex items-center gap-2 text-xs font-semibold text-slate-600 dark:text-slate-400">
+            <Link href="/" className="hover:text-primary transition-colors">Home</Link>
+            <span>/</span>
+            <Link href="/articles" className="hover:text-primary transition-colors">Articles</Link>
+            {article.category?.slug && (
+              <>
+                <span>/</span>
+                <Link href={`/categories/${article.category.slug}`} className="text-primary hover:underline capitalize">
+                  {article.category.name}
+                </Link>
+              </>
+            )}
+          </nav>
 
           {/* Header */}
-          <header className="space-y-3 sm:space-y-4">
+          <header className="space-y-4">
             {article.category?.slug && (
               <Link href={`/categories/${article.category.slug}`}>
-                 <Badge variant="secondary" className="mb-2 cursor-pointer">
+                 <span className="inline-block px-3 py-1 rounded-md text-xs font-bold bg-primary/10 text-primary border border-primary/20 hover:bg-primary/20 transition-all">
                    {article.category.name}
-                 </Badge>
+                 </span>
                </Link>
             )}
 
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-gray-900 dark:text-gray-100 leading-tight">
+            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black font-serif tracking-tight text-slate-900 dark:text-slate-100 leading-tight">
               {article.title}
             </h1>
 
             {article.excerpt && (
-              <p className="text-lg sm:text-xl text-gray-600 dark:text-gray-300 leading-relaxed font-meduim">
+              <p className="text-lg sm:text-xl text-slate-700 dark:text-slate-300 leading-relaxed font-serif italic border-l-4 border-primary pl-4 py-1">
                 {article.excerpt}
               </p>
             )}
 
-            <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500 dark:text-gray-400 py-2">
-              {article.author?.name && (
-                <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold">
-                    {article.author.name.charAt(0)}
+            <div className="flex flex-wrap items-center justify-between gap-4 text-xs sm:text-sm text-slate-600 dark:text-slate-400 py-3 border-y border-border/80">
+              <div className="flex items-center gap-3">
+                {article.author?.name && (
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 rounded-full bg-primary text-white flex items-center justify-center font-bold shadow-xs">
+                      {article.author.name.charAt(0)}
+                    </div>
+                    <span>
+                      By <span className="font-bold text-slate-900 dark:text-slate-100">{article.author.name}</span>
+                    </span>
                   </div>
-                  <span>
-                    By <span className="font-semibold text-gray-900 dark:text-gray-100">{article.author.name}</span>
-                  </span>
-                </div>
-              )}
-              {articleDate && (
-                <>
-                  <Separator orientation="vertical" className="h-4" />
-                  <time dateTime={articleDate} className="font-medium">
-                    {(() => {
-                      try {
-                        return format(new Date(articleDate), "MMMM d, yyyy");
-                      } catch (e) {
-                        return "Date unavailable";
-                      }
-                    })()}
-                  </time>
-                </>
-              )}
+                )}
+                {articleDate && (
+                  <>
+                    <Separator orientation="vertical" className="h-4" />
+                    <time dateTime={articleDate} className="font-medium">
+                      {(() => {
+                        try {
+                          return format(new Date(articleDate), "MMMM d, yyyy");
+                        } catch (e) {
+                          return "Date unavailable";
+                        }
+                      })()}
+                    </time>
+                  </>
+                )}
+              </div>
+
+              <div className="flex items-center gap-2 bg-slate-100 dark:bg-slate-800/80 px-3 py-1 rounded-full text-xs font-semibold text-slate-700 dark:text-slate-300">
+                <span>📖</span>
+                <span>{Math.max(2, Math.ceil((article.content?.length || 500) / 1000))} min read</span>
+              </div>
             </div>
           </header>
 
           {/* Featured Image */}
           {article.coverImage && (
-            <div className="relative aspect-video overflow-hidden rounded-xl bg-muted">
+            <div className="relative aspect-video overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-800 shadow-md bg-muted">
               <Image
                 src={article.coverImage.startsWith('http') ? article.coverImage : `${process.env.NEXT_PUBLIC_API_URL?.replace('/api', '') || 'http://localhost:5000'}${article.coverImage.startsWith('/') ? '' : '/'}${article.coverImage}`}
                 alt={article.title}
@@ -263,11 +282,11 @@ export default async function ArticlePage({
             <div className="space-y-6">
               {/* Editorial Teaser Text Preview with Fade Overlay */}
               {article.excerpt && (
-                <div className="relative font-serif text-lg sm:text-xl text-foreground/80 leading-relaxed max-w-none">
+                <div className="relative font-serif text-lg sm:text-xl text-slate-800 dark:text-slate-200 leading-relaxed max-w-none">
                   <p className="line-clamp-3 leading-relaxed">
                     {article.excerpt}
                   </p>
-                  <div className="absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-background to-transparent pointer-events-none" />
+                  <div className="absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-card to-transparent pointer-events-none" />
                 </div>
               )}
 
@@ -277,12 +296,12 @@ export default async function ArticlePage({
             <SanitizedContent
               html={article.content}
               className="prose prose-lg sm:prose-xl prose-slate dark:prose-invert max-w-none 
-              font-serif text-gray-800 dark:text-gray-200 leading-loose article-content
-              prose-headings:font-sans prose-headings:font-bold prose-headings:tracking-tight 
-              prose-p:leading-loose prose-p:mb-6
-              prose-a:text-primary prose-a:no-underline hover:prose-a:underline
-              prose-blockquote:border-l-4 prose-blockquote:border-primary prose-blockquote:pl-6 prose-blockquote:italic prose-blockquote:text-gray-700 dark:prose-blockquote:text-gray-300
-              prose-img:rounded-xl prose-img:shadow-lg prose-img:my-8
+              font-serif text-slate-900 dark:text-slate-100 leading-relaxed article-content
+              prose-headings:font-sans prose-headings:font-bold prose-headings:tracking-tight prose-headings:text-slate-900 dark:prose-headings:text-slate-100
+              prose-p:leading-relaxed prose-p:mb-6 prose-p:text-slate-800 dark:prose-p:text-slate-200
+              prose-a:text-primary prose-a:font-semibold prose-a:no-underline hover:prose-a:underline
+              prose-blockquote:border-l-4 prose-blockquote:border-primary prose-blockquote:pl-6 prose-blockquote:py-2 prose-blockquote:bg-primary/5 prose-blockquote:rounded-r-xl prose-blockquote:italic prose-blockquote:text-slate-800 dark:prose-blockquote:text-slate-200
+              prose-img:rounded-2xl prose-img:shadow-md prose-img:my-8
               prose-li:marker:text-primary"
             />
           )}

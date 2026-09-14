@@ -149,10 +149,24 @@ export default async function HomePage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(newsCollectionSchema) }}
       />
 
-      <div className="container mx-auto px-2 sm:px-4 py-4 sm:py-6 space-y-6 sm:space-y-8">
+      <div className="container mx-auto px-2 sm:px-4 py-4 sm:py-6 space-y-6 sm:space-y-8 bg-grid-pattern rounded-3xl">
         <h1 className="sr-only">The Commons Voice - Independent News & Analysis</h1>
         {/* Breaking news ticker */}
         <BreakingNewsTicker />
+
+        {/* Dynamic Topic Hashtags Bar */}
+        <div className="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar text-xs font-semibold">
+          <span className="text-slate-500 uppercase tracking-wider text-[11px] shrink-0 font-bold">Trending Topics:</span>
+          {trendingCategories.map((cat) => (
+            <Link
+              key={cat.id}
+              href={`/categories/${cat.slug}`}
+              className="shrink-0 px-3 py-1 rounded-full bg-slate-200/80 dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-primary hover:text-white dark:hover:bg-primary transition-all duration-200 shadow-2xs"
+            >
+              #{cat.name}
+            </Link>
+          ))}
+        </div>
 
         {/* Bento Grid Hero */}
         {featuredArticles.length > 0 && (
@@ -175,8 +189,11 @@ export default async function HomePage() {
           <main className="md:col-span-9 lg:col-span-6 space-y-6 sm:space-y-8 order-2 md:order-2">
             <ScrollReveal direction="up" delay={0.15}>
               {/* Mobile/Tablet Trending */}
-              <div className="lg:hidden space-y-4 mb-6">
-                <h2 className="text-lg font-bold font-serif border-l-4 border-primary pl-3">Trending</h2>
+              <div className="lg:hidden space-y-4 mb-6 bg-card p-4 rounded-xl border border-slate-200 dark:border-slate-800">
+                <h2 className="text-base font-bold font-serif text-slate-900 dark:text-slate-100 flex items-center gap-2">
+                  <span className="w-1.5 h-4 bg-primary rounded-full" />
+                  Trending Categories
+                </h2>
                 <div className="flex flex-wrap gap-2">
                   {trendingCategories.map((category) => (
                     <Link key={category.id} href={`/categories/${category.slug}`}>
@@ -192,12 +209,15 @@ export default async function HomePage() {
               </div>
 
               <section>
-                <div className="flex items-center justify-between mb-4 sm:mb-6">
-                  <h2 className="text-xl sm:text-2xl font-bold border-b-2 border-primary pb-2">
-                    Latest News
-                  </h2>
-                  <Link href="/articles" className="text-xs sm:text-sm text-primary hover:underline">
-                    View all
+                <div className="flex items-center justify-between border-b-2 border-slate-200 dark:border-slate-800 pb-3 mb-6">
+                  <div className="flex items-center gap-2">
+                    <span className="w-2 h-6 bg-primary rounded-full" />
+                    <h2 className="text-xl sm:text-2xl font-bold font-serif text-slate-900 dark:text-slate-100">
+                      Latest News & Coverage
+                    </h2>
+                  </div>
+                  <Link href="/articles" className="text-xs sm:text-sm font-semibold text-primary hover:underline flex items-center gap-1">
+                    View all <span>&rarr;</span>
                   </Link>
                 </div>
 
@@ -222,18 +242,21 @@ export default async function HomePage() {
             </ScrollReveal>
           </main>
 
-          {/* Right Sidebar - Stacked on Mobile, Hidden on Tablet, Visible on Desktop */}
+          {/* Right Sidebar */}
           <aside className="block md:hidden lg:block lg:col-span-3 space-y-8 order-3 md:order-3">
             <ScrollReveal direction="up" delay={0.2}>
               <div className="sticky top-24 space-y-8">
-                <div className="hidden lg:block space-y-4">
-                  <h2 className="text-lg font-bold font-serif border-l-4 border-primary pl-3">Trending</h2>
+                <div className="hidden lg:block space-y-4 bg-card p-4 rounded-xl border border-slate-200 dark:border-slate-800">
+                  <h2 className="text-base font-bold font-serif text-slate-900 dark:text-slate-100 flex items-center gap-2">
+                    <span className="w-1.5 h-4 bg-primary rounded-full" />
+                    Trending Topics
+                  </h2>
                   <div className="flex flex-wrap gap-2">
                     {trendingCategories.map((category) => (
                       <Link key={category.id} href={`/categories/${category.slug}`}>
                         <Badge
                           variant="secondary"
-                          className="hover:bg-primary hover:text-white transition-colors"
+                          className="hover:bg-primary hover:text-white transition-colors cursor-pointer"
                         >
                           {category.name}
                         </Badge>
@@ -244,19 +267,21 @@ export default async function HomePage() {
 
                 <RecommendedWidget items={recommendedItems} />
 
-                <div className="bg-muted/30 p-5 rounded-xl border border-border/50">
-                  <h2 className="text-lg font-bold font-serif mb-2">Subscribe</h2>
-                  <p className="text-sm text-muted-foreground mb-4">
-                    Get the latest news delivered.
+                <div className="bg-slate-900 text-white p-5 rounded-2xl border border-slate-800 shadow-md space-y-3">
+                  <h2 className="text-base font-bold font-serif text-white flex items-center gap-2">
+                    <span>📬</span> Newsroom Digest
+                  </h2>
+                  <p className="text-xs text-slate-300 leading-relaxed">
+                    Get top breaking stories and analytical briefings delivered directly to your inbox every morning.
                   </p>
-                  <div className="space-y-2">
+                  <div className="space-y-2 pt-1">
                     <input
                       type="email"
-                      placeholder="Email address"
-                      className="w-full px-3 py-2 text-sm border rounded-md bg-background"
+                      placeholder="Your email address"
+                      className="w-full px-3 py-2 text-xs border border-slate-700 rounded-lg bg-slate-800 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary"
                     />
-                    <button className="w-full bg-primary text-primary-foreground px-3 py-2 text-sm rounded-md hover:bg-primary/90 transition-colors font-medium">
-                      Join Now
+                    <button className="w-full bg-primary text-white px-3 py-2 text-xs rounded-lg hover:bg-primary/90 transition-colors font-semibold shadow-xs">
+                      Join Free
                     </button>
                   </div>
                 </div>

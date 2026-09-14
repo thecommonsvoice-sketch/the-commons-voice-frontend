@@ -28,6 +28,18 @@ function optimizeImageUrl(url: string | undefined | null, width = 800): string {
   return url;
 }
 
+function getCategoryBadgeClass(categoryName?: string) {
+  if (!categoryName) return "bg-primary/10 text-primary border-primary/20";
+  const lower = categoryName.toLowerCase();
+  if (lower.includes("politic")) return "bg-red-100 text-red-900 dark:bg-red-950/80 dark:text-red-200 border-red-300 dark:border-red-800";
+  if (lower.includes("tech") || lower.includes("science")) return "bg-cyan-100 text-cyan-950 dark:bg-cyan-950/80 dark:text-cyan-200 border-cyan-300 dark:border-cyan-800";
+  if (lower.includes("business")) return "bg-emerald-100 text-emerald-950 dark:bg-emerald-950/80 dark:text-emerald-200 border-emerald-300 dark:border-emerald-800";
+  if (lower.includes("sport") || lower.includes("entertain")) return "bg-amber-100 text-amber-950 dark:bg-amber-950/80 dark:text-amber-200 border-amber-300 dark:border-amber-800";
+  if (lower.includes("world")) return "bg-blue-100 text-blue-950 dark:bg-blue-950/80 dark:text-blue-200 border-blue-300 dark:border-blue-800";
+  if (lower.includes("defence")) return "bg-slate-200 text-slate-900 dark:bg-slate-800 dark:text-slate-200 border-slate-300 dark:border-slate-700";
+  return "bg-purple-100 text-purple-950 dark:bg-purple-950/80 dark:text-purple-200 border-purple-300 dark:border-purple-800";
+}
+
 export function ArticleCard({ article, variant = "default", show = true }: ArticleCardProps) {
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [isCommentsOpen, setIsCommentsOpen] = useState(false);
@@ -87,7 +99,7 @@ export function ArticleCard({ article, variant = "default", show = true }: Artic
   return (
     <>
       <Card
-        className={`group border-none shadow-sm hover:shadow-xl transition-all duration-300 bg-card rounded-xl overflow-hidden h-full flex flex-col 
+        className={`group border border-slate-200 dark:border-slate-800 hover:border-primary/50 shadow-xs hover:shadow-lg transition-all duration-300 bg-card rounded-xl overflow-hidden h-full flex flex-col 
           ${isFeatured ? "sm:col-span-2 lg:col-span-2" : isHorizontal ? "flex-row h-auto min-h-[140px]" : ""}`}
       >
         <Link href={`/articles/${article.slug}`} prefetch={false} className={`flex-1 flex ${isHorizontal ? "flex-row gap-4" : "flex-col"}`}>
@@ -111,7 +123,7 @@ export function ArticleCard({ article, variant = "default", show = true }: Artic
 
             {article.category && (
               <Badge
-                className="absolute top-3 left-3 bg-white/90 dark:bg-black/80 hover:bg-white text-black dark:text-white backdrop-blur-sm border-none shadow-sm font-medium"
+                className={`absolute top-3 left-3 border shadow-xs font-bold px-2.5 py-0.5 text-xs rounded-md ${getCategoryBadgeClass(article.category.name)}`}
               >
                 {article.category.name}
               </Badge>
@@ -122,14 +134,14 @@ export function ArticleCard({ article, variant = "default", show = true }: Artic
           <CardContent className={`flex-1 flex flex-col ${isCompact ? "p-3" : isHorizontal ? "p-3 sm:p-4 justify-between" : "p-4 sm:p-5"}`}>
             <div>
               <h3
-                className={`font-bold font-serif leading-tight group-hover:text-primary transition-colors text-foreground mb-2 line-clamp-2 
+                className={`font-bold font-serif leading-tight text-slate-900 dark:text-slate-100 group-hover:text-primary transition-colors mb-2 line-clamp-2 
                   ${isFeatured ? "text-xl sm:text-2xl" : isCompact ? "text-base" : isHorizontal ? "text-lg sm:text-xl" : "text-lg sm:text-xl"}`}
               >
                 {article.title}
               </h3>
 
               {!isCompact && article.excerpt && (
-                <p className={`text-sm text-muted-foreground leading-relaxed ${isHorizontal ? "line-clamp-2 md:line-clamp-3 mb-2" : "line-clamp-2 mb-4"}`}>
+                <p className={`text-sm text-slate-700 dark:text-slate-300 font-normal leading-relaxed ${isHorizontal ? "line-clamp-2 md:line-clamp-3 mb-2" : "line-clamp-2 mb-4"}`}>
                   {article.excerpt}
                 </p>
               )}

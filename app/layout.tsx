@@ -102,10 +102,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
         <ThemeProvider defaultTheme="system">
           <AuthProvider>
-            <div className="relative flex min-h-screen flex-col">
+            <div className="relative flex min-h-screen flex-col bg-slate-50/70 dark:bg-slate-950/90 text-foreground selection:bg-primary selection:text-white">
+              {/* Ambient Mesh Background Lighting */}
+              <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden opacity-40 dark:opacity-30">
+                <div className="absolute top-[-100px] left-1/2 -translate-x-1/2 w-[1000px] h-[450px] bg-gradient-to-b from-blue-400/20 via-indigo-500/10 to-transparent blur-3xl rounded-full" />
+                <div className="absolute top-[500px] left-[-150px] w-[400px] h-[400px] bg-emerald-400/10 blur-3xl rounded-full" />
+                <div className="absolute top-[1100px] right-[-150px] w-[450px] h-[450px] bg-rose-400/10 blur-3xl rounded-full" />
+              </div>
+
               <Navbar />
 
-              <main className="w-full h-full overflow-y-auto flex-1">{children}</main>
+              <main className="relative z-10 w-full h-full overflow-y-auto flex-1">{children}</main>
               <Footer />
             </div>
             <Toaster />

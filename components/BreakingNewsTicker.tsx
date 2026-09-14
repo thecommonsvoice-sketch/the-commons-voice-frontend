@@ -64,10 +64,16 @@ export function BreakingNewsTicker() {
 
   return (
     <div
-      className={`bg-red-600 text-white h-10 px-4 overflow-hidden whitespace-nowrap flex items-center gap-4 ${oxanium.className}`}
+      className={`bg-gradient-to-r from-red-700 via-red-600 to-rose-700 text-white h-10 px-4 overflow-hidden whitespace-nowrap flex items-center gap-3 shadow-xs ${oxanium.className}`}
     >
-      <strong className="flex-shrink-0">Breaking News:</strong>
-      <div className="overflow-hidden flex-1">
+      <div className="flex-shrink-0 flex items-center gap-2 bg-black/20 px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wider">
+        <span className="relative flex h-2 w-2">
+          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
+          <span className="relative inline-flex rounded-full h-2 w-2 bg-white"></span>
+        </span>
+        <span>Breaking News</span>
+      </div>
+      <div className="overflow-hidden flex-1 text-sm font-medium text-white/95">
         {headlines.length > 0 && (
           <div
             ref={marqueeRef}
@@ -78,7 +84,7 @@ export function BreakingNewsTicker() {
             }}
           >
             {repeated.map((h, i) => (
-              <span key={i} className="mx-6 inline-block">
+              <span key={i} className="mx-6 inline-block hover:underline cursor-pointer">
                 {h}
               </span>
             ))}

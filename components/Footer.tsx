@@ -68,33 +68,58 @@ const Footer = () => {
   // Use all 5 categories (or slice if you strictly want max 5, but static list is already 5)
   const newCat = categories;
   return (
-    <footer className="border-t bg-muted/30">
-      <div className="container mx-auto px-4 py-8">
+    <footer className="border-t border-slate-800 bg-slate-900 text-slate-200 dark:bg-slate-950">
+      {/* Top Footer Banner / Newsletter Callout */}
+      <div className="border-b border-slate-800/80 bg-slate-950/50 py-8">
+        <div className="container mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-4">
+          <div>
+            <h3 className="text-lg font-bold text-white font-serif">Subscribe to The Commons Voice</h3>
+            <p className="text-sm text-slate-400">Get independent daily reporting and investigative stories delivered straight to your inbox.</p>
+          </div>
+          <div className="flex w-full md:w-auto items-center gap-2">
+            <input
+              type="email"
+              placeholder="Enter your email address"
+              className="bg-slate-800 border border-slate-700 text-white placeholder-slate-400 text-sm rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary w-full md:w-72"
+            />
+            <button className="bg-primary hover:bg-primary/90 text-white text-sm font-semibold px-4 py-2 rounded-lg transition-all shrink-0">
+              Subscribe
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div className="container mx-auto px-4 py-12">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
           <div>
-            <h3 className="notranslate font-semibold mb-3" translate="no">The Commons Voice</h3>
-            <p className="text-sm text-muted-foreground mb-4">
-              We love to tell grounded stories and explore life.
+            <div className="flex items-center gap-2 mb-3">
+              <div className="w-7 h-7 rounded-md bg-primary flex items-center justify-center text-white font-serif font-bold text-base">
+                C
+              </div>
+              <h3 className="notranslate font-serif font-bold text-lg text-white" translate="no">The Commons Voice</h3>
+            </div>
+            <p className="text-sm text-slate-400 mb-6 leading-relaxed">
+              Independent journalism committed to truth, depth, and community voice.
             </p>
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3">
               {socialLinks.map((social) => (
                 <a
                   key={social.label}
                   href={social.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className={`flex items-center justify-center w-5 h-5 transition-all duration-300 hover:scale-110 text-muted-foreground ${social.color}`}
+                  className={`flex items-center justify-center w-8 h-8 rounded-full bg-slate-800 text-slate-300 transition-all duration-300 hover:scale-110 hover:bg-slate-700 ${social.color}`}
                   title={social.label}
                 >
                   {social.kind === "icon" && social.icon ? (
-                    <social.icon className="w-full h-full" />
+                    <social.icon className="w-4 h-4" />
                   ) : social.kind === "image" ? (
                     <Image
                       src={social.imageSrc}
                       alt={social.label}
-                      width={20}
-                      height={20}
-                      className="w-full h-full brightness-0 dark:invert transition-all"
+                      width={16}
+                      height={16}
+                      className="w-4 h-4 invert transition-all"
                       unoptimized
                     />
                   ) : null}
@@ -103,34 +128,31 @@ const Footer = () => {
             </div>
           </div>
           <div>
-            <h4 className="font-medium mb-3">Categories</h4>
-            <ul className="space-y-1 text-sm">
-
-              {
-                newCat && newCat.map((cat) => (
-                  <li key={cat.name}>
-                    <Link href={cat.href} className="hover:underline">{cat.name}</Link>
-                  </li>
-                ))
-              }
+            <h4 className="font-semibold text-white mb-4 text-sm uppercase tracking-wider">Categories</h4>
+            <ul className="space-y-2 text-sm text-slate-400">
+              {newCat && newCat.map((cat) => (
+                <li key={cat.name}>
+                  <Link href={cat.href} className="hover:text-white transition-colors">{cat.name}</Link>
+                </li>
+              ))}
             </ul>
           </div>
           <div>
-            <h4 className="font-medium mb-3">About</h4>
-            <ul className="space-y-1 text-sm">
-              <li><Link href="/about" className="hover:underline">About Us</Link></li>
-              <li><Link href="/contact" className="hover:underline">Contact</Link></li>
+            <h4 className="font-semibold text-white mb-4 text-sm uppercase tracking-wider">About</h4>
+            <ul className="space-y-2 text-sm text-slate-400">
+              <li><Link href="/about" className="hover:text-white transition-colors">About Us</Link></li>
+              <li><Link href="/contact" className="hover:text-white transition-colors">Contact</Link></li>
             </ul>
           </div>
           <div>
-            <h4 className="font-medium mb-3">Legal</h4>
-            <ul className="space-y-1 text-sm">
-              <li><Link href="/privacy" className="hover:underline">Privacy Policy</Link></li>
-              <li><Link href="/terms" className="hover:underline">Terms of Service</Link></li>
+            <h4 className="font-semibold text-white mb-4 text-sm uppercase tracking-wider">Legal</h4>
+            <ul className="space-y-2 text-sm text-slate-400">
+              <li><Link href="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link></li>
+              <li><Link href="/terms" className="hover:text-white transition-colors">Terms of Service</Link></li>
             </ul>
           </div>
         </div>
-        <div className="mt-8 pt-8 border-t text-center text-sm text-muted-foreground">
+        <div className="mt-12 pt-8 border-t border-slate-800 text-center text-xs text-slate-500">
           <p>&copy; 2026 <span className="notranslate" translate="no">The Commons Voice</span>. All rights reserved.</p>
         </div>
       </div>
