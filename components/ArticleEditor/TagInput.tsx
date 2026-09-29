@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
 
 interface TagInputProps {
@@ -15,8 +14,8 @@ interface TagInputProps {
 export function TagInput({
   tags,
   onChange,
-  placeholder = "Add tags and press Enter",
-  maxTags = 10,
+  placeholder = "Add tags separated by comma or press Enter",
+  maxTags = 25,
 }: TagInputProps) {
   const [inputValue, setInputValue] = useState("");
   const [suggestions, setSuggestions] = useState<string[]>([]);
@@ -38,19 +37,33 @@ export function TagInput({
     "world",
     "national",
     "local",
+    "defence",
+    "economy",
+    "environment",
   ];
 
-  const handleAddTag = (tag: string) => {
-    const trimmedTag = tag.trim().toLowerCase();
-    if (
-      trimmedTag &&
-      !tags.includes(trimmedTag) &&
-      tags.length < maxTags
-    ) {
-      onChange([...tags, trimmedTag]);
-      setInputValue("");
-      setSuggestions([]);
+  // Parses single or comma-separated string of tags and adds them
+  const addTags = (rawInput: string) => {
+    if (!rawInput.trim()) return;
+
+    // Split by comma or newline
+    const incomingTags = rawInput
+      .split(/[,\n]+/)
+      .map((t) => t.trim().replace(/^#+/, "").toLowerCase())
+      .filter((t) => t.length > 0);
+
+    if (incomingTags.length === 0) return;
+
+    const newTags = [...tags];
+    for (const tag of incomingTags) {
+      if (!newTags.includes(tag) && newTags.length < maxTags) {
+        newTags.push(tag);
+      }
     }
+
+    onChange(newTags);
+    setInputValue("");
+    setSuggestions([]);
   };
 
   const handleRemoveTag = (tag: string) => {
@@ -58,27 +71,50 @@ export function TagInput({
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
+    if (e.key === "Enter" || e.key === ",") {
       e.preventDefault();
-      handleAddTag(inputValue);
+      if (inputValue.trim()) {
+        addTags(inputValue);
+      }
     } else if (e.key === "Backspace" && !inputValue && tags.length > 0) {
       handleRemoveTag(tags[tags.length - 1]);
     }
   };
 
   const handleInputChange = (value: string) => {
+    // If the input contains a comma (typed or pasted), add immediately
+    if (value.includes(",")) {
+      addTags(value);
+      return;
+    }
+
     setInputValue(value);
+
     // Show suggestions based on input
-    if (value.length > 0) {
+    const clean = value.trim().replace(/^#+/, "").toLowerCase();
+    if (clean.length > 0) {
       const filtered = commonTags.filter(
-        (tag) =>
-          tag.includes(value.toLowerCase()) &&
-          !tags.includes(tag)
+        (tag) => tag.includes(clean) && !tags.includes(tag)
       );
       setSuggestions(filtered.slice(0, 5));
     } else {
       setSuggestions([]);
     }
+  };
+
+  const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
+    const text = e.clipboardData.getData("text");
+    if (text.includes(",") || text.includes("\n")) {
+      e.preventDefault();
+      addTags(text);
+    }
+  };
+
+  const handleBlur = () => {
+    if (inputValue.trim()) {
+      addTags(inputValue);
+    }
+    setSuggestions([]);
   };
 
   return (
@@ -95,7 +131,8 @@ export function TagInput({
               <button
                 type="button"
                 onClick={() => handleRemoveTag(tag)}
-                className="hover:text-indigo-900 transition-colors"
+                className="hover:text-indigo-900 transition-colors cursor-pointer"
+                title="Remove tag"
               >
                 <X size={14} />
               </button>
@@ -111,6 +148,8 @@ export function TagInput({
             value={inputValue}
             onChange={(e) => handleInputChange(e.target.value)}
             onKeyDown={handleKeyDown}
+            onPaste={handlePaste}
+            onBlur={handleBlur}
             disabled={tags.length >= maxTags}
             className="bg-white border-0 p-0 focus:ring-0 placeholder-gray-400"
           />
@@ -122,8 +161,8 @@ export function TagInput({
                 <button
                   key={suggestion}
                   type="button"
-                  onClick={() => handleAddTag(suggestion)}
-                  className="w-full text-left px-3 py-2 hover:bg-gray-100 text-sm text-gray-700 transition-colors first:rounded-t-lg last:rounded-b-lg"
+                  onClick={() => addTags(suggestion)}
+                  className="w-full text-left px-3 py-2 hover:bg-gray-100 text-sm text-gray-700 transition-colors first:rounded-t-lg last:rounded-b-lg cursor-pointer"
                 >
                   #{suggestion}
                 </button>
@@ -135,7 +174,7 @@ export function TagInput({
 
       {/* Helper Text */}
       <p className="text-xs text-gray-500">
-        {tags.length}/{maxTags} tags • Press Enter to add, Backspace to remove
+        {tags.length}/{maxTags} tags • Type or paste comma-separated tags (e.g. <code>politics, climate, world</code>) or press Enter
       </p>
     </div>
   );
