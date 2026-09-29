@@ -1,163 +1,177 @@
-"use client"
-import Link from 'next/link'
-import Image from 'next/image'
-import React from 'react'
-import { Facebook, Instagram, type LucideIcon } from "lucide-react";
-// import { useCategoryStore } from '@/store/useCategoryStore'
+"use client";
 
-const Footer = () => {
+import Link from "next/link";
 
-  // Static categories list
-  const categories = [
-    { name: "General", href: "/categories/general" },
-    { name: "Politics", href: "/categories/politics" },
-    { name: "Science and Technology", href: "/categories/science-and-technology" },
-    { name: "Sports and Entertainment", href: "/categories/sports-and-entertainment" },
-    { name: "Business", href: "/categories/business" },
-    { name: "World", href: "/categories/world" },
-    { name: "Defence", href: "/categories/defence" },
+export default function Footer() {
+  const editorialSections = [
+    { name: "General News & Wire", href: "/categories/general" },
+    { name: "Politics & Statecraft", href: "/categories/politics" },
+    { name: "Science & Technology", href: "/categories/science-and-technology" },
+    { name: "Sports & Entertainment", href: "/categories/sports-and-entertainment" },
+    { name: "Business & Commerce", href: "/categories/business" },
+    { name: "World & Regional Wire", href: "/categories/world" },
+    { name: "Defence & Strategic Affairs", href: "/categories/defence" },
   ];
 
-  type SocialLink =
-    | {
-        kind: "icon";
-        icon: LucideIcon;
-        href: string;
-        label: string;
-        color: string;
-      }
-    | {
-        kind: "image";
-        imageSrc: string;
-        href: string;
-        label: string;
-        color: string;
-      };
-
-  const socialLinks: SocialLink[] = [
-    {
-      kind: "icon",
-      icon: Instagram,
-      href: "https://www.instagram.com/thecommons_voice/",
-      label: "Instagram",
-      color: "hover:text-pink-500",
-    },
-    {
-      kind: "image",
-      imageSrc: "https://cdn.simpleicons.org/threads/111111",
-      href: "https://www.threads.com/@thecommons_voice",
-      label: "Threads",
-      color: "",
-    },
-    {
-      kind: "icon",
-      icon: Facebook,
-      href: "https://www.facebook.com/profile.php?id=61578787756966",
-      label: "Facebook",
-      color: "hover:text-blue-600",
-    },
-    {
-      kind: "image",
-      imageSrc: "https://cdn.simpleicons.org/x/111111",
-      href: "https://x.com/commonsvoice1",
-      label: "X",
-      color: "",
-    },
+  const investigativeUnits = [
+    { name: "Climate Observatory", href: "/categories/science-and-technology" },
+    { name: "Financial Forensic Desk", href: "/categories/business" },
+    { name: "Elections & Polling Tracker", href: "/categories/politics" },
+    { name: "Commons Podcast Network", href: "/articles" },
+    { name: "Special Documentary Archive", href: "/articles" },
   ];
 
-  // Use all 5 categories (or slice if you strictly want max 5, but static list is already 5)
-  const newCat = categories;
+  const commonsTrust = [
+    { name: "Contact Us & Desk", href: "/contact" },
+    { name: "Editorial Code of Ethics", href: "/about" },
+    { name: "Corrections & Clarifications", href: "/about" },
+    { name: "Press Freedom Charter", href: "/about" },
+    { name: "Subscriber Help Desk", href: "/contact" },
+  ];
+
   return (
-    <footer className="border-t border-slate-800 bg-slate-900 text-slate-200 dark:bg-slate-950">
-      {/* Top Footer Banner / Newsletter Callout */}
-      <div className="border-b border-slate-800/80 bg-slate-950/50 py-8">
-        <div className="container mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-4">
-          <div>
-            <h3 className="text-lg font-bold text-white font-serif">Subscribe to The Commons Voice</h3>
-            <p className="text-sm text-slate-400">Get independent daily reporting and investigative stories delivered straight to your inbox.</p>
+    <footer className="w-full bg-[#1A1715] text-[#FAF7F2] pt-12 pb-8 border-t-4 border-[#C2410C]">
+      <div className="max-w-[1380px] mx-auto px-4 sm:px-6 md:px-8">
+        {/* Top Footer: Brand Statement & Foreign Bureaus Telegram */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 pb-10 border-b border-[#3C3835]">
+          <div className="lg:col-span-6 space-y-3">
+            <h4 className="font-masthead text-2xl sm:text-3xl font-bold tracking-tight text-[#FAF7F2]">
+              The Commons Voice
+            </h4>
+            <span className="font-sans text-[10px] tracking-[0.25em] uppercase text-stone-400 font-bold block">
+              Independent International Broadsheet of Record
+            </span>
+            <p className="font-serif text-sm text-stone-300 max-w-lg leading-relaxed pt-1">
+              Dedicated to verified reporting, geopolitical perspective, and rigorous editorial analysis across continents and cultures. Published without corporate or partisan bias.
+            </p>
           </div>
-          <div className="flex w-full md:w-auto items-center gap-2">
-            <input
-              type="email"
-              placeholder="Enter your email address"
-              className="bg-slate-800 border border-slate-700 text-white placeholder-slate-400 text-sm rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary w-full md:w-72"
-            />
-            <button className="bg-primary hover:bg-primary/90 text-white text-sm font-semibold px-4 py-2 rounded-lg transition-all shrink-0">
-              Subscribe
-            </button>
+
+          <div className="lg:col-span-6 flex flex-col justify-between bg-[#23201E] p-6 border border-[#3C3835]">
+            <div>
+              <span className="font-sans text-[10px] uppercase font-bold tracking-widest text-[#C2410C] block mb-1">
+                Newsroom &amp; Editorial Desk
+              </span>
+              <p className="font-serif text-xs text-stone-300">
+                For news tips, corrections, press releases, and editorial submissions:
+              </p>
+              <div className="font-mono text-xs text-amber-200 mt-2 bg-[#1A1715] p-2.5 border border-[#3C3835] flex items-center justify-between flex-wrap gap-2">
+                <a href="mailto:contact@thecommonsvoice.com" className="hover:underline">
+                  contact@thecommonsvoice.com
+                </a>
+                <Link
+                  href="/contact"
+                  className="text-[10px] font-sans font-bold bg-[#C2410C] hover:bg-[#9A3412] text-white px-2.5 py-1 uppercase tracking-wider transition-colors inline-flex items-center gap-1"
+                >
+                  <span>Contact Page</span>
+                  <span>→</span>
+                </Link>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
 
-      <div className="container mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
+        {/* 4 Editorial Columns */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 py-8 border-b border-[#3C3835] font-sans text-xs">
           <div>
-            <div className="flex items-center gap-2 mb-3">
-              <div className="w-7 h-7 rounded-md bg-primary flex items-center justify-center text-white font-serif font-bold text-base">
-                C
-              </div>
-              <h3 className="notranslate font-serif font-bold text-lg text-white" translate="no">The Commons Voice</h3>
-            </div>
-            <p className="text-sm text-slate-400 mb-6 leading-relaxed">
-              Independent journalism committed to truth, depth, and community voice.
-            </p>
-            <div className="flex items-center gap-3">
-              {socialLinks.map((social) => (
-                <a
-                  key={social.label}
-                  href={social.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={`flex items-center justify-center w-8 h-8 rounded-full bg-slate-800 text-slate-300 transition-all duration-300 hover:scale-110 hover:bg-slate-700 ${social.color}`}
-                  title={social.label}
-                >
-                  {social.kind === "icon" && social.icon ? (
-                    <social.icon className="w-4 h-4" />
-                  ) : social.kind === "image" ? (
-                    <Image
-                      src={social.imageSrc}
-                      alt={social.label}
-                      width={16}
-                      height={16}
-                      className="w-4 h-4 invert transition-all"
-                      unoptimized
-                    />
-                  ) : null}
-                </a>
-              ))}
-            </div>
-          </div>
-          <div>
-            <h4 className="font-semibold text-white mb-4 text-sm uppercase tracking-wider">Categories</h4>
-            <ul className="space-y-2 text-sm text-slate-400">
-              {newCat && newCat.map((cat) => (
-                <li key={cat.name}>
-                  <Link href={cat.href} className="hover:text-white transition-colors">{cat.name}</Link>
+            <h5 className="font-bold uppercase tracking-wider text-[11px] text-stone-300 mb-3">
+              Editorial Sections
+            </h5>
+            <ul className="space-y-2 text-stone-400">
+              {editorialSections.map((item) => (
+                <li key={item.name}>
+                  <Link href={item.href} className="hover:text-stone-200 transition-colors">
+                    {item.name}
+                  </Link>
                 </li>
               ))}
             </ul>
           </div>
+
           <div>
-            <h4 className="font-semibold text-white mb-4 text-sm uppercase tracking-wider">About</h4>
-            <ul className="space-y-2 text-sm text-slate-400">
-              <li><Link href="/about" className="hover:text-white transition-colors">About Us</Link></li>
-              <li><Link href="/contact" className="hover:text-white transition-colors">Contact</Link></li>
+            <h5 className="font-bold uppercase tracking-wider text-[11px] text-stone-300 mb-3">
+              Investigative Units
+            </h5>
+            <ul className="space-y-2 text-stone-400">
+              {investigativeUnits.map((item) => (
+                <li key={item.name}>
+                  <Link href={item.href} className="hover:text-stone-200 transition-colors">
+                    {item.name}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
+
           <div>
-            <h4 className="font-semibold text-white mb-4 text-sm uppercase tracking-wider">Legal</h4>
-            <ul className="space-y-2 text-sm text-slate-400">
-              <li><Link href="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link></li>
-              <li><Link href="/terms" className="hover:text-white transition-colors">Terms of Service</Link></li>
+            <h5 className="font-bold uppercase tracking-wider text-[11px] text-stone-300 mb-3">
+              Commons Trust
+            </h5>
+            <ul className="space-y-2 text-stone-400">
+              {commonsTrust.map((item) => (
+                <li key={item.name}>
+                  <Link href={item.href} className="hover:text-stone-200 transition-colors">
+                    {item.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div>
+            <h5 className="font-bold uppercase tracking-wider text-[11px] text-stone-300 mb-3">
+              Newsroom Desk
+            </h5>
+            <ul className="space-y-2.5 text-stone-400 text-xs">
+              <li>
+                <strong className="text-stone-300">Official Email:</strong>{" "}
+                <a
+                  href="mailto:contact@thecommonsvoice.com"
+                  className="hover:underline text-amber-200"
+                >
+                  contact@thecommonsvoice.com
+                </a>
+              </li>
+              <li>
+                <strong className="text-stone-300">Office:</strong> Dehradun, Uttarakhand, India
+              </li>
+              <li>
+                <strong className="text-stone-300">Response:</strong> Within 24–48 Hours
+              </li>
+              <li className="pt-2 border-t border-[#3C3835]">
+                <Link
+                  href="/contact"
+                  className="inline-flex items-center gap-1 text-[11px] font-bold text-[#C2410C] hover:text-amber-300 transition-colors uppercase tracking-wider"
+                >
+                  <span>Open Contact Us Form</span>
+                  <span>→</span>
+                </Link>
+              </li>
             </ul>
           </div>
         </div>
-        <div className="mt-12 pt-8 border-t border-slate-800 text-center text-xs text-slate-500">
-          <p>&copy; 2026 <span className="notranslate" translate="no">The Commons Voice</span>. All rights reserved.</p>
+
+        {/* Legal & Copyright */}
+        <div className="pt-6 flex flex-col md:flex-row items-center justify-between gap-4 font-sans text-[11px] text-stone-500">
+          <p>© {new Date().getFullYear()} The Commons Voice. Independent journalism for the global public interest.</p>
+          <div className="flex items-center gap-4">
+            <Link href="/contact" className="hover:text-[#C2410C] font-semibold text-stone-300 transition-colors">
+              Contact Us
+            </Link>
+            <span>•</span>
+            <Link href="/about" className="hover:text-stone-300 transition-colors">
+              About Us
+            </Link>
+            <span>•</span>
+            <Link href="/privacy" className="hover:text-stone-300 transition-colors">
+              Privacy Policy
+            </Link>
+            <span>•</span>
+            <Link href="/terms" className="hover:text-stone-300 transition-colors">
+              Terms of Service
+            </Link>
+          </div>
         </div>
       </div>
     </footer>
-  )
+  );
 }
-
-export default Footer

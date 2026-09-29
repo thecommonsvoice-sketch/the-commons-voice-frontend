@@ -83,19 +83,19 @@ export function TagInput({
 
   return (
     <div className="space-y-2">
-      <div className="border rounded-lg p-3 bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600">
+      <div className="border rounded-lg p-3 bg-white border-gray-300">
         {/* Tags Display */}
         <div className="flex flex-wrap gap-2 mb-2">
           {tags.map((tag) => (
             <span
               key={tag}
-              className="inline-flex items-center gap-1 px-3 py-1 bg-indigo-100 dark:bg-indigo-900 text-indigo-700 dark:text-indigo-200 rounded-full text-sm font-medium"
+              className="inline-flex items-center gap-1 px-3 py-1 bg-indigo-100 text-indigo-700 rounded-full text-sm font-medium"
             >
               #{tag}
               <button
                 type="button"
                 onClick={() => handleRemoveTag(tag)}
-                className="hover:text-indigo-900 dark:hover:text-white transition-colors"
+                className="hover:text-indigo-900 transition-colors"
               >
                 <X size={14} />
               </button>
@@ -112,18 +112,18 @@ export function TagInput({
             onChange={(e) => handleInputChange(e.target.value)}
             onKeyDown={handleKeyDown}
             disabled={tags.length >= maxTags}
-            className="bg-white dark:bg-gray-700 border-0 p-0 focus:ring-0 placeholder-gray-400 dark:placeholder-gray-500"
+            className="bg-white border-0 p-0 focus:ring-0 placeholder-gray-400"
           />
 
           {/* Suggestions Dropdown */}
           {suggestions.length > 0 && (
-            <div className="absolute top-full left-0 right-0 mt-1 bg-white dark:bg-gray-600 border border-gray-300 dark:border-gray-500 rounded-lg shadow-lg z-10">
+            <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-300 rounded-lg shadow-lg z-10">
               {suggestions.map((suggestion) => (
                 <button
                   key={suggestion}
                   type="button"
                   onClick={() => handleAddTag(suggestion)}
-                  className="w-full text-left px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-500 text-sm text-gray-700 dark:text-gray-200 transition-colors first:rounded-t-lg last:rounded-b-lg"
+                  className="w-full text-left px-3 py-2 hover:bg-gray-100 text-sm text-gray-700 transition-colors first:rounded-t-lg last:rounded-b-lg"
                 >
                   #{suggestion}
                 </button>
@@ -134,7 +134,7 @@ export function TagInput({
       </div>
 
       {/* Helper Text */}
-      <p className="text-xs text-gray-500 dark:text-gray-400">
+      <p className="text-xs text-gray-500">
         {tags.length}/{maxTags} tags • Press Enter to add, Backspace to remove
       </p>
     </div>

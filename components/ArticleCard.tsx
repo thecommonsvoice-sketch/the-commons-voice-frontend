@@ -31,13 +31,12 @@ function optimizeImageUrl(url: string | undefined | null, width = 800): string {
 function getCategoryBadgeClass(categoryName?: string) {
   if (!categoryName) return "bg-primary/10 text-primary border-primary/20";
   const lower = categoryName.toLowerCase();
-  if (lower.includes("politic")) return "bg-red-100 text-red-900 dark:bg-red-950/80 dark:text-red-200 border-red-300 dark:border-red-800";
-  if (lower.includes("tech") || lower.includes("science")) return "bg-cyan-100 text-cyan-950 dark:bg-cyan-950/80 dark:text-cyan-200 border-cyan-300 dark:border-cyan-800";
-  if (lower.includes("business")) return "bg-emerald-100 text-emerald-950 dark:bg-emerald-950/80 dark:text-emerald-200 border-emerald-300 dark:border-emerald-800";
-  if (lower.includes("sport") || lower.includes("entertain")) return "bg-amber-100 text-amber-950 dark:bg-amber-950/80 dark:text-amber-200 border-amber-300 dark:border-amber-800";
-  if (lower.includes("world")) return "bg-blue-100 text-blue-950 dark:bg-blue-950/80 dark:text-blue-200 border-blue-300 dark:border-blue-800";
-  if (lower.includes("defence")) return "bg-slate-200 text-slate-900 dark:bg-slate-800 dark:text-slate-200 border-slate-300 dark:border-slate-700";
-  return "bg-purple-100 text-purple-950 dark:bg-purple-950/80 dark:text-purple-200 border-purple-300 dark:border-purple-800";
+  if (lower.includes("politic")) return "bg-red-100 text-red-900 border-red-300";
+  if (lower.includes("tech") || lower.includes("science")) return "bg-cyan-100 text-cyan-950 border-cyan-300";
+  if (lower.includes("business")) return "bg-emerald-100 text-emerald-950 border-emerald-300";
+  if (lower.includes("sport") || lower.includes("entertain")) return "bg-amber-100 text-amber-950 border-amber-300";
+  if (lower.includes("world")) return "bg-blue-100 text-blue-950 border-blue-300";
+  return "bg-stone-100 text-stone-900 border-stone-300";
 }
 
 export function ArticleCard({ article, variant = "default", show = true }: ArticleCardProps) {
@@ -101,34 +100,33 @@ export function ArticleCard({ article, variant = "default", show = true }: Artic
   return (
     <>
       <Card
-        className={`group relative border border-slate-200/80 dark:border-slate-800/80 hover:border-primary/60 shadow-xs hover:shadow-xl hover:shadow-primary/5 transition-all duration-300 bg-card rounded-2xl overflow-hidden h-full flex flex-col hover:-translate-y-0.5
+        className={`group relative border border-[#E2D9CE] hover:border-[#1A1715] transition-all duration-300 bg-[#FAF7F2] rounded-none overflow-hidden h-full flex flex-col shadow-none
           ${isFeatured ? "sm:col-span-2 lg:col-span-2" : isHorizontal ? "flex-row h-auto min-h-[150px]" : ""}`}
       >
         <Link href={`/articles/${article.slug}`} prefetch={false} className={`flex-1 flex ${isHorizontal ? "flex-row gap-3 sm:gap-5" : "flex-col"}`}>
           {/* Image Container */}
-          <div className={`relative overflow-hidden ${isHorizontal ? "w-2/5 sm:w-1/3 aspect-[4/3] sm:aspect-video h-auto shrink-0" : "aspect-video"}`}>
+          <div className={`relative overflow-hidden bg-[#F3EDE5] border-b sm:border-b-0 border-[#E2D9CE] ${isHorizontal ? "w-2/5 sm:w-1/3 aspect-[4/3] h-auto shrink-0 border-r" : "aspect-video"}`}>
             {article.coverImage ? (
               <>
                 <img
                   src={optimizeImageUrl(article.coverImage, isFeatured ? 1200 : isHorizontal ? 600 : 800)}
                   alt={article.title}
                   loading="lazy"
-                  className="h-full w-full object-cover transform transition-transform duration-700 group-hover:scale-105"
+                  className="h-full w-full object-cover transform transition-transform duration-500 group-hover:scale-102"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-60 group-hover:opacity-40 transition-opacity"></div>
               </>
             ) : (
-              <div className="h-full w-full bg-slate-100 dark:bg-slate-800/80 flex items-center justify-center text-muted-foreground text-xs font-medium">
-                No image available
+              <div className="h-full w-full bg-[#F3EDE5] flex items-center justify-center text-[#68635D] text-xs font-sans">
+                No photograph filed
               </div>
             )}
 
             {article.category && (
-              <Badge
-                className={`absolute top-3 left-3 border shadow-xs font-bold px-2.5 py-0.5 text-xs rounded-md backdrop-blur-md ${getCategoryBadgeClass(article.category.name)}`}
+              <span
+                className="absolute top-2.5 left-2.5 font-sans font-bold text-[9px] uppercase tracking-widest px-2 py-0.5 bg-[#1A1715] text-[#FAF7F2] rounded-none shadow-xs"
               >
                 {article.category.name}
-              </Badge>
+              </span>
             )}
           </div>
 
@@ -136,37 +134,27 @@ export function ArticleCard({ article, variant = "default", show = true }: Artic
           <CardContent className={`flex-1 flex flex-col ${isCompact ? "p-3" : isHorizontal ? "p-3 sm:p-4 justify-between" : "p-4 sm:p-5"}`}>
             <div>
               <h3
-                className={`font-bold font-serif leading-snug text-slate-900 dark:text-slate-100 group-hover:text-primary transition-colors mb-2 line-clamp-2 
+                className={`font-bold font-headline leading-snug text-[#1A1715] group-hover:text-[#C2410C] transition-colors mb-2 line-clamp-2 
                   ${isFeatured ? "text-xl sm:text-2xl" : isCompact ? "text-base" : isHorizontal ? "text-base sm:text-lg" : "text-base sm:text-lg"}`}
               >
                 {article.title}
               </h3>
 
               {!isCompact && article.excerpt && (
-                <p className={`text-xs sm:text-sm text-slate-600 dark:text-slate-300 font-normal leading-relaxed ${isHorizontal ? "line-clamp-2 md:line-clamp-3 mb-2" : "line-clamp-2 mb-4"}`}>
+                <p className={`text-xs sm:text-sm text-[#3C3835] font-serif leading-relaxed ${isHorizontal ? "line-clamp-2 md:line-clamp-3 mb-2" : "line-clamp-2 mb-4"}`}>
                   {article.excerpt}
                 </p>
               )}
             </div>
 
             {/* Metadata Footer Bar */}
-            <div className={`flex items-center justify-between mt-auto pt-3 text-xs text-slate-600 dark:text-slate-400 ${isHorizontal ? "" : "border-t border-slate-100 dark:border-slate-800/80 w-full"}`}>
-              <div className="flex items-center gap-2 flex-wrap">
-                {article.author?.name && (
-                  <span className="flex items-center gap-1.5 font-semibold text-slate-900 dark:text-slate-100">
-                    <span className="w-5 h-5 rounded-full bg-primary/10 text-primary text-[10px] font-bold flex items-center justify-center shrink-0">
-                      {article.author.name.charAt(0)}
-                    </span>
-                    <span className="truncate max-w-[100px] sm:max-w-[140px]">{article.author.name}</span>
-                  </span>
-                )}
-                {article.author?.name && publishedDate && <span>•</span>}
-                {publishedDate && (
-                  <span className="flex items-center gap-1">
-                    <Clock className="w-3 h-3 text-slate-400 shrink-0" />
-                    <span>{publishedDate}</span>
-                  </span>
-                )}
+            <div className={`flex items-center justify-between mt-auto pt-3 text-xs text-[#68635D] font-sans ${isHorizontal ? "" : "border-t border-[#E2D9CE] w-full"}`}>
+              <div className="flex items-center gap-2 flex-wrap text-[11px]">
+                <span className="font-bold text-[#1A1715]">
+                  {article.author?.name || "The Commons Voice"}
+                </span>
+                <span>•</span>
+                {publishedDate && <span>{publishedDate}</span>}
               </div>
 
               {/* Action Buttons for Both Vertical and Horizontal Cards */}
@@ -175,7 +163,7 @@ export function ArticleCard({ article, variant = "default", show = true }: Artic
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="h-7 w-7 text-slate-500 hover:text-primary hover:bg-primary/10 transition-colors rounded-full"
+                    className="h-7 w-7 text-[#68635D] hover:text-[#C2410C] hover:bg-[#F3EDE5] transition-colors rounded-none"
                     onClick={openComments}
                     title="Comments"
                     aria-label="Open comments"
@@ -187,7 +175,7 @@ export function ArticleCard({ article, variant = "default", show = true }: Artic
                     <Button
                       variant="ghost"
                       size="icon"
-                      className={`h-7 w-7 transition-colors rounded-full ${isBookmarked ? "text-primary bg-primary/10" : "text-slate-500 hover:text-primary hover:bg-primary/10"}`}
+                      className={`h-7 w-7 transition-colors rounded-none ${isBookmarked ? "text-[#C2410C] bg-[#F3EDE5]" : "text-[#68635D] hover:text-[#C2410C] hover:bg-[#F3EDE5]"}`}
                       onClick={changeBookmarkStatus}
                       disabled={disable}
                       title={isBookmarked ? "Remove Bookmark" : "Bookmark"}

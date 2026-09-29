@@ -1,14 +1,29 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
-@custom-variant dark (&:is(.dark *));
-
 @theme inline {
+  --color-surface: #FAF7F2;
+  --color-surface-dim: #F3EDE5;
+  --color-surface-container: #F5EFEB;
+  --color-surface-container-high: #ECE4DB;
+  --color-surface-container-lowest: #FFFFFF;
+  --color-ink: #1A1715;
+  --color-ink-light: #3C3835;
+  --color-ink-muted: #68635D;
+  --color-vermilion: #C2410C;
+  --color-vermilion-dark: #9A3412;
+  --color-hairline: #E2D9CE;
+  --color-hairline-dark: #D1C4B5;
+  --color-parchment: #F4EFEA;
+  --color-parchment-border: #DFD6C9;
+
+  --font-masthead: var(--font-newsreader), "Georgia", serif;
+  --font-headline: var(--font-newsreader), "Georgia", serif;
+  --font-serif: var(--font-source-serif), "Georgia", serif;
+  --font-sans: var(--font-libre-franklin), system-ui, sans-serif;
+
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-serif: var(--font-merriweather);
-  --font-mono: var(--font-geist-mono);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -38,79 +53,45 @@
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
+  --radius-sm: 0px;
+  --radius-md: 0px;
+  --radius-lg: 0px;
+  --radius-xl: 0px;
 }
 
 :root {
-  --radius: 0.625rem;
-  --background: #f8fafc;
-  --foreground: oklch(0.12 0.02 240);
-  --card: #ffffff;
-  --card-foreground: oklch(0.12 0.02 240);
-  --popover: #ffffff;
-  --popover-foreground: oklch(0.12 0.02 240);
-  --primary: oklch(0.42 0.19 252);
-  --primary-foreground: #ffffff;
-  --secondary: oklch(0.94 0.02 240);
-  --secondary-foreground: oklch(0.18 0.06 252);
-  --muted: oklch(0.95 0.01 240);
-  --muted-foreground: oklch(0.35 0.03 240);
-  --accent: oklch(0.94 0.03 252);
-  --accent-foreground: oklch(0.20 0.1 252);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.89 0.01 240);
-  --input: oklch(0.89 0.01 240);
-  --ring: oklch(0.48 0.18 252);
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: #ffffff;
-  --sidebar-foreground: oklch(0.12 0.02 240);
-  --sidebar-primary: oklch(0.42 0.19 252);
-  --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: oklch(0.95 0.02 240);
-  --sidebar-accent-foreground: oklch(0.20 0.08 252);
-  --sidebar-border: oklch(0.89 0.01 240);
-  --sidebar-ring: oklch(0.48 0.18 252);
-}
-
-.dark {
-  --background: oklch(0.11 0.02 250);
-  --foreground: oklch(0.98 0.01 240);
-  --card: oklch(0.16 0.02 250);
-  --card-foreground: oklch(0.98 0.01 240);
-  --popover: oklch(0.16 0.02 250);
-  --popover-foreground: oklch(0.98 0.01 240);
-  --primary: oklch(0.68 0.2 252);
-  --primary-foreground: oklch(0.10 0.02 250);
-  --secondary: oklch(0.22 0.03 250);
-  --secondary-foreground: oklch(0.98 0.01 240);
-  --muted: oklch(0.22 0.02 250);
-  --muted-foreground: oklch(0.78 0.03 240);
-  --accent: oklch(0.25 0.04 250);
-  --accent-foreground: oklch(0.98 0.01 240);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 14%);
-  --input: oklch(1 0 0 / 18%);
-  --ring: oklch(0.68 0.2 252);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.16 0.02 250);
-  --sidebar-foreground: oklch(0.98 0.01 240);
-  --sidebar-primary: oklch(0.68 0.2 252);
-  --sidebar-primary-foreground: oklch(0.10 0.02 250);
-  --sidebar-accent: oklch(0.22 0.03 250);
-  --sidebar-accent-foreground: oklch(0.98 0.01 240);
-  --sidebar-border: oklch(1 0 0 / 14%);
-  --sidebar-ring: oklch(0.68 0.2 252);
+  --radius: 0px;
+  --background: #FAF7F2;
+  --foreground: #1A1715;
+  --card: #FAF7F2;
+  --card-foreground: #1A1715;
+  --popover: #FAF7F2;
+  --popover-foreground: #1A1715;
+  --primary: #C2410C;
+  --primary-foreground: #FAF7F2;
+  --secondary: #F5EFEB;
+  --secondary-foreground: #1A1715;
+  --muted: #F3EDE5;
+  --muted-foreground: #68635D;
+  --accent: #ECE4DB;
+  --accent-foreground: #1A1715;
+  --destructive: #BA1A1A;
+  --border: #E2D9CE;
+  --input: #E2D9CE;
+  --ring: #C2410C;
+  --chart-1: #C2410C;
+  --chart-2: #0284C7;
+  --chart-3: #059669;
+  --chart-4: #D97706;
+  --chart-5: #475569;
+  --sidebar: #FAF7F2;
+  --sidebar-foreground: #1A1715;
+  --sidebar-primary: #C2410C;
+  --sidebar-primary-foreground: #FAF7F2;
+  --sidebar-accent: #F5EFEB;
+  --sidebar-accent-foreground: #1A1715;
+  --sidebar-border: #E2D9CE;
+  --sidebar-ring: #C2410C;
 }
 
 @layer base {
@@ -118,46 +99,67 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground selection:bg-indigo-500 selection:text-white;
+    background-color: #FAF7F2;
+    color: #1A1715;
+    font-family: var(--font-source-serif), "Georgia", serif;
   }
+}
+
+.double-rule {
+  border-top: 3px double #1A1715;
+}
+
+.double-rule-b {
+  border-bottom: 3px double #1A1715;
+}
+
+.double-rule-light {
+  border-top: 3px double #D1C4B5;
+}
+
+.newspaper-dropcap::first-letter {
+  float: left;
+  font-family: var(--font-newsreader), "Georgia", serif;
+  font-size: 3.4rem;
+  line-height: 0.8;
+  padding-top: 3px;
+  padding-right: 8px;
+  padding-bottom: 2px;
+  color: #1A1715;
+  font-weight: 700;
 }
 
 /* Category Badge Styling Utilities */
 .badge-politics {
-  @apply bg-red-100 text-red-900 dark:bg-red-950/80 dark:text-red-200 border border-red-300 dark:border-red-800 font-bold;
+  @apply bg-red-100 text-red-900 border border-red-300 font-bold;
 }
 .badge-tech {
-  @apply bg-cyan-100 text-cyan-950 dark:bg-cyan-950/80 dark:text-cyan-200 border border-cyan-300 dark:border-cyan-800 font-bold;
+  @apply bg-cyan-100 text-cyan-950 border border-cyan-300 font-bold;
 }
 .badge-business {
-  @apply bg-emerald-100 text-emerald-950 dark:bg-emerald-950/80 dark:text-emerald-200 border border-emerald-300 dark:border-emerald-800 font-bold;
+  @apply bg-emerald-100 text-emerald-950 border border-emerald-300 font-bold;
 }
 .badge-sports {
-  @apply bg-amber-100 text-amber-950 dark:bg-amber-950/80 dark:text-amber-200 border border-amber-300 dark:border-amber-800 font-bold;
+  @apply bg-amber-100 text-amber-950 border border-amber-300 font-bold;
 }
 .badge-world {
-  @apply bg-blue-100 text-blue-950 dark:bg-blue-950/80 dark:text-blue-200 border border-blue-300 dark:border-blue-800 font-bold;
+  @apply bg-blue-100 text-blue-950 border border-blue-300 font-bold;
 }
 .badge-general {
-  @apply bg-purple-100 text-purple-950 dark:bg-purple-950/80 dark:text-purple-200 border border-purple-300 dark:border-purple-800 font-bold;
+  @apply bg-purple-100 text-purple-950 border border-purple-300 font-bold;
 }
 .badge-defence {
-  @apply bg-slate-200 text-slate-900 dark:bg-slate-800 dark:text-slate-200 border border-slate-300 dark:border-slate-700 font-bold;
+  @apply bg-slate-200 text-slate-900 border border-slate-300 font-bold;
 }
 
 /* Background Grid Mesh & Glass Card Utilities */
 .bg-grid-pattern {
-  background-image: radial-gradient(rgba(148, 163, 184, 0.18) 1px, transparent 1px);
-  background-size: 24px 24px;
-}
-
-.dark .bg-grid-pattern {
-  background-image: radial-gradient(rgba(51, 65, 85, 0.35) 1px, transparent 1px);
+  background-image: radial-gradient(rgba(0, 0, 0, 0.05) 1px, transparent 1px);
   background-size: 24px 24px;
 }
 
 .glass-card {
-  @apply bg-card/95 backdrop-blur-md border border-slate-200/90 dark:border-slate-800/90 shadow-xs hover:shadow-xl transition-all duration-300;
+  @apply bg-card/95 backdrop-blur-md border border-border shadow-xs hover:shadow-lg transition-all duration-300;
 }
 
 /* Google Translate Widget UI Premium Customizations */
@@ -205,8 +207,5 @@ body {
   margin-right: 0.75rem;
   font-family: var(--font-serif);
   line-height: 1;
-}
-
-.dark .article-content > p:first-child::first-letter {
-  color: inherit;
+  color: #b91c1c;
 }

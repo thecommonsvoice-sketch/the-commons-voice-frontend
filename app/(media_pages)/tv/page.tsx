@@ -50,7 +50,7 @@ export default function TVPage() {
       <div className="absolute top-0 left-0 w-64 h-64 bg-blue-200/20 rounded-full -z-10 blur-3xl" />
       <div className="absolute bottom-0 right-0 w-96 h-96 bg-pink-200/20 rounded-full -z-10 blur-3xl" />
 
-      <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 dark:text-gray-100 mb-8 text-center">
+      <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-8 text-center">
         TV News
       </h1>
 
@@ -59,7 +59,7 @@ export default function TVPage() {
           {[...Array(6)].map((_, i) => (
             <div
               key={i}
-              className="animate-pulse bg-gray-200 dark:bg-gray-700 h-96 rounded-xl"
+              className="animate-pulse bg-gray-200 h-96 rounded-xl"
             />
           ))}
         </div>
@@ -97,10 +97,10 @@ export default function TVPage() {
       )}
 
       {/* Decorative divider */}
-      <div className="mt-12 h-px bg-gray-300 dark:bg-gray-700 opacity-30"></div>
+      <div className="mt-12 h-px bg-gray-300 opacity-30"></div>
 
       {/* Footer-like placeholder for extra content */}
-      <div className="mt-6 text-center text-gray-500 dark:text-gray-400">
+      <div className="mt-6 text-center text-gray-500">
         Explore more TV updates daily! ⭐
       </div>
     </main>

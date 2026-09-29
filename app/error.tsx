@@ -21,7 +21,7 @@ export default function Error({
     <div className="container mx-auto px-4 py-12 max-w-md">
       <Card>
         <CardHeader className="text-center">
-          <div className="mx-auto mb-4 h-12 w-12 bg-red-100 dark:bg-red-900/20 rounded-full flex items-center justify-center">
+          <div className="mx-auto mb-4 h-12 w-12 bg-red-100 rounded-full flex items-center justify-center">
             <AlertTriangle className="h-6 w-6 text-red-600" />
           </div>
           <CardTitle className="text-2xl">Something went wrong</CardTitle>

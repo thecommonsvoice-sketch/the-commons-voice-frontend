@@ -43,7 +43,7 @@ const socialLinks: SocialLink[] = [
     imageSrc: "https://cdn.simpleicons.org/threads/111111",
     href: "https://www.threads.com/@thecommons_voice",
     label: "Threads",
-    color: "hover:bg-neutral-900/10 dark:hover:bg-white/10",
+    color: "hover:bg-neutral-900/10",
   },
   {
     kind: "icon",
@@ -57,7 +57,7 @@ const socialLinks: SocialLink[] = [
     imageSrc: "https://cdn.simpleicons.org/x/111111",
     href: "https://x.com/commonsvoice1",
     label: "X",
-    color: "hover:bg-zinc-900/10 dark:hover:bg-white/10",
+    color: "hover:bg-zinc-900/10",
   },
 ];
 
@@ -68,7 +68,7 @@ export default function AboutPage() {
       <div className="absolute top-0 left-0 w-full h-full -z-10 opacity-30 pointer-events-none">
         <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/20 blur-[120px] rounded-full animate-pulse"></div>
         <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-indigo-500/10 blur-[120px] rounded-full animate-pulse [animation-delay:2s]"></div>
-        <div className="absolute inset-0 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px] [mask-image:radial-gradient(ellipse_50%_50%_at_50%_50%,#000_70%,transparent_100%)] dark:bg-[radial-gradient(#1f2937_1px,transparent_1px)]"></div>
+        <div className="absolute inset-0 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px] [mask-image:radial-gradient(ellipse_50%_50%_at_50%_50%,#000_70%,transparent_100%)],transparent_1px)]"></div>
       </div>
 
       <div className="container mx-auto px-4 sm:px-6 py-16 sm:py-24 max-w-6xl relative z-10">
@@ -84,20 +84,20 @@ export default function AboutPage() {
           </p>
           
           <div className="max-w-4xl mx-auto mt-12 text-left animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-300">
-            <div className="p-8 sm:p-10 bg-white/40 dark:bg-black/40 backdrop-blur-xl border border-primary/10 rounded-3xl shadow-sm hover:shadow-md transition-all duration-500 hover:border-primary/30 group">
+            <div className="p-8 sm:p-10 bg-white/40 backdrop-blur-xl border border-primary/10 rounded-3xl shadow-sm hover:shadow-md transition-all duration-500 hover:border-primary/30 group">
               <div className="space-y-6">
                 <div className="inline-flex items-center px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-bold tracking-[0.2em] uppercase">
                   Since 2025
                 </div>
 
                 <div className="space-y-6">
-                  <p className="text-base sm:text-lg text-gray-700 dark:text-gray-300 leading-relaxed font-medium">
+                  <p className="text-base sm:text-lg text-gray-700 leading-relaxed font-medium">
                     The Commons Voice was founded in 2025 with a simple belief: Important stories don&apos;t always come from the powerful. Sometimes they come from the ordinary people living ordinary lives.
                   </p>
 
                   <div className="h-px w-full bg-gradient-to-r from-primary/30 via-indigo-500/40 to-transparent"></div>
 
-                  <p className="text-base sm:text-lg text-gray-700 dark:text-gray-300 leading-relaxed font-medium">
+                  <p className="text-base sm:text-lg text-gray-700 leading-relaxed font-medium">
                     Started as a storytelling platform dedicated to sharing unheard voices, The Commons Voice has evolved into a digital media space for podcasts, storytelling, journalism, and social conversations.
                   </p>
                 </div>
@@ -108,9 +108,9 @@ export default function AboutPage() {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 sm:gap-20 items-center">
           <div className="space-y-8 order-2 lg:order-1 animate-in fade-in slide-in-from-left-8 duration-1000 delay-500">
-              <div className="space-y-6 p-8 bg-white/40 dark:bg-black/40 backdrop-blur-xl border border-primary/10 rounded-[2.5rem] relative group overflow-hidden shadow-sm hover:shadow-md transition-all duration-500 hover:border-primary/30">
+              <div className="space-y-6 p-8 bg-white/40 backdrop-blur-xl border border-primary/10 rounded-[2.5rem] relative group overflow-hidden shadow-sm hover:shadow-md transition-all duration-500 hover:border-primary/30">
                 <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 blur-3xl -z-10 group-hover:scale-150 transition-transform duration-700"></div>
-                <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-gray-900 dark:text-gray-100">
+                <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-gray-900">
                   Our Philosophy
                 </h2>
                 <p className="text-lg sm:text-xl text-muted-foreground leading-relaxed font-medium">
@@ -118,9 +118,9 @@ export default function AboutPage() {
                 </p>
               </div>
               
-              <div className="space-y-6 p-8 bg-white/40 dark:bg-black/40 backdrop-blur-xl border border-primary/10 rounded-[2.5rem] relative group overflow-hidden shadow-sm hover:shadow-md transition-all duration-500 hover:border-primary/30">
+              <div className="space-y-6 p-8 bg-white/40 backdrop-blur-xl border border-primary/10 rounded-[2.5rem] relative group overflow-hidden shadow-sm hover:shadow-md transition-all duration-500 hover:border-primary/30">
                 <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 blur-3xl -z-10 group-hover:scale-150 transition-transform duration-700"></div>
-                <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-gray-900 dark:text-gray-100">
+                <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-gray-900">
                   Our Focus
                 </h2>
                 <p className="text-lg sm:text-xl text-muted-foreground leading-relaxed font-medium">
@@ -134,13 +134,13 @@ export default function AboutPage() {
                 {/* Decorative Frame */}
                 <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-indigo-500/20 rounded-[3rem] blur-2xl group-hover:blur-3xl transition-all duration-700 opacity-60"></div>
                 
-                <div className="relative w-full h-full bg-white/40 dark:bg-black/60 backdrop-blur-2xl rounded-[3rem] p-4 sm:p-8 flex flex-col items-center justify-center border border-white/20 dark:border-white/5 shadow-2xl overflow-hidden ring-1 ring-white/10">
+                <div className="relative w-full h-full bg-white/40 backdrop-blur-2xl rounded-[3rem] p-4 sm:p-8 flex flex-col items-center justify-center border border-white/20 shadow-2xl overflow-hidden ring-1 ring-white/10">
                     <div className="absolute top-8 left-8 text-xs font-black tracking-widest text-primary/40 uppercase">Uttarakhand & Beyond</div>
                     <div className="w-full h-[85%] relative z-10 group-hover:scale-[1.02] transition-transform duration-700 ease-out">
                       <UttarakhandSVGMap />
                     </div>
-                    <div className="mt-4 flex items-center bg-white/50 dark:bg-black/50 px-6 py-2 rounded-full backdrop-blur-md border-primary/10 pointer-events-none">
-                        <span className="text-sm font-bold text-indigo-600 dark:text-indigo-400">HQ: Dehradun</span>
+                    <div className="mt-4 flex items-center bg-white/50 px-6 py-2 rounded-full backdrop-blur-md border-primary/10 pointer-events-none">
+                        <span className="text-sm font-bold text-indigo-600">HQ: Dehradun</span>
                     </div>
                 </div>
             </div>
@@ -151,7 +151,7 @@ export default function AboutPage() {
         <div className="mt-32 relative animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-500">
           <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-indigo-500/5 blur-3xl -z-10"></div>
           
-          <div className="max-w-4xl mx-auto p-8 sm:p-12 bg-white/40 dark:bg-black/40 backdrop-blur-2xl border border-primary/10 rounded-[3rem] shadow-2xl overflow-hidden group">
+          <div className="max-w-4xl mx-auto p-8 sm:p-12 bg-white/40 backdrop-blur-2xl border border-primary/10 rounded-[3rem] shadow-2xl overflow-hidden group">
             <div className="absolute -top-24 -right-24 w-64 h-64 bg-primary/10 rounded-full blur-[80px] group-hover:bg-primary/20 transition-colors duration-700"></div>
             
             <div className="relative z-10 text-center space-y-8">
@@ -159,7 +159,7 @@ export default function AboutPage() {
                 Submit Your Story
               </div>
               
-              <h2 className="text-3xl sm:text-5xl font-black tracking-tight text-gray-900 dark:text-gray-100 italic">
+              <h2 className="text-3xl sm:text-5xl font-black tracking-tight text-gray-900 italic">
                 Do you have a story that deserves to be heard?
               </h2>
               
@@ -169,18 +169,18 @@ export default function AboutPage() {
               
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 pt-4">
                 <a 
-                  href="mailto:thecommonsvoice@gmail.com" 
+                  href="mailto:contact@thecommonsvoice.com" 
                   className="flex items-center gap-3 px-6 py-4 bg-primary text-white rounded-2xl font-bold shadow-lg shadow-primary/20 hover:scale-[1.05] hover:shadow-primary/30 active:scale-95 transition-all duration-300 w-full sm:w-auto justify-center"
                 >
-                  <Mail className="w-5 h-5 dark:text-black" />
-                  <span className="dark:text-black">Email Us</span>
+                  <Mail className="w-5 h-5" />
+                  <span>Email Us</span>
                 </a>
                 
                 <a 
                   href="https://www.instagram.com/thecommons_voice/" 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="flex items-center gap-3 px-6 py-4 bg-white dark:bg-zinc-900 border border-primary/20 text-foreground rounded-2xl font-bold hover:bg-primary/5 hover:border-primary/40 hover:scale-[1.05] active:scale-95 transition-all duration-300 w-full sm:w-auto justify-center shadow-sm"
+                  className="flex items-center gap-3 px-6 py-4 bg-white border border-primary/20 text-foreground rounded-2xl font-bold hover:bg-primary/5 hover:border-primary/40 hover:scale-[1.05] active:scale-95 transition-all duration-300 w-full sm:w-auto justify-center shadow-sm"
                 >
                   <Instagram className="w-5 h-5 text-pink-500" />
                   <span>@thecommons_voice</span>
@@ -204,7 +204,7 @@ export default function AboutPage() {
                 href={social.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className={`p-4 rounded-2xl border border-primary/10 bg-white/40 dark:bg-black/40 backdrop-blur-xl transition-all duration-500 hover:scale-110 shadow-sm hover:shadow-md ${social.color} group`}
+                className={`p-4 rounded-2xl border border-primary/10 bg-white/40 backdrop-blur-xl transition-all duration-500 hover:scale-110 shadow-sm hover:shadow-md ${social.color} group`}
                 title={social.label}
               >
                 {social.kind === "icon" ? (
@@ -215,7 +215,7 @@ export default function AboutPage() {
                     alt={social.label}
                     width={32}
                     height={32}
-                    className="w-6 h-6 sm:w-8 sm:h-8 transition-transform duration-500 group-hover:scale-110 dark:invert"
+                    className="w-6 h-6 sm:w-8 sm:h-8 transition-transform duration-500 group-hover:scale-110"
                     unoptimized
                   />
                 )}

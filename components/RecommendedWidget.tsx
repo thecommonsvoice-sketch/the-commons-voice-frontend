@@ -22,9 +22,9 @@ export function RecommendedWidget({ items }: RecommendedWidgetProps) {
   if (!items.length) return null;
 
   return (
-    <div className="bg-card border border-slate-200 dark:border-slate-800 p-4 sm:p-5 rounded-2xl shadow-xs space-y-4">
+    <div className="bg-card border border-slate-200 p-4 sm:p-5 rounded-2xl shadow-xs space-y-4">
       <div className="flex items-center justify-between border-b border-border/80 pb-3">
-        <h2 className="text-base sm:text-lg font-bold font-serif text-slate-900 dark:text-slate-100 flex items-center gap-2">
+        <h2 className="text-base sm:text-lg font-bold font-serif text-slate-900 flex items-center gap-2">
           <span className="w-2 h-5 bg-primary rounded-full inline-block" />
           Recommended Reads
         </h2>
@@ -51,7 +51,7 @@ export function RecommendedWidget({ items }: RecommendedWidgetProps) {
               </div>
             )}
             <div className="flex flex-col flex-1 min-w-0">
-              <h3 className="text-sm font-bold font-serif leading-snug line-clamp-2 text-slate-900 dark:text-slate-100 group-hover:text-primary transition-colors">
+              <h3 className="text-sm font-bold font-serif leading-snug line-clamp-2 text-slate-900 group-hover:text-primary transition-colors">
                 {item.title}
               </h3>
             </div>

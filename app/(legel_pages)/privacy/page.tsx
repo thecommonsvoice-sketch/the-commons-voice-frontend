@@ -61,7 +61,7 @@ export default function PrivacyPage() {
         <h2 className="text-xl font-semibold mt-8 mb-2">5. Your Rights</h2>
         <ul className="list-disc ml-6 space-y-2">
           <li>You may request access to, correction of, or deletion of your personal information.</li>
-          <li>Contact us at <a href="mailto:privacy@thecommonvoice.com" className="underline text-primary">privacy@thecommonvoice.com</a> for privacy-related requests.</li>
+          <li>Contact us at <a href="mailto:contact@thecommonsvoice.com" className="underline text-primary">contact@thecommonsvoice.com</a> for privacy-related requests.</li>
         </ul>
 
         <h2 className="text-xl font-semibold mt-8 mb-2">6. Third-Party Links</h2>
@@ -76,7 +76,7 @@ export default function PrivacyPage() {
 
         <h2 className="text-xl font-semibold mt-8 mb-2">8. Contact Us</h2>
         <p>
-          If you have any questions about this Privacy Policy, please contact us at <a href="mailto:privacy@thecommonvoice.com" className="underline text-primary">privacy@thecommonvoice.com</a>.
+          If you have any questions about this Privacy Policy, please contact us at <a href="mailto:contact@thecommonsvoice.com" className="underline text-primary">contact@thecommonsvoice.com</a>.
         </p>
 
         <p className="text-sm text-muted-foreground mt-8">Effective Date: August 30, 2025</p>

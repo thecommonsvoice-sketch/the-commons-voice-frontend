@@ -75,10 +75,10 @@ export function LeftPortalNav() {
       </AnimatePresence>
 
       {/* Desktop Sidebar */}
-      <aside className="hidden md:flex flex-col w-full border border-slate-200 dark:border-slate-800 bg-card rounded-2xl p-3 shadow-xs sticky top-24 max-h-[calc(100vh-7rem)] overflow-y-auto space-y-1">
+      <aside className="hidden md:flex flex-col w-full border border-slate-200 bg-card rounded-2xl p-3 shadow-xs sticky top-24 max-h-[calc(100vh-7rem)] overflow-y-auto space-y-1">
         <div className="px-3 py-2 mb-1 border-b border-border/70 flex items-center gap-2">
           <span className="w-1.5 h-4 bg-primary rounded-full" />
-          <h2 className="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-slate-100">Portal Hub</h2>
+          <h2 className="text-xs font-bold uppercase tracking-wider text-slate-900">Portal Hub</h2>
         </div>
         {portalNav.map((item) => (
           <NavItem
@@ -116,7 +116,7 @@ function NavItem({
         <div>
           <button
             className={`flex justify-between items-center w-full px-3 py-2 rounded-lg text-sm font-semibold transition-all
-              ${isActive ? "bg-primary/10 text-primary border-l-3 border-primary" : "text-slate-800 dark:text-slate-200 hover:bg-primary/10 hover:text-primary"}`}
+              ${isActive ? "bg-primary/10 text-primary border-l-3 border-primary" : "text-slate-800 hover:bg-primary/10 hover:text-primary"}`}
             onClick={() => setOpen(open === item.label ? null : item.label)}
           >
             <div className="flex items-center gap-2.5">
@@ -135,7 +135,7 @@ function NavItem({
                 initial={{ height: 0, opacity: 0 }}
                 animate={{ height: "auto", opacity: 1 }}
                 exit={{ height: 0, opacity: 0 }}
-                className="pl-4 mt-1 space-y-1 border-l-2 border-slate-200 dark:border-slate-800 ml-3"
+                className="pl-4 mt-1 space-y-1 border-l-2 border-slate-200 ml-3"
               >
                 {item.children?.map((sub) => (
                   <Link
@@ -143,7 +143,7 @@ function NavItem({
                     href={sub.href}
                     className={`block text-xs font-medium px-2 py-1.5 rounded-md transition-colors ${pathname.startsWith(sub.href)
                         ? "text-primary font-bold bg-primary/10"
-                        : "text-slate-700 dark:text-slate-300 hover:text-primary hover:bg-primary/5"
+                        : "text-slate-700 hover:text-primary hover:bg-primary/5"
                       }`}
                     onClick={onClose}
                   >
@@ -160,7 +160,7 @@ function NavItem({
           className={`flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-semibold transition-all
             ${isActive
               ? "bg-primary/10 text-primary border-l-3 border-primary font-bold"
-              : "text-slate-800 dark:text-slate-200 hover:bg-primary/10 hover:text-primary"
+              : "text-slate-800 hover:bg-primary/10 hover:text-primary"
             }`}
           onClick={onClose}
         >

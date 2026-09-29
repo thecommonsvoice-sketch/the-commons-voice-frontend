@@ -122,10 +122,10 @@ export default function TermsPage() {
           If you have any questions about these Terms of Service, editorial
           policy, or community guidelines, please contact us at{" "}
           <a
-            href="mailto:legal@thecommonvoice.com"
+            href="mailto:contact@thecommonsvoice.com"
             className="underline text-primary"
           >
-            legal@thecommonvoice.com
+            contact@thecommonsvoice.com
           </a>
           .
         </p>

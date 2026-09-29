@@ -137,11 +137,11 @@ export function Pagination({
             1,
             isFirstPage,
             "First page",
-            <ChevronsLeft className="h-4 w-4" />,
-            `inline-flex items-center justify-center h-9 w-9 rounded-lg text-sm font-medium transition-colors ${
+            <ChevronsLeft className="h-3.5 w-3.5" />,
+            `inline-flex items-center justify-center h-8 w-8 rounded-none border border-[#E2D9CE] bg-[#FAF7F2] text-xs font-medium transition-colors ${
               isFirstPage
-                ? "text-muted-foreground/40 cursor-not-allowed"
-                : "text-muted-foreground hover:bg-primary/10 hover:text-primary"
+                ? "text-[#A8A29E] opacity-40 cursor-not-allowed pointer-events-none"
+                : "text-[#3C3835] hover:bg-[#F3EDE5] hover:border-[#1A1715]"
             }`
           )}
 
@@ -151,24 +151,24 @@ export function Pagination({
           isFirstPage,
           "Previous page",
           <>
-            <ChevronLeft className="h-4 w-4" />
+            <ChevronLeft className="h-3.5 w-3.5" />
             <span className="hidden sm:inline">Prev</span>
           </>,
-          `inline-flex items-center justify-center h-9 px-2.5 rounded-lg text-sm font-medium transition-colors gap-1 ${
+          `inline-flex items-center justify-center h-8 px-2.5 rounded-none border border-[#E2D9CE] bg-[#FAF7F2] text-xs font-semibold font-sans uppercase tracking-wider transition-colors gap-1 ${
             isFirstPage
-              ? "text-muted-foreground/40 cursor-not-allowed"
-              : "text-muted-foreground hover:bg-primary/10 hover:text-primary"
+              ? "text-[#A8A29E] opacity-40 cursor-not-allowed pointer-events-none"
+              : "text-[#3C3835] hover:bg-[#F3EDE5] hover:border-[#1A1715]"
           }`
         )}
 
         {/* Page Numbers */}
-        <div className="flex items-center gap-0.5 sm:gap-1">
+        <div className="flex items-center gap-1">
           {pages.map((page, idx) => {
             if (page === "...") {
               return (
                 <span
                   key={`ellipsis-${idx}`}
-                  className="inline-flex items-center justify-center h-9 w-7 text-sm text-muted-foreground select-none"
+                  className="inline-flex items-center justify-center h-8 w-7 text-xs text-[#68635D] select-none font-serif"
                 >
                   …
                 </span>
@@ -176,10 +176,10 @@ export function Pagination({
             }
 
             const isActive = page === currentPage;
-            const className = `inline-flex items-center justify-center h-9 min-w-[2.25rem] rounded-lg text-sm font-semibold transition-all ${
+            const className = `inline-flex items-center justify-center h-8 min-w-[2rem] px-2 rounded-none border text-xs font-bold font-sans transition-colors ${
               isActive
-                ? "bg-primary text-primary-foreground shadow-sm pointer-events-none"
-                : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                ? "bg-[#1A1715] text-[#FAF7F2] border-[#1A1715] pointer-events-none"
+                : "bg-[#FAF7F2] text-[#3C3835] border-[#E2D9CE] hover:bg-[#F3EDE5] hover:border-[#1A1715]"
             }`;
 
             return renderButtonOrLink(
@@ -200,12 +200,12 @@ export function Pagination({
           "Next page",
           <>
             <span className="hidden sm:inline">Next</span>
-            <ChevronRight className="h-4 w-4" />
+            <ChevronRight className="h-3.5 w-3.5" />
           </>,
-          `inline-flex items-center justify-center h-9 px-2.5 rounded-lg text-sm font-medium transition-colors gap-1 ${
+          `inline-flex items-center justify-center h-8 px-2.5 rounded-none border border-[#E2D9CE] bg-[#FAF7F2] text-xs font-semibold font-sans uppercase tracking-wider transition-colors gap-1 ${
             isLastPage
-              ? "text-muted-foreground/40 cursor-not-allowed"
-              : "text-muted-foreground hover:bg-primary/10 hover:text-primary"
+              ? "text-[#A8A29E] opacity-40 cursor-not-allowed pointer-events-none"
+              : "text-[#3C3835] hover:bg-[#F3EDE5] hover:border-[#1A1715]"
           }`
         )}
 
@@ -215,19 +215,19 @@ export function Pagination({
             totalPages,
             isLastPage,
             "Last page",
-            <ChevronsRight className="h-4 w-4" />,
-            `inline-flex items-center justify-center h-9 w-9 rounded-lg text-sm font-medium transition-colors ${
+            <ChevronsRight className="h-3.5 w-3.5" />,
+            `inline-flex items-center justify-center h-8 w-8 rounded-none border border-[#E2D9CE] bg-[#FAF7F2] text-xs font-medium transition-colors ${
               isLastPage
-                ? "text-muted-foreground/40 cursor-not-allowed"
-                : "text-muted-foreground hover:bg-primary/10 hover:text-primary"
+                ? "text-[#A8A29E] opacity-40 cursor-not-allowed pointer-events-none"
+                : "text-[#3C3835] hover:bg-[#F3EDE5] hover:border-[#1A1715]"
             }`
           )}
       </div>
 
       {/* Page info text */}
-      <p className="text-xs text-muted-foreground">
-        Page <span className="font-semibold text-foreground">{currentPage}</span> of{" "}
-        <span className="font-semibold text-foreground">{totalPages}</span>
+      <p className="font-sans text-[11px] text-[#68635D] tracking-wider uppercase">
+        Folio Page <span className="font-bold text-[#1A1715]">{currentPage}</span> of{" "}
+        <span className="font-bold text-[#1A1715]">{totalPages}</span>
       </p>
     </nav>
   );

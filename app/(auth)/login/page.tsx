@@ -191,8 +191,8 @@ function LoginContent() {
 
           {/* Passcode Quick Notice */}
           {codeParam && (
-            <div className="p-3.5 rounded-lg border border-emerald-500/30 bg-emerald-500/10 text-emerald-800 dark:text-emerald-300 text-xs flex items-center gap-2.5">
-              <CheckCircle2 className="h-4 w-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
+            <div className="p-3.5 rounded-lg border border-emerald-500/30 bg-emerald-500/10 text-emerald-800 text-xs flex items-center gap-2.5">
+              <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0" />
               <span>
                 Passcode <strong>{codeParam}</strong> will automatically attach upon sign-in!
               </span>
@@ -216,7 +216,7 @@ function LoginContent() {
                 />
               </div>
               {errors.email && (
-                <p className="text-xs font-medium text-red-600 dark:text-red-400">{errors.email.message}</p>
+                <p className="text-xs font-medium text-red-600">{errors.email.message}</p>
               )}
             </div>
 
@@ -253,7 +253,7 @@ function LoginContent() {
                 </button>
               </div>
               {errors.password && (
-                <p className="text-xs font-medium text-red-600 dark:text-red-400">{errors.password.message}</p>
+                <p className="text-xs font-medium text-red-600">{errors.password.message}</p>
               )}
             </div>
 
@@ -273,7 +273,7 @@ function LoginContent() {
 
             {/* Error Message Box */}
             {error && (
-              <div className="p-3 text-xs font-medium text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800/50 rounded-lg">
+              <div className="p-3 text-xs font-medium text-red-600 bg-red-50 border border-red-200 rounded-lg">
                 {error}
               </div>
             )}

@@ -63,17 +63,15 @@ export function BreakingNewsTicker() {
   const repeated = [...headlines, ...headlines];
 
   return (
-    <div
-      className={`bg-gradient-to-r from-red-700 via-red-600 to-rose-700 text-white h-10 px-4 overflow-hidden whitespace-nowrap flex items-center gap-3 shadow-xs ${oxanium.className}`}
-    >
-      <div className="flex-shrink-0 flex items-center gap-2 bg-black/20 px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wider">
-        <span className="relative flex h-2 w-2">
+    <div className="border-t border-b border-[#D1C4B5] bg-[#F1EAE0] text-[#1A1715] h-9 px-3 sm:px-6 md:px-8 overflow-hidden whitespace-nowrap flex items-center gap-3 font-sans text-xs">
+      <div className="flex-shrink-0 flex items-center gap-1.5 px-2 py-0.5 bg-[#C2410C] text-[#FAF7F2] font-sans text-[10px] font-extrabold uppercase tracking-widest rounded-none">
+        <span className="relative flex h-1.5 w-1.5">
           <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
-          <span className="relative inline-flex rounded-full h-2 w-2 bg-white"></span>
+          <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-white"></span>
         </span>
-        <span>Breaking News</span>
+        <span>Live Wire</span>
       </div>
-      <div className="overflow-hidden flex-1 text-sm font-medium text-white/95">
+      <div className="overflow-hidden flex-1 text-xs font-serif italic text-[#1A1715]">
         {headlines.length > 0 && (
           <div
             ref={marqueeRef}
@@ -84,13 +82,16 @@ export function BreakingNewsTicker() {
             }}
           >
             {repeated.map((h, i) => (
-              <span key={i} className="mx-6 inline-block hover:underline cursor-pointer">
+              <span key={i} className="mx-6 inline-block hover:text-[#C2410C] hover:underline cursor-pointer">
                 {h}
               </span>
             ))}
           </div>
         )}
       </div>
+      <span className="ml-auto shrink-0 hidden md:inline font-sans text-[11px] text-[#68635D]">
+        Updated Wire
+      </span>
 
       <style jsx>{`
         @keyframes marquee {

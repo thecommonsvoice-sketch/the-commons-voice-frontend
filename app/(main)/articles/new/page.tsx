@@ -111,61 +111,61 @@ export default function NewArticlePage() {
 
   return (
     <ProtectedRoute>
-      <div className="max-w-3xl mx-auto py-6 sm:py-10 px-4 sm:px-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg">
-        <h1 className="text-2xl sm:text-3xl font-semibold text-center mb-6 sm:mb-8 text-gray-800 dark:text-white">Create New Article</h1>
+      <div className="max-w-3xl mx-auto py-6 sm:py-10 px-4 sm:px-6 bg-white rounded-lg shadow-lg">
+        <h1 className="text-2xl sm:text-3xl font-semibold text-center mb-6 sm:mb-8 text-gray-800">Create New Article</h1>
 
         <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
           {/* Title Section */}
           <div>
-            <label className="block text-base sm:text-lg font-medium text-gray-700 dark:text-gray-300">Title</label>
+            <label className="block text-base sm:text-lg font-medium text-gray-700">Title</label>
             <Input
               placeholder="Enter article title"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               required
-              className="mt-2 p-3 sm:p-4 text-sm sm:text-base rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="mt-2 p-3 sm:p-4 text-sm sm:text-base rounded-md border border-gray-300 bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
           </div>
 
           {/* Content Section */}
           <div>
-            <label className="block text-base sm:text-lg font-medium text-gray-700 dark:text-gray-300">Content</label>
+            <label className="block text-base sm:text-lg font-medium text-gray-700">Content</label>
             <Textarea
               placeholder="Write your article content here"
               value={content}
               onChange={(e) => setContent(e.target.value)}
               rows={6}
               required
-              className="mt-2 p-3 sm:p-4 text-sm sm:text-base rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="mt-2 p-3 sm:p-4 text-sm sm:text-base rounded-md border border-gray-300 bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
           </div>
 
           {/* Meta Title & Description Section */}
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
             <div className="flex-1">
-              <label className="block text-base sm:text-lg font-medium text-gray-700 dark:text-gray-300">Meta Title</label>
+              <label className="block text-base sm:text-lg font-medium text-gray-700">Meta Title</label>
               <Input
                 placeholder="SEO Title (max 60 characters)"
                 value={metaTitle}
                 onChange={(e) => setMetaTitle(e.target.value)}
                 maxLength={60}
-                className="mt-2 p-3 sm:p-4 text-sm sm:text-base rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="mt-2 p-3 sm:p-4 text-sm sm:text-base rounded-md border border-gray-300 bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500"
               />
             </div>
             <div className="flex-1">
-              <label className="block text-base sm:text-lg font-medium text-gray-700 dark:text-gray-300">Meta Description</label>
+              <label className="block text-base sm:text-lg font-medium text-gray-700">Meta Description</label>
               <Input
                 placeholder="SEO Description (max 160 characters)"
                 value={metaDescription}
                 onChange={(e) => setMetaDescription(e.target.value)}
                 maxLength={160}
-                className="mt-2 p-3 sm:p-4 text-sm sm:text-base rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="mt-2 p-3 sm:p-4 text-sm sm:text-base rounded-md border border-gray-300 bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-base sm:text-lg font-medium text-gray-700 dark:text-gray-300">Category</label>
+            <label className="block text-base sm:text-lg font-medium text-gray-700">Category</label>
             <div className="mt-2">
               <HierarchicalCategorySelect
                 key={refreshKey}
@@ -178,18 +178,18 @@ export default function NewArticlePage() {
 
           {/* Tags Section */}
           <div>
-            <label className="block text-base sm:text-lg font-medium text-gray-700 dark:text-gray-300 mb-2">Tags</label>
+            <label className="block text-base sm:text-lg font-medium text-gray-700 mb-2">Tags</label>
             <TagInput tags={tags} onChange={setTags} />
           </div>
 
           {/* Cover Image Section */}
           <div>
-            <label className="block text-base sm:text-lg font-medium text-gray-700 dark:text-gray-300">Cover Image</label>
+            <label className="block text-base sm:text-lg font-medium text-gray-700">Cover Image</label>
             <div
-              className="mt-2 p-3 sm:p-4 border-dashed border-2 border-gray-300 dark:border-gray-600 rounded-md text-center cursor-pointer"
+              className="mt-2 p-3 sm:p-4 border-dashed border-2 border-gray-300 rounded-md text-center cursor-pointer"
               onClick={() => document.getElementById("image-upload")?.click()}
             >
-              <span className="text-sm sm:text-base text-gray-500 dark:text-gray-400">
+              <span className="text-sm sm:text-base text-gray-500">
                 {imageUploading ? "Uploading..." : "Click or Drag & Drop Image"}
               </span>
               <input

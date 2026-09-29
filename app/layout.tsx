@@ -1,6 +1,6 @@
 // app/layout.tsx
 import type { Metadata, Viewport } from "next";
-import { Inter, Merriweather } from "next/font/google"; // Import Merriweather
+import { Newsreader, Source_Serif_4, Libre_Franklin } from "next/font/google";
 import "./globals.css";
 import AuthProvider from "@/providers/AuthProvider";
 import { ThemeProvider } from "@/components/ThemeProvider";
@@ -10,12 +10,23 @@ import { AdSlot } from "@/components/AdSlot";
 import Footer from "@/components/Footer";
 import Script from "next/script";
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
-const merriweather = Merriweather({
+const newsreader = Newsreader({
   subsets: ["latin"],
-  weight: ["300", "400", "700", "900"],
-  variable: "--font-merriweather",
-  display: 'swap'
+  variable: "--font-newsreader",
+  display: "swap",
+  style: ["normal", "italic"],
+});
+
+const sourceSerif = Source_Serif_4({
+  subsets: ["latin"],
+  variable: "--font-source-serif",
+  display: "swap",
+});
+
+const libreFranklin = Libre_Franklin({
+  subsets: ["latin"],
+  variable: "--font-libre-franklin",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -88,7 +99,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <meta name="google-site-verification" content="_nmZiV9WeB08rFkX15T_x_LEYcbinV484NCAcCg0rsY" />
       </head>
       <body
-        className={`${inter.variable} ${merriweather.variable} font-sans h-screen bg-background text-foreground antialiased overflow-x-hidden`}
+        className={`${newsreader.variable} ${sourceSerif.variable} ${libreFranklin.variable} font-serif min-h-screen bg-[#FAF7F2] text-[#1A1715] antialiased selection:bg-[#C2410C]/20 selection:text-[#1A1715] overflow-x-hidden`}
       >
         {/* Load AdSense script optimally using Next.js Script */}
         {adsenseClient && (
@@ -102,17 +113,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
         <ThemeProvider defaultTheme="system">
           <AuthProvider>
-            <div className="relative flex min-h-screen flex-col bg-slate-50/70 dark:bg-slate-950/90 text-foreground selection:bg-primary selection:text-white">
-              {/* Ambient Mesh Background Lighting */}
-              <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden opacity-40 dark:opacity-30">
-                <div className="absolute top-[-100px] left-1/2 -translate-x-1/2 w-[1000px] h-[450px] bg-gradient-to-b from-blue-400/20 via-indigo-500/10 to-transparent blur-3xl rounded-full" />
-                <div className="absolute top-[500px] left-[-150px] w-[400px] h-[400px] bg-emerald-400/10 blur-3xl rounded-full" />
-                <div className="absolute top-[1100px] right-[-150px] w-[450px] h-[450px] bg-rose-400/10 blur-3xl rounded-full" />
-              </div>
-
+            <div className="relative flex min-h-screen flex-col bg-[#FAF7F2] text-[#1A1715]">
               <Navbar />
 
-              <main className="relative z-10 w-full h-full overflow-y-auto flex-1">{children}</main>
+              <main className="relative z-10 w-full flex-1">{children}</main>
               <Footer />
             </div>
             <Toaster />

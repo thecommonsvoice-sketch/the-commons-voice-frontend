@@ -209,9 +209,9 @@ export function CommentsSidebar({ articleId, onClose }: CommentsSidebarProps) {
         const element = document.getElementById(`comment-${justPostedCommentId}`);
         if (element) {
           element.scrollIntoView({ behavior: "smooth", block: "center" });
-          element.classList.add("bg-primary/10", "dark:bg-primary/20");
+          element.classList.add("bg-primary/10");
           setTimeout(() => {
-            element.classList.remove("bg-primary/10", "dark:bg-primary/20");
+            element.classList.remove("bg-primary/10");
           }, 1500);
           setJustPostedCommentId(null);
         }

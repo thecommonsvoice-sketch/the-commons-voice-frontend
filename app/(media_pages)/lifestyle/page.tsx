@@ -51,7 +51,7 @@ export default function FashionPage() {
       <div className="absolute top-1/2 left-1/3 w-32 h-32 bg-yellow-200/30 rounded-xl rotate-45 -z-10 blur-xl" />
       <div className="absolute bottom-1/3 right-1/4 w-40 h-40 bg-green-200/30 rounded-full -z-10 blur-xl" />
 
-      <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 dark:text-gray-100 mb-8 text-center">
+      <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-8 text-center">
         Life & Style
       </h1>
 
@@ -60,7 +60,7 @@ export default function FashionPage() {
           {[...Array(6)].map((_, i) => (
             <div
               key={i}
-              className="animate-pulse bg-gray-200 dark:bg-gray-700 h-72 rounded-xl"
+              className="animate-pulse bg-gray-200 h-72 rounded-xl"
             />
           ))}
         </div>
@@ -102,10 +102,10 @@ export default function FashionPage() {
       <div className="absolute bottom-10 right-1/2 w-32 h-32 bg-yellow-100/30 rounded-xl -z-20 blur-xl" />
 
       {/* Decorative divider */}
-      <div className="mt-12 h-px bg-gray-300 dark:bg-gray-700 opacity-30"></div>
+      <div className="mt-12 h-px bg-gray-300 opacity-30"></div>
 
       {/* Footer placeholder */}
-      <div className="mt-6 text-center text-gray-500 dark:text-gray-400">
+      <div className="mt-6 text-center text-gray-500">
         Stay updated with the latest fashion trends every day! 👗
       </div>
     </main>

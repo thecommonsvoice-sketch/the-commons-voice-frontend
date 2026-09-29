@@ -139,18 +139,18 @@ export const VideoSection = ({ videos, onChange }: VideoSectionProps) => {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-semibold text-gray-800 dark:text-white">Media Embeds</h3>
+        <h3 className="text-lg font-semibold text-gray-800">Media Embeds</h3>
         {videos.length > 0 && (
-          <span className="text-sm text-gray-500 dark:text-gray-400">
+          <span className="text-sm text-gray-500">
             {videos.length} media item{videos.length !== 1 ? 's' : ''}
           </span>
         )}
       </div>
 
       {videos.length === 0 && (
-        <div className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-8 text-center">
+        <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
           <Play className="w-10 h-10 mx-auto text-gray-400 mb-2" />
-          <p className="text-gray-500 dark:text-gray-400 text-sm">No media added yet</p>
+          <p className="text-gray-500 text-sm">No media added yet</p>
         </div>
       )}
 
@@ -162,15 +162,15 @@ export const VideoSection = ({ videos, onChange }: VideoSectionProps) => {
         return (
           <div 
             key={index} 
-            className="border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden bg-white dark:bg-gray-700 shadow-sm hover:shadow-md transition-shadow"
+            className="border border-gray-300 rounded-lg overflow-hidden bg-white shadow-sm hover:shadow-md transition-shadow"
           >
             {/* Header with media type and number */}
-            <div className="bg-gray-50 dark:bg-gray-800 px-4 py-3 border-b border-gray-300 dark:border-gray-600 flex items-center justify-between">
+            <div className="bg-gray-50 px-4 py-3 border-b border-gray-300 flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 bg-indigo-100 dark:bg-indigo-900 rounded-full flex items-center justify-center">
-                  <span className="text-sm font-semibold text-indigo-600 dark:text-indigo-300">{index + 1}</span>
+                <div className="w-8 h-8 bg-indigo-100 rounded-full flex items-center justify-center">
+                  <span className="text-sm font-semibold text-indigo-600">{index + 1}</span>
                 </div>
-                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                <span className="text-sm font-medium text-gray-700">
                   {video.type === 'upload' ? '📹 Video Upload' : '🎬 YouTube Embed'}
                 </span>
               </div>
@@ -179,7 +179,7 @@ export const VideoSection = ({ videos, onChange }: VideoSectionProps) => {
                 variant="ghost"
                 size="sm"
                 onClick={() => removeVideo(index)}
-                className="text-gray-500 hover:text-red-600 dark:text-gray-400 dark:hover:text-red-400"
+                className="text-gray-500 hover:text-red-600"
               >
                 <X size={18} />
               </Button>
@@ -189,7 +189,7 @@ export const VideoSection = ({ videos, onChange }: VideoSectionProps) => {
             <div className="p-4 space-y-4">
               {/* Media Type Selector */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
                   Media Type
                 </label>
                 <Select
@@ -197,7 +197,7 @@ export const VideoSection = ({ videos, onChange }: VideoSectionProps) => {
                   onValueChange={(value) => handleVideoChange(index, 'type', value)}
                   disabled={isUploading}
                 >
-                  <SelectTrigger className="bg-white dark:bg-gray-600 border-gray-300 dark:border-gray-500">
+                  <SelectTrigger className="bg-white border-gray-300">
                     <SelectValue placeholder="Select media type" />
                   </SelectTrigger>
                   <SelectContent>
@@ -210,25 +210,25 @@ export const VideoSection = ({ videos, onChange }: VideoSectionProps) => {
               {/* Video Upload */}
               {video.type === 'upload' ? (
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
                     Choose Video File
                   </label>
                   {!video.url ? (
                     <div className="space-y-3">
-                      <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer bg-gray-50 dark:bg-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 transition">
+                      <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 transition">
                         <div className="flex flex-col items-center justify-center pt-5 pb-6">
                           {isUploading ? (
                             <>
-                              <Loader size={24} className="text-indigo-600 dark:text-indigo-400 animate-spin mb-2" />
-                              <p className="text-sm text-gray-600 dark:text-gray-300 font-medium">Uploading... {uploadProgress}%</p>
+                              <Loader size={24} className="text-indigo-600 animate-spin mb-2" />
+                              <p className="text-sm text-gray-600 font-medium">Uploading... {uploadProgress}%</p>
                             </>
                           ) : (
                             <>
-                              <Upload size={24} className="text-gray-500 dark:text-gray-400 mb-2" />
-                              <p className="text-sm text-gray-600 dark:text-gray-300">
+                              <Upload size={24} className="text-gray-500 mb-2" />
+                              <p className="text-sm text-gray-600">
                                 <span className="font-semibold">Click to upload</span> or drag and drop
                               </p>
-                              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">MP4, WebM up to 100MB</p>
+                              <p className="text-xs text-gray-500 mt-1">MP4, WebM up to 100MB</p>
                             </>
                           )}
                         </div>
@@ -248,7 +248,7 @@ export const VideoSection = ({ videos, onChange }: VideoSectionProps) => {
                       
                       {/* Upload Progress Bar */}
                       {isUploading && uploadProgress > 0 && (
-                        <div className="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-2">
+                        <div className="w-full bg-gray-200 rounded-full h-2">
                           <div
                             className="bg-indigo-600 h-2 rounded-full transition-all duration-300"
                             style={{ width: `${uploadProgress}%` }}
@@ -257,11 +257,11 @@ export const VideoSection = ({ videos, onChange }: VideoSectionProps) => {
                       )}
                     </div>
                   ) : (
-                    <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4 flex items-start gap-3">
-                      <CheckCircle size={20} className="text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5" />
+                    <div className="bg-green-50 border border-green-200 rounded-lg p-4 flex items-start gap-3">
+                      <CheckCircle size={20} className="text-green-600 flex-shrink-0 mt-0.5" />
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-green-800 dark:text-green-300">Upload complete!</p>
-                        <p className="text-xs text-green-700 dark:text-green-400 mt-1 truncate">
+                        <p className="text-sm font-medium text-green-800">Upload complete!</p>
+                        <p className="text-xs text-green-700 mt-1 truncate">
                           {video.url.substring(video.url.lastIndexOf('/') + 1)}
                         </p>
                       </div>
@@ -270,7 +270,7 @@ export const VideoSection = ({ videos, onChange }: VideoSectionProps) => {
                         variant="ghost"
                         size="sm"
                         onClick={() => handleVideoChange(index, 'url', '')}
-                        className="text-green-600 hover:text-red-600 dark:text-green-400 dark:hover:text-red-400"
+                        className="text-green-600 hover:text-red-600"
                       >
                         <X size={16} />
                       </Button>
@@ -279,7 +279,7 @@ export const VideoSection = ({ videos, onChange }: VideoSectionProps) => {
                 </div>
               ) : (
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
                     YouTube URL
                   </label>
                   <Input
@@ -287,15 +287,15 @@ export const VideoSection = ({ videos, onChange }: VideoSectionProps) => {
                     value={video.url || ''}
                     onChange={(e) => handleVideoChange(index, 'url', e.target.value)}
                     disabled={isUploading}
-                    className="bg-white dark:bg-gray-600 border-gray-300 dark:border-gray-500"
+                    className="bg-white border-gray-300"
                   />
                   
                   {/* URL Status Indicator */}
                   {video.url && (
                     <div className={`flex items-center gap-2 text-sm px-3 py-2 rounded mt-2 ${
                       embedType === 'youtube' 
-                        ? 'bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300 border border-green-200 dark:border-green-800' 
-                        : 'bg-yellow-50 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-300 border border-yellow-200 dark:border-yellow-800'
+                        ? 'bg-green-50 text-green-700 border border-green-200' 
+                        : 'bg-yellow-50 text-yellow-700 border border-yellow-200'
                     }`}>
                       {embedType === 'youtube' ? (
                         <>
@@ -315,7 +315,7 @@ export const VideoSection = ({ videos, onChange }: VideoSectionProps) => {
 
               {/* Title */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
                   Title <span className="text-gray-500 text-xs">(optional)</span>
                 </label>
                 <Input
@@ -323,13 +323,13 @@ export const VideoSection = ({ videos, onChange }: VideoSectionProps) => {
                   value={video.title || ''}
                   onChange={(e) => handleVideoChange(index, 'title', e.target.value)}
                   disabled={isUploading}
-                  className="bg-white dark:bg-gray-600 border-gray-300 dark:border-gray-500"
+                  className="bg-white border-gray-300"
                 />
               </div>
 
               {/* Description */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
                   Description <span className="text-gray-500 text-xs">(optional)</span>
                 </label>
                 <Textarea
@@ -338,7 +338,7 @@ export const VideoSection = ({ videos, onChange }: VideoSectionProps) => {
                   onChange={(e) => handleVideoChange(index, 'description', e.target.value)}
                   disabled={isUploading}
                   rows={3}
-                  className="bg-white dark:bg-gray-600 border-gray-300 dark:border-gray-500 resize-none"
+                  className="bg-white border-gray-300 resize-none"
                 />
               </div>
             </div>
@@ -350,7 +350,7 @@ export const VideoSection = ({ videos, onChange }: VideoSectionProps) => {
         type="button" 
         onClick={addVideo} 
         variant="outline"
-        className="w-full border-dashed border-2 border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800"
+        className="w-full border-dashed border-2 border-gray-300 hover:bg-gray-50"
       >
         <span className="text-lg mr-2">+</span> Add Media Embed
       </Button>

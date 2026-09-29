@@ -22,6 +22,7 @@ export interface Category {
   coverImage?: string | null;
   createdAt?: string;
   updatedAt?: string;
+  children?: Category[];
 }
 
 export interface VideoData {

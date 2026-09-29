@@ -147,20 +147,20 @@ export default function AdminSubscriberCodesPage() {
     if (item.isUsed) {
       return {
         label: "Redeemed",
-        colorClass: "bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20",
+        colorClass: "bg-blue-500/10 text-blue-600 border-blue-500/20",
         icon: UserCheck,
       };
     }
     if (isExpired) {
       return {
         label: "Expired",
-        colorClass: "bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20",
+        colorClass: "bg-rose-500/10 text-rose-600 border-rose-500/20",
         icon: Clock,
       };
     }
     return {
       label: "Active / Unused",
-      colorClass: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20",
+      colorClass: "bg-emerald-500/10 text-emerald-600 border-emerald-500/20",
       icon: Clock,
     };
   };
@@ -352,7 +352,7 @@ export default function AdminSubscriberCodesPage() {
                           size="sm"
                           variant="ghost"
                           onClick={() => handleDeleteSingle(item.id, item.code)}
-                          className="h-8 px-2 text-xs text-rose-500 hover:text-rose-700 hover:bg-rose-50 dark:hover:bg-rose-950/40"
+                          className="h-8 px-2 text-xs text-rose-500 hover:text-rose-700 hover:bg-rose-50"
                           title="Delete Passcode"
                         >
                           <Trash2 className="h-3.5 w-3.5" />

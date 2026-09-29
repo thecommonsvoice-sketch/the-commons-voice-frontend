@@ -400,7 +400,7 @@ export default function CategoryManagementPage() {
                                                             <Button
                                                                 variant="outline"
                                                                 size="sm"
-                                                                className="text-green-600 border-green-600 hover:bg-green-50 dark:hover:bg-green-950"
+                                                                className="text-green-600 border-green-600 hover:bg-green-50"
                                                                 onClick={() => handleRestore(cat.id)}
                                                             >
                                                                 <RotateCcw className="h-3 w-3 mr-1" /> Restore

@@ -109,16 +109,16 @@ export default function LanguageSelector() {
     <div className="relative inline-block text-left">
       <div id="google_translate_element" className="hidden" style={{ display: "none" }}></div>
 
-      <div className="relative flex items-center gap-1 bg-white dark:bg-black border border-gray-200 dark:border-gray-800 rounded-full px-2 py-0.5 shadow-sm hover:shadow-md hover:border-blue-400 dark:hover:border-blue-500 transition-all duration-300">
+      <div className="relative flex items-center gap-1 bg-white border border-gray-200 rounded-full px-2 py-0.5 shadow-sm hover:shadow-md hover:border-blue-400 transition-all duration-300">
         <Globe className="h-3.5 w-3.5 text-blue-500 flex-shrink-0 animate-pulse" />
         <select
           value={selectedLanguage}
           onChange={(e) => changeLanguage(e.target.value)}
-          className="notranslate appearance-none bg-transparent pr-4 pl-0.5 py-0 text-[10px] sm:text-xs font-medium text-gray-700 dark:text-gray-300 outline-none border-none cursor-pointer w-[50px] sm:w-[58px] focus:ring-0 truncate"
+          className="notranslate appearance-none bg-transparent pr-4 pl-0.5 py-0 text-[10px] sm:text-xs font-medium text-gray-700 outline-none border-none cursor-pointer w-[50px] sm:w-[58px] focus:ring-0 truncate"
           translate="no"
         >
           {languages.map((lng) => (
-            <option key={lng.code} value={lng.code} className="notranslate text-black dark:text-white bg-white dark:bg-black" translate="no">
+            <option key={lng.code} value={lng.code} className="notranslate text-black bg-white" translate="no">
               {lng.name}
             </option>
           ))}

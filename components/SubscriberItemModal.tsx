@@ -135,7 +135,7 @@ export function SubscriberItemModal({ article, onClose }: SubscriberItemModalPro
             ) : null}
 
             {/* Dispatch Body Content */}
-            <div className="prose dark:prose-invert max-w-none font-sans text-sm sm:text-base leading-relaxed text-foreground/90 whitespace-pre-line space-y-4 pt-2">
+            <div className="prose max-w-none font-sans text-sm sm:text-base leading-relaxed text-foreground/90 whitespace-pre-line space-y-4 pt-2">
               {article.content || article.excerpt || "No additional text content logged for this dispatch file."}
             </div>
           </div>

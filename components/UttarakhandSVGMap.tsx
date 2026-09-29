@@ -16,7 +16,7 @@ export default function UttarakhandSVGMap({ className = "" }: { className?: stri
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
-                    className="bg-white/80 dark:bg-black/80 backdrop-blur-md border border-primary/20 p-4 rounded-2xl shadow-xl min-w-[150px]"
+                    className="bg-white/80 backdrop-blur-md border border-primary/20 p-4 rounded-2xl shadow-xl min-w-[150px]"
                 >
                     <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-1">District</p>
                     <p className="text-2xl font-black text-primary leading-none">{hovered || selected}</p>
@@ -224,7 +224,7 @@ export default function UttarakhandSVGMap({ className = "" }: { className?: stri
           style={{ pointerEvents: 'none' }}
         >
           <circle cx="93.30" cy="276.10" r="15" className="fill-indigo-500/20" />
-          <circle cx="93.30" cy="276.10" r="6" className="fill-indigo-600 shadow-md ring-4 ring-white dark:ring-black" />
+          <circle cx="93.30" cy="276.10" r="6" className="fill-indigo-600 shadow-md ring-4 ring-white" />
           <motion.circle 
             cx="93.30" 
             cy="276.10" 

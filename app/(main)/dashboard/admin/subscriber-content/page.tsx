@@ -299,14 +299,14 @@ export default function AdminSubscriberContentPage() {
         <div className="rounded-xl border bg-card p-4 flex items-center justify-between shadow-xs">
           <div>
             <p className="text-xs text-muted-foreground font-medium">Published (Active)</p>
-            <p className="text-2xl font-bold text-emerald-600 dark:text-emerald-400 mt-0.5">{publishedCount}</p>
+            <p className="text-2xl font-bold text-emerald-600 mt-0.5">{publishedCount}</p>
           </div>
           <CheckCircle2 className="h-8 w-8 text-emerald-500/30" />
         </div>
         <div className="rounded-xl border bg-card p-4 flex items-center justify-between shadow-xs">
           <div>
             <p className="text-xs text-muted-foreground font-medium">Drafts (Hidden)</p>
-            <p className="text-2xl font-bold text-amber-600 dark:text-amber-400 mt-0.5">{draftCount}</p>
+            <p className="text-2xl font-bold text-amber-600 mt-0.5">{draftCount}</p>
           </div>
           <EyeOff className="h-8 w-8 text-amber-500/30" />
         </div>
@@ -370,7 +370,7 @@ export default function AdminSubscriberContentPage() {
                 className="h-10 text-sm bg-background font-mono"
               />
               {videoUrl.trim() && (
-                <div className="flex items-center gap-1.5 text-xs text-emerald-600 dark:text-emerald-400 font-medium">
+                <div className="flex items-center gap-1.5 text-xs text-emerald-600 font-medium">
                   <CheckCircle2 className="h-3.5 w-3.5" />
                   <span>Detected Format: <strong>{parseMediaUrl(videoUrl).label}</strong></span>
                 </div>
@@ -545,11 +545,11 @@ export default function AdminSubscriberContentPage() {
                       </td>
                       <td className="px-4 py-3">
                         {isPublished ? (
-                          <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 px-2.5 py-0.5 text-[11px] font-semibold border border-emerald-500/20">
+                          <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 text-emerald-700 px-2.5 py-0.5 text-[11px] font-semibold border border-emerald-500/20">
                             <CheckCircle2 className="h-3 w-3 text-emerald-500" /> Published
                           </span>
                         ) : (
-                          <span className="inline-flex items-center gap-1 rounded-full bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 px-2.5 py-0.5 text-[11px] font-semibold border border-amber-500/20">
+                          <span className="inline-flex items-center gap-1 rounded-full bg-amber-50 text-amber-700 px-2.5 py-0.5 text-[11px] font-semibold border border-amber-500/20">
                             <EyeOff className="h-3 w-3 text-amber-500" /> Draft
                           </span>
                         )}
@@ -569,7 +569,7 @@ export default function AdminSubscriberContentPage() {
                             onClick={() => handleToggleStatus(item)}
                             className={`h-8 px-2.5 text-xs gap-1 font-medium ${
                               isPublished
-                                ? "text-muted-foreground hover:text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-950/40"
+                                ? "text-muted-foreground hover:text-amber-600 hover:bg-amber-50"
                                 : "bg-primary text-primary-foreground hover:bg-primary/90"
                             }`}
                             title={isPublished ? "Unpublish (Hide from subscribers)" : "Publish (Make visible to subscribers)"}
@@ -601,7 +601,7 @@ export default function AdminSubscriberContentPage() {
                             size="sm"
                             variant="ghost"
                             onClick={() => handleDeleteDrop(item.id, item.title)}
-                            className="h-8 px-2 text-xs text-rose-500 hover:text-rose-700 hover:bg-rose-50 dark:hover:bg-rose-950/40"
+                            className="h-8 px-2 text-xs text-rose-500 hover:text-rose-700 hover:bg-rose-50"
                             title="Delete Drop"
                           >
                             <Trash2 className="h-3.5 w-3.5" />

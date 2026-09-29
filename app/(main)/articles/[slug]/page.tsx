@@ -296,7 +296,7 @@ export default async function ArticlePage({
           ) : (
             <SanitizedContent
               html={article.content}
-              className="prose prose-lg sm:prose-xl dark:prose-invert max-w-none 
+              className="prose prose-lg sm:prose-xl max-w-none 
               font-serif text-foreground/90 leading-[1.85] article-content
               prose-headings:font-sans prose-headings:font-bold prose-headings:tracking-tight prose-headings:text-foreground
               prose-p:leading-[1.85] prose-p:mb-6 prose-p:text-foreground/90
@@ -350,7 +350,7 @@ export default async function ArticlePage({
                     </div>
                   )}
                   {(vid.title || vid.description) && (
-                    <div className="p-4 space-y-1 bg-gray-50 dark:bg-gray-800">
+                    <div className="p-4 space-y-1 bg-gray-50">
                       {vid.title && <h3 className="text-lg font-medium">{vid.title}</h3>}
                       {vid.description && (
                         <p className="text-sm text-muted-foreground">{vid.description}</p>

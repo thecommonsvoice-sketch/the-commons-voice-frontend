@@ -28,7 +28,7 @@ const NewsCard: React.FC<NewsCardProps> = ({ article }) => {
     : "";
 
   return (
-    <div className="group relative flex flex-col overflow-hidden rounded-xl shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 bg-white dark:bg-gray-800 h-96">
+    <div className="group relative flex flex-col overflow-hidden rounded-xl shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 bg-white h-96">
       {/* Image Section */}
       {photoUrl ? (
         <div className="relative h-48 w-full">
@@ -43,14 +43,14 @@ const NewsCard: React.FC<NewsCardProps> = ({ article }) => {
               href={link}
               target="_blank"
               rel="noopener noreferrer"
-              className="bg-blue-600 dark:bg-blue-500 text-white px-4 py-2 rounded-md mb-4 text-sm hover:bg-blue-700 dark:hover:bg-blue-600 transition"
+              className="bg-blue-600 text-white px-4 py-2 rounded-md mb-4 text-sm hover:bg-blue-700 transition"
             >
               Read More
             </a>
           </div>
         </div>
       ) : (
-        <div className="h-48 w-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-gray-500 dark:text-gray-300">
+        <div className="h-48 w-full bg-gray-200 flex items-center justify-center text-gray-500">
           No Image
         </div>
       )}
@@ -58,17 +58,17 @@ const NewsCard: React.FC<NewsCardProps> = ({ article }) => {
       {/* Content Section */}
       <div className="p-4 flex flex-col justify-between flex-1">
         <div>
-          <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-2 line-clamp-2">
+          <h2 className="text-lg font-semibold text-gray-800 mb-2 line-clamp-2">
             {title}
           </h2>
           {description && (
-            <p className="text-gray-600 dark:text-gray-300 text-sm mb-3 line-clamp-3">
+            <p className="text-gray-600 text-sm mb-3 line-clamp-3">
               {description}
             </p>
           )}
         </div>
 
-        <div className="flex justify-between items-center text-xs text-gray-500 dark:text-gray-400 mt-2">
+        <div className="flex justify-between items-center text-xs text-gray-500 mt-2">
           <span>{formattedDate}</span>
           {type && (
             <span className="bg-blue-600 text-white px-2 py-0.5 rounded text-[10px] uppercase">

@@ -50,22 +50,22 @@ export function SearchBar({
 
   return (
     <form onSubmit={handleSearch} className="relative w-full max-w-lg group">
-      <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground/60 group-focus-within:text-primary transition-colors pointer-events-none" />
+      <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[#68635D] group-focus-within:text-[#C2410C] transition-colors pointer-events-none" />
       <input
         type="text"
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         placeholder={placeholder}
-        className="w-full h-11 rounded-xl border border-border bg-card pl-10 pr-10 text-sm text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all shadow-sm"
+        className="w-full h-10 rounded-none border border-[#1A1715] bg-[#FAF7F2] pl-10 pr-10 text-xs sm:text-sm text-[#1A1715] placeholder:text-[#8C827A] focus:outline-none focus:border-[#C2410C] focus:ring-1 focus:ring-[#C2410C] transition-all font-sans"
       />
       {query && (
         <button
           type="button"
           onClick={handleClear}
-          className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 rounded-full bg-muted hover:bg-muted-foreground/20 flex items-center justify-center transition-colors"
+          className="absolute right-2.5 top-1/2 -translate-y-1/2 h-6 w-6 rounded-none hover:bg-[#EAE2D8] flex items-center justify-center transition-colors text-[#68635D] hover:text-[#1A1715]"
           aria-label="Clear search"
         >
-          <X className="h-3 w-3 text-muted-foreground" />
+          <X className="h-3.5 w-3.5" />
         </button>
       )}
     </form>

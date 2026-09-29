@@ -26,7 +26,7 @@ export function ModeToggle() {
 
   return (
     <Toggle
-      className="hover:cursor-pointer hover:scale-[1.1] z-100 bg-transparent hover:bg-transparent dark:hover:bg-transparent"
+      className="hover:cursor-pointer hover:scale-[1.1] z-100 bg-transparent hover:bg-transparent"
       onClick={toggleTheme}
     >
       {theme === "light" ? <Sun /> : <Moon />}

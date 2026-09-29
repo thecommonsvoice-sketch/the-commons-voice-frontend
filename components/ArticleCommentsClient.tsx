@@ -186,9 +186,9 @@ export function ArticleCommentsClient({ articleId }: ArticleCommentsClientProps)
         if (element) {
           element.scrollIntoView({ behavior: "smooth", block: "center" });
           // Apply a subtle premium highlight glow that fades out
-          element.classList.add("bg-primary/10", "dark:bg-primary/20");
+          element.classList.add("bg-primary/10");
           setTimeout(() => {
-            element.classList.remove("bg-primary/10", "dark:bg-primary/20");
+            element.classList.remove("bg-primary/10");
           }, 1500);
           setJustPostedCommentId(null);
         }
@@ -250,8 +250,8 @@ export function ArticleCommentsClient({ articleId }: ArticleCommentsClientProps)
         key={node.id}
         className={`py-2 px-2 rounded-lg transition-all duration-500 hover:bg-muted/10 ${
           depth > 0 
-            ? "ml-4 md:ml-6 mt-2 pl-4 border-l-2 border-gray-200 dark:border-gray-800" 
-            : "border-b border-gray-100 dark:border-gray-900 pb-3"
+            ? "ml-4 md:ml-6 mt-2 pl-4 border-l-2 border-gray-200" 
+            : "border-b border-gray-100 pb-3"
         }`}
       >
         <div className="group flex gap-3">
@@ -421,7 +421,7 @@ export function ArticleCommentsClient({ articleId }: ArticleCommentsClientProps)
               value={newComment}
               onChange={(e) => setNewComment(e.target.value)}
               onKeyDown={handleKeyDown}
-              className="w-full bg-transparent border-b border-gray-300 dark:border-gray-600 focus:border-primary dark:focus:border-primary outline-none py-2 pr-10 text-sm placeholder:text-muted-foreground transition-colors"
+              className="w-full bg-transparent border-b border-gray-300 focus:border-primary outline-none py-2 pr-10 text-sm placeholder:text-muted-foreground transition-colors"
             />
             {newComment.trim() && (
               <button
@@ -440,7 +440,7 @@ export function ArticleCommentsClient({ articleId }: ArticleCommentsClientProps)
         </div>
       ) : (
         <div className="flex items-center gap-3 py-2">
-          <div className="w-8 h-8 rounded-full bg-gray-200 dark:bg-gray-700 flex-shrink-0 flex items-center justify-center">
+          <div className="w-8 h-8 rounded-full bg-gray-200 flex-shrink-0 flex items-center justify-center">
             <MessageCircle size={14} className="text-gray-400" />
           </div>
           <a href="/login" className="text-sm text-primary font-semibold hover:opacity-70 transition-opacity">
@@ -455,17 +455,17 @@ export function ArticleCommentsClient({ articleId }: ArticleCommentsClientProps)
           <div className="space-y-4 py-4">
             {[1, 2, 3].map((i) => (
               <div key={i} className="flex gap-3 animate-pulse">
-                <div className="w-8 h-8 rounded-full bg-gray-200 dark:bg-gray-700 flex-shrink-0" />
+                <div className="w-8 h-8 rounded-full bg-gray-200 flex-shrink-0" />
                 <div className="flex-1 space-y-2">
-                  <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-24" />
-                  <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-3/4" />
+                  <div className="h-3 bg-gray-200 rounded w-24" />
+                  <div className="h-3 bg-gray-200 rounded w-3/4" />
                 </div>
               </div>
             ))}
           </div>
         ) : comments.length === 0 ? (
           <div className="text-center py-10">
-            <MessageCircle className="mx-auto text-gray-300 dark:text-gray-600 mb-3" size={40} />
+            <MessageCircle className="mx-auto text-gray-300 mb-3" size={40} />
             <p className="text-sm text-muted-foreground">
               No comments yet. Be the first to share your thoughts!
             </p>
