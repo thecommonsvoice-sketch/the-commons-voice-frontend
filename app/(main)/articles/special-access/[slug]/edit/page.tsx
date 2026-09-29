@@ -14,6 +14,7 @@ import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import { VideoSection } from "@/components/VideoSection";
 import { TagInput } from "@/components/ArticleEditor/TagInput";
 import { HierarchicalCategorySelect } from "@/components/ArticleEditor/HierarchicalCategorySelect";
+import { CategoryCreateDialog } from "@/components/ArticleEditor/CategoryCreateDialog";
 
 const CLOUDINARY_UPLOAD_URL = `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/upload`;
 
@@ -22,7 +23,7 @@ export default function EditSpecialAccessArticlePage() {
   const params = useParams();
   const slug = params?.slug; // ✅ safely access slug
 
-  const [title, setTitle] = useState<string>("");
+  const [title, setTitle] = useState<string>("" );
   const [content, setContent] = useState<string>("");
   const [categoryId, setCategoryId] = useState<string>("");
   const [coverImage, setCoverImage] = useState<string | null>(null);
@@ -33,6 +34,14 @@ export default function EditSpecialAccessArticlePage() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [imageUploading, setImageUploading] = useState<boolean>(false);
   const [videos, setVideos] = useState<VideoData[]>([]);
+  const [status, setStatus] = useState<string>("DRAFT");
+  const [isSubscriberOnly, setIsSubscriberOnly] = useState<boolean>(false);
+  const [refreshKey, setRefreshKey] = useState<number>(0);
+
+  const handleCategoryCreated = (newCategoryId: string) => {
+    setCategoryId(newCategoryId);
+    setRefreshKey((prev) => prev + 1);
+  };
 
   // Redirect if slug is missing
   useEffect(() => {
@@ -60,6 +69,8 @@ export default function EditSpecialAccessArticlePage() {
           setMetaDescription(article.metaDescription || "");
           setTags(article.tags || []);
           setVideos(article.videos || []);
+          setStatus(article.status || "DRAFT");
+          setIsSubscriberOnly(article.isSubscriberOnly || false);
         } else {
           toast.error("Article not found.");
           router.push("/dashboard");
@@ -116,11 +127,13 @@ export default function EditSpecialAccessArticlePage() {
         title,
         content,
         categoryId,
+        status, // ✅ send updated status (PUBLISHED, DRAFT, ARCHIVED)
         coverImage: coverImage || undefined,
         metaTitle: metaTitle || undefined,
         metaDescription: metaDescription || undefined,
         tags: tags.length > 0 ? tags : undefined,
         videos: validVideos, // Always send the array (even if empty) to ensure update
+        isSubscriberOnly,
       });
 
       toast.success("Article updated!");
@@ -192,14 +205,55 @@ export default function EditSpecialAccessArticlePage() {
             </div>
           </div>
 
+          {/* Category Section with Create Option */}
           <div>
             <label className="block text-lg font-medium text-gray-700">Category</label>
             <div className="mt-2">
               <HierarchicalCategorySelect
+                key={refreshKey}
                 value={categoryId}
                 onChange={setCategoryId}
               />
             </div>
+            <CategoryCreateDialog onCategoryCreated={handleCategoryCreated} />
+          </div>
+
+          {/* Article Publishing Status Control */}
+          <div className="bg-slate-50 p-4 rounded-lg border border-slate-200">
+            <label className="block text-base font-semibold text-gray-800 mb-1">
+              Article Status
+            </label>
+            <p className="text-xs text-muted-foreground mb-3">
+              Change publishing visibility. Setting to PUBLISHED makes this dispatch live on the homepage and news feed.
+            </p>
+            <Select value={status} onValueChange={setStatus}>
+              <SelectTrigger className="w-full bg-white border border-gray-300 text-sm">
+                <SelectValue placeholder="Select Status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="PUBLISHED">
+                  <div className="flex items-center gap-2 py-0.5">
+                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 shrink-0" />
+                    <span className="font-semibold text-emerald-800">PUBLISHED</span>
+                    <span className="text-xs text-muted-foreground">— Live &amp; Public to all readers</span>
+                  </div>
+                </SelectItem>
+                <SelectItem value="DRAFT">
+                  <div className="flex items-center gap-2 py-0.5">
+                    <span className="w-2.5 h-2.5 rounded-full bg-amber-500 shrink-0" />
+                    <span className="font-semibold text-amber-800">DRAFT</span>
+                    <span className="text-xs text-muted-foreground">— Hidden, Work in Progress</span>
+                  </div>
+                </SelectItem>
+                <SelectItem value="ARCHIVED">
+                  <div className="flex items-center gap-2 py-0.5">
+                    <span className="w-2.5 h-2.5 rounded-full bg-slate-400 shrink-0" />
+                    <span className="font-semibold text-slate-700">ARCHIVED</span>
+                    <span className="text-xs text-muted-foreground">— Retired from live circulation</span>
+                  </div>
+                </SelectItem>
+              </SelectContent>
+            </Select>
           </div>
 
           {/* Tags Section */}
@@ -248,6 +302,20 @@ export default function EditSpecialAccessArticlePage() {
 
           {/* Videos */}
           <VideoSection videos={videos} onChange={setVideos} />
+
+          {/* Subscriber Exclusive Toggle */}
+          <div className="flex items-center gap-3 rounded-xl border border-rose-500/30 bg-rose-500/10 p-4">
+            <input
+              type="checkbox"
+              id="isSubscriberOnly"
+              checked={isSubscriberOnly}
+              onChange={(e) => setIsSubscriberOnly(e.target.checked)}
+              className="h-4 w-4 accent-rose-600 rounded cursor-pointer"
+            />
+            <label htmlFor="isSubscriberOnly" className="cursor-pointer text-sm sm:text-base font-semibold text-foreground flex items-center gap-2">
+              ⭐ Mark as Instagram Subscriber Exclusive (Gated for Passcode Holders)
+            </label>
+          </div>
 
           {/* Submit */}
           <Button

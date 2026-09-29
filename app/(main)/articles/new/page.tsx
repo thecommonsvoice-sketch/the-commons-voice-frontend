@@ -31,11 +31,10 @@ export default function NewArticlePage() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [imageUploading, setImageUploading] = useState<boolean>(false);
   const [videos, setVideos] = useState<VideoData[]>([]);
+  const [status, setStatus] = useState<string>("PUBLISHED");
   const [isSubscriberOnly, setIsSubscriberOnly] = useState<boolean>(false);
   const [refreshKey, setRefreshKey] = useState<number>(0);
   const { user } = useUserStore();
-
-
 
   useEffect(() => {
     if (!user) {
@@ -88,6 +87,7 @@ export default function NewArticlePage() {
         title,
         content,
         categoryId,
+        status,
         coverImage: coverImage || undefined,
         metaTitle: metaTitle || undefined,
         metaDescription: metaDescription || undefined,
@@ -174,6 +174,37 @@ export default function NewArticlePage() {
               />
             </div>
             <CategoryCreateDialog onCategoryCreated={handleCategoryCreated} />
+          </div>
+
+          {/* Article Publishing Status Control */}
+          <div className="bg-slate-50 p-4 rounded-lg border border-slate-200">
+            <label className="block text-base font-semibold text-gray-800 mb-1">
+              Article Status
+            </label>
+            <p className="text-xs text-muted-foreground mb-3">
+              Choose whether to publish immediately or save as a draft for editorial review.
+            </p>
+            <Select value={status} onValueChange={setStatus}>
+              <SelectTrigger className="w-full bg-white border border-gray-300 text-sm">
+                <SelectValue placeholder="Select Status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="PUBLISHED">
+                  <div className="flex items-center gap-2 py-0.5">
+                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 shrink-0" />
+                    <span className="font-semibold text-emerald-800">PUBLISHED</span>
+                    <span className="text-xs text-muted-foreground">— Live &amp; Public immediately</span>
+                  </div>
+                </SelectItem>
+                <SelectItem value="DRAFT">
+                  <div className="flex items-center gap-2 py-0.5">
+                    <span className="w-2.5 h-2.5 rounded-full bg-amber-500 shrink-0" />
+                    <span className="font-semibold text-amber-800">DRAFT</span>
+                    <span className="text-xs text-muted-foreground">— Save as draft (hidden from public)</span>
+                  </div>
+                </SelectItem>
+              </SelectContent>
+            </Select>
           </div>
 
           {/* Tags Section */}

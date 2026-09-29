@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { api } from "@/lib/api";
+import { isAxiosError } from "axios";
 import {
   Dialog,
   DialogContent,
@@ -38,7 +39,7 @@ export function CategoryCreateDialog({ onCategoryCreated }: CategoryCreateDialog
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [parentCategories, setParentCategories] = useState<Category[]>([]);
-  const [selectedParentId, setSelectedParentId] = useState<string>("");
+  const [selectedParentId, setSelectedParentId] = useState<string>("none");
 
   // Fetch parent categories when dialog opens
   useEffect(() => {
@@ -63,11 +64,14 @@ export function CategoryCreateDialog({ onCategoryCreated }: CategoryCreateDialog
 
     setLoading(true);
     try {
+      const parentId =
+        selectedParentId && selectedParentId !== "none" ? selectedParentId : undefined;
+
       const res = await api.post("/categories", {
         name: name.trim(),
         description: description.trim() || undefined,
         isActive: true,
-        parentId: selectedParentId || undefined,
+        parentId,
       });
 
       const newCategory = res.data?.category;
@@ -76,12 +80,16 @@ export function CategoryCreateDialog({ onCategoryCreated }: CategoryCreateDialog
         onCategoryCreated(newCategory.id, newCategory.name);
         setName("");
         setDescription("");
-        setSelectedParentId("");
+        setSelectedParentId("none");
         setOpen(false);
       }
     } catch (error) {
       console.error("Failed to create category:", error);
-      toast.error("Failed to create category");
+      const errorMessage =
+        isAxiosError(error) && error.response?.data?.message
+          ? error.response.data.message
+          : "Failed to create category";
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -90,7 +98,7 @@ export function CategoryCreateDialog({ onCategoryCreated }: CategoryCreateDialog
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline" className="w-full mt-2">
+        <Button type="button" variant="outline" className="w-full mt-2 border-dashed border-[#1A1715]/30 hover:border-[#1A1715] font-sans text-xs">
           + Create New Category
         </Button>
       </DialogTrigger>
@@ -98,7 +106,7 @@ export function CategoryCreateDialog({ onCategoryCreated }: CategoryCreateDialog
         <DialogHeader>
           <DialogTitle>Create New Category</DialogTitle>
           <DialogDescription>
-            Add a new category for your article
+            Add a new category for your article. It will appear across the site once approved.
           </DialogDescription>
         </DialogHeader>
         <div className="space-y-4 py-4">
@@ -109,6 +117,7 @@ export function CategoryCreateDialog({ onCategoryCreated }: CategoryCreateDialog
               value={name}
               onChange={(e) => setName(e.target.value)}
               disabled={loading}
+              autoFocus
             />
           </div>
           <div>
@@ -118,7 +127,7 @@ export function CategoryCreateDialog({ onCategoryCreated }: CategoryCreateDialog
                 <SelectValue placeholder="None (create as main category)" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">None (main category)</SelectItem>
+                <SelectItem value="none">None (create as main category)</SelectItem>
                 {parentCategories.map((cat) => (
                   <SelectItem key={cat.id} value={cat.id}>
                     {cat.name}
@@ -143,18 +152,20 @@ export function CategoryCreateDialog({ onCategoryCreated }: CategoryCreateDialog
         </div>
         <div className="flex gap-3 justify-end">
           <Button
+            type="button"
             variant="outline"
             onClick={() => {
               setOpen(false);
               setName("");
               setDescription("");
-              setSelectedParentId("");
+              setSelectedParentId("none");
             }}
             disabled={loading}
           >
             Cancel
           </Button>
           <Button
+            type="button"
             onClick={handleCreate}
             disabled={loading || !name.trim()}
           >
