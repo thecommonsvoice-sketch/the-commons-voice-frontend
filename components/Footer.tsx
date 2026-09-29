@@ -31,7 +31,7 @@ export default function Footer() {
 
   return (
     <footer className="w-full bg-[#1A1715] text-[#FAF7F2] pt-12 pb-8 border-t-4 border-[#C2410C]">
-      <div className="max-w-[1380px] mx-auto px-4 sm:px-6 md:px-8">
+      <div className="w-full px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16">
         {/* Top Footer: Brand Statement & Foreign Bureaus Telegram */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 pb-10 border-b border-[#3C3835]">
           <div className="lg:col-span-6 space-y-3">

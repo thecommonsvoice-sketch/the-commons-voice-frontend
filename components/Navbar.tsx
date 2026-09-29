@@ -75,14 +75,14 @@ export default function Navbar() {
   const categories = [
     { name: "General", href: "/categories/general" },
     { name: "Politics", href: "/categories/politics" },
-    { name: "Science & Technology", href: "/categories/science-and-technology" },
-    { name: "Sports & Entertainment", href: "/categories/sports-and-entertainment" },
+    { name: "Science & Tech", href: "/categories/science-and-technology" },
     { name: "Business", href: "/categories/business" },
     { name: "World", href: "/categories/world" },
+    { name: "Sports", href: "/categories/sports-and-entertainment" },
     { name: "Defence", href: "/categories/defence" },
   ];
 
-  const maxVisible = 6;
+  const maxVisible = 5;
   const visibleCategories = useMemo(() => categories.slice(0, maxVisible), [categories]);
   const hiddenCategories = useMemo(() => categories.slice(maxVisible), [categories]);
 
@@ -90,7 +90,7 @@ export default function Navbar() {
     <>
       {/* TOP BROADSHEET TICKER: DATE, REAL LIVE CURRENCIES, LANGUAGE */}
       <aside className="w-full bg-[#F3ECE3] border-b border-[#E2D9CE] text-[#68635D] text-[11px] font-sans">
-        <div className="max-w-[1380px] mx-auto px-3 sm:px-6 md:px-8 py-1.5 flex flex-wrap items-center justify-between gap-y-1.5">
+        <div className="w-full px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 py-1.5 flex flex-wrap items-center justify-between gap-y-1.5">
           <div className="flex items-center gap-3 sm:gap-4 flex-wrap">
             <span className="flex items-center gap-1.5 font-semibold text-[#1A1715]">
               <Calendar className="w-3.5 h-3.5 text-[#C2410C]" />
@@ -128,7 +128,7 @@ export default function Navbar() {
 
       {/* MAIN BROADSHEET MASTHEAD */}
       <header className="w-full bg-[#FAF7F2] border-b border-[#E2D9CE]">
-        <div className="max-w-[1380px] mx-auto px-3 sm:px-6 md:px-8 pt-3 sm:pt-4 pb-2">
+        <div className="w-full px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 pt-3 sm:pt-4 pb-2">
           {/* Header Top Row */}
           <div className="flex items-center justify-between gap-4 border-b border-[#E2D9CE] pb-3 sm:pb-4">
             {/* Desktop Left: Search Form */}
@@ -256,9 +256,9 @@ export default function Navbar() {
           )}
 
           {/* NAVIGATION BAND BETWEEN DOUBLE RULES */}
-          <nav className="pt-2 pb-1.5 mt-1 border-t-[3px] border-[#1A1715] border-double flex flex-col md:flex-row items-center justify-between gap-y-2 font-sans text-xs tracking-wider uppercase font-semibold">
-            {/* Desktop Categories */}
-            <div className="hidden lg:flex flex-wrap items-center justify-center gap-x-6 xl:gap-x-8 gap-y-1 text-[#3C3835]">
+          <nav className="pt-2 pb-1.5 mt-1 border-t-[3px] border-[#1A1715] border-double flex items-center justify-between font-sans text-xs tracking-wider uppercase font-semibold">
+            {/* Desktop Categories (Strictly single line, flex-nowrap) */}
+            <div className="hidden lg:flex items-center flex-nowrap gap-x-4 xl:gap-x-6 text-[#3C3835] whitespace-nowrap">
               <Link
                 href="/"
                 className={`transition-colors pb-0.5 ${

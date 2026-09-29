@@ -106,7 +106,7 @@ export default async function CategoriesIndexPage() {
 
   return (
     <div className="w-full bg-[#FAF7F2] text-[#1A1715] min-h-screen">
-      <main className="max-w-[1380px] mx-auto px-3 sm:px-6 md:px-8 py-6 sm:py-8">
+      <main className="w-full px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 py-6 sm:py-8">
         {/* 1. BREADCRUMBS & SECTION STRIP */}
         <div className="flex flex-wrap items-center justify-between gap-y-2 border-b border-[#E2D9CE] pb-3 text-xs font-sans text-[#68635D]">
           <div className="flex items-center gap-2">

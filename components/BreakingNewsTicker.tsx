@@ -63,35 +63,37 @@ export function BreakingNewsTicker() {
   const repeated = [...headlines, ...headlines];
 
   return (
-    <div className="border-t border-b border-[#D1C4B5] bg-[#F1EAE0] text-[#1A1715] h-9 px-3 sm:px-6 md:px-8 overflow-hidden whitespace-nowrap flex items-center gap-3 font-sans text-xs">
-      <div className="flex-shrink-0 flex items-center gap-1.5 px-2 py-0.5 bg-[#C2410C] text-[#FAF7F2] font-sans text-[10px] font-extrabold uppercase tracking-widest rounded-none">
-        <span className="relative flex h-1.5 w-1.5">
-          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
-          <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-white"></span>
+    <div className="w-full border-t border-b border-[#FCD34D] bg-[#FFFBEB] text-[#1A1715] h-9">
+      <div className="w-full px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 h-full flex items-center gap-3 overflow-hidden whitespace-nowrap font-sans text-xs">
+        <div className="flex-shrink-0 flex items-center gap-1.5 px-2 py-0.5 bg-[#DC2626] text-white font-sans text-[10px] font-extrabold uppercase tracking-widest rounded-none shadow-xs">
+          <span className="relative flex h-1.5 w-1.5">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-white"></span>
+          </span>
+          <span>Live Wire</span>
+        </div>
+        <div className="overflow-hidden flex-1 text-xs font-serif italic text-[#1A1715]">
+          {headlines.length > 0 && (
+            <div
+              ref={marqueeRef}
+              className="inline-block"
+              style={{
+                display: "inline-block",
+                animation: `marquee ${duration}s linear infinite`,
+              }}
+            >
+              {repeated.map((h, i) => (
+                <span key={i} className="mx-6 inline-block hover:text-[#DC2626] hover:underline cursor-pointer">
+                  {h}
+                </span>
+              ))}
+            </div>
+          )}
+        </div>
+        <span className="ml-auto shrink-0 hidden md:inline font-sans text-[11px] text-[#68635D]">
+          Updated Wire
         </span>
-        <span>Live Wire</span>
       </div>
-      <div className="overflow-hidden flex-1 text-xs font-serif italic text-[#1A1715]">
-        {headlines.length > 0 && (
-          <div
-            ref={marqueeRef}
-            className="inline-block"
-            style={{
-              display: "inline-block",
-              animation: `marquee ${duration}s linear infinite`,
-            }}
-          >
-            {repeated.map((h, i) => (
-              <span key={i} className="mx-6 inline-block hover:text-[#C2410C] hover:underline cursor-pointer">
-                {h}
-              </span>
-            ))}
-          </div>
-        )}
-      </div>
-      <span className="ml-auto shrink-0 hidden md:inline font-sans text-[11px] text-[#68635D]">
-        Updated Wire
-      </span>
 
       <style jsx>{`
         @keyframes marquee {

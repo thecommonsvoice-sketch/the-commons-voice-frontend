@@ -41,6 +41,17 @@ function getArticleSummary(article: Article, maxLength = 210): string {
   return "Comprehensive field reporting and verified dispatches recorded from our editorial desk.";
 }
 
+function getCategoryBadgeStyle(catName?: string, catSlug?: string): string {
+  const q = (catSlug || catName || "").toLowerCase();
+  if (q.includes("politic")) return "bg-[#FEF2F2] text-[#B91C1C] border-[#FECACA]";
+  if (q.includes("defence") || q.includes("defense")) return "bg-[#FEFCE8] text-[#A16207] border-[#FEF08A]";
+  if (q.includes("world") || q.includes("diploma")) return "bg-[#EFF6FF] text-[#1D4ED8] border-[#BFDBFE]";
+  if (q.includes("business") || q.includes("econom")) return "bg-[#ECFDF5] text-[#047857] border-[#A7F3D0]";
+  if (q.includes("tech") || q.includes("science")) return "bg-[#F5F3FF] text-[#6D28D9] border-[#DDD6FE]";
+  if (q.includes("sport") || q.includes("entertain")) return "bg-[#FFF7ED] text-[#EA580C] border-[#FED7AA]";
+  return "bg-[#F8FAFC] text-[#334155] border-[#CBD5E1]";
+}
+
 export function DailyChronicleFeed({ initialArticles, categories }: DailyChronicleFeedProps) {
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [activeArticleForComments, setActiveArticleForComments] = useState<string | null>(null);
@@ -93,11 +104,11 @@ export function DailyChronicleFeed({ initialArticles, categories }: DailyChronic
     <>
       <div className="border-b-2 border-[#1A1715] pb-3 mb-6 flex flex-col sm:flex-row sm:items-end justify-between gap-y-3">
         <div>
-          <span className="font-sans text-[10px] uppercase tracking-widest font-extrabold text-[#C2410C] block">
+          <span className="font-sans text-[10px] uppercase tracking-widest font-extrabold text-[#DC2626] block">
             Section Two
           </span>
           <h3 className="font-headline text-2xl sm:text-3xl font-bold text-[#1A1715] leading-none">
-            The Daily Chronicle & Dispatches
+            The Daily Chronicle &amp; Dispatches
           </h3>
         </div>
 
@@ -106,10 +117,10 @@ export function DailyChronicleFeed({ initialArticles, categories }: DailyChronic
           <button
             type="button"
             onClick={() => setSelectedCategory("all")}
-            className={`px-3 py-1 uppercase tracking-wider font-bold text-[10px] transition-colors rounded-none ${
+            className={`px-3 py-1 uppercase tracking-wider font-bold text-[10px] transition-colors rounded-none border ${
               selectedCategory === "all"
-                ? "bg-[#1A1715] text-[#FAF7F2]"
-                : "bg-[#F5EFEB] hover:bg-[#ECE4DB] text-[#3C3835] border border-[#E2D9CE]"
+                ? "bg-[#DC2626] text-white border-[#DC2626] shadow-xs"
+                : "bg-white hover:bg-[#F8FAFC] text-[#334155] border-[#CBD5E1]"
             }`}
           >
             All
@@ -121,10 +132,10 @@ export function DailyChronicleFeed({ initialArticles, categories }: DailyChronic
                 key={cat.id}
                 type="button"
                 onClick={() => setSelectedCategory(cat.slug)}
-                className={`px-3 py-1 uppercase tracking-wider font-semibold text-[10px] transition-colors rounded-none border ${
+                className={`px-3 py-1 uppercase tracking-wider font-bold text-[10px] transition-colors rounded-none border ${
                   isSelected
-                    ? "bg-[#1A1715] text-[#FAF7F2] border-[#1A1715] font-bold"
-                    : "bg-[#F5EFEB] hover:bg-[#ECE4DB] text-[#3C3835] border-[#E2D9CE]"
+                    ? "bg-[#DC2626] text-white border-[#DC2626] shadow-xs"
+                    : "bg-white hover:bg-[#F8FAFC] text-[#334155] border-[#CBD5E1]"
                 }`}
               >
                 {cat.name}
@@ -134,8 +145,8 @@ export function DailyChronicleFeed({ initialArticles, categories }: DailyChronic
         </div>
       </div>
 
-      {/* Articles Feed */}
-      <div className="flex flex-col divide-y divide-[#E2D9CE]">
+      {/* Articles Feed in Crisp White Cards */}
+      <div className="space-y-4">
         {filteredArticles.length > 0 ? (
           filteredArticles.map((article) => {
             const dateStr = article.publishedAt || article.createdAt;
@@ -143,19 +154,25 @@ export function DailyChronicleFeed({ initialArticles, categories }: DailyChronic
               ? formatDistanceToNow(new Date(dateStr), { addSuffix: true })
               : "recent wire";
             const isBookmarked = !!bookmarkedMap[article.id];
+            const badgeClass = getCategoryBadgeStyle(article.category?.name, article.category?.slug);
 
             return (
-              <article key={article.id} className="py-6 first:pt-0 group grid grid-cols-1 md:grid-cols-12 gap-5 items-start">
+              <article
+                key={article.id}
+                className="bg-white p-5 sm:p-6 border border-[#E5DDD0] hover:border-[#DC2626] shadow-2xs hover:shadow-xs transition-all group grid grid-cols-1 md:grid-cols-12 gap-5 items-start"
+              >
                 <div className="md:col-span-8 flex flex-col justify-between">
                   <div>
-                    <div className="flex items-center gap-2 font-sans text-[10px] uppercase font-bold tracking-widest text-[#C2410C] mb-1">
-                      <span>{article.category?.name || "Dispatch Wire"}</span>
+                    <div className="flex items-center gap-2 font-sans text-[10px] uppercase font-bold tracking-widest mb-1.5 flex-wrap">
+                      <span className={`px-2 py-0.5 border text-[9.5px] font-extrabold tracking-wider ${badgeClass}`}>
+                        {article.category?.name || "Dispatch"}
+                      </span>
                       <span className="text-[#D1C4B5]">|</span>
                       <span className="text-[#68635D]">Global Bureau</span>
                     </div>
 
                     <Link href={`/articles/${article.slug}`} className="block group">
-                      <h4 className="font-headline text-xl sm:text-2xl font-bold text-[#1A1715] leading-snug group-hover:text-[#C2410C] transition-colors">
+                      <h4 className="font-headline text-xl sm:text-2xl font-bold text-[#1A1715] leading-snug group-hover:text-[#DC2626] transition-colors">
                         {article.title}
                       </h4>
                     </Link>

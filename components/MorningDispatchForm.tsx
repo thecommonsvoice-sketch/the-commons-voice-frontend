@@ -29,12 +29,12 @@ export function MorningDispatchForm() {
         value={email}
         onChange={(e) => setEmail(e.target.value)}
         placeholder="name@organization.com"
-        className="w-full border border-[#D1C4B5] bg-white px-3 py-2 text-xs font-sans text-[#1A1715] placeholder-[#68635D] focus:outline-none focus:border-[#1A1715] rounded-none text-center"
+        className="w-full border border-slate-700 bg-slate-900/90 text-white placeholder-slate-400 px-3 py-2.5 text-xs font-sans focus:outline-none focus:border-[#F59E0B] rounded-none text-center"
       />
       <button
         type="submit"
         disabled={loading}
-        className="w-full bg-[#C2410C] hover:bg-[#9A3412] disabled:opacity-60 text-white font-sans text-xs font-bold uppercase tracking-widest py-2.5 rounded-none shadow-xs transition-colors"
+        className="w-full bg-[#EA580C] hover:bg-[#C2410C] disabled:opacity-60 text-white font-sans text-xs font-bold uppercase tracking-widest py-2.5 rounded-none shadow-sm transition-colors cursor-pointer"
       >
         {loading ? "Registering..." : "Subscribe Complimentary"}
       </button>

@@ -117,33 +117,29 @@ export function LiveCurrencyBox() {
   }, []);
 
   return (
-    <div className="bg-[#F4EFEA] p-4 border border-[#DFD6C9]">
-      <div className="flex items-center justify-between border-b border-[#D1C4B5] pb-1.5 mb-3">
-        <span className="font-sans text-[10px] uppercase font-bold tracking-wider text-[#1A1715] flex items-center gap-1.5">
-          <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse" />
+    <div className="bg-[#F0FDF4] p-5 border-2 border-[#86EFAC] shadow-xs">
+      <div className="flex items-center justify-between border-b border-[#BBF7D0] pb-2 mb-3.5">
+        <span className="font-sans text-[10px] uppercase font-extrabold tracking-wider text-[#15803D] flex items-center gap-1.5">
+          <span className="w-2 h-2 rounded-full bg-[#16A34A] animate-pulse" />
           Global Currency Wire
         </span>
-        <span className="font-sans text-[9px] uppercase font-bold text-[#C2410C] tracking-widest">
+        <span className="font-sans text-[9px] uppercase font-bold text-[#15803D] tracking-widest bg-[#DCFCE7] px-2 py-0.5 border border-[#86EFAC]">
           {lastUpdated ? `Live at ${lastUpdated}` : "Real-Time Rates"}
         </span>
       </div>
-      <div className="grid grid-cols-2 gap-3 text-xs">
-        {rates.slice(0, 2).map((item) => (
-          <div key={item.pair} className="border-r border-[#D1C4B5] pr-2">
-            <span className="text-[10px] text-[#68635D] uppercase font-sans block">
+      <div className="grid grid-cols-2 gap-2.5 text-xs">
+        {rates.map((item) => (
+          <div
+            key={item.pair}
+            className="bg-white p-2.5 border border-[#BBF7D0] shadow-2xs hover:border-[#16A34A] transition-colors"
+          >
+            <span className="text-[10px] text-[#64748B] font-bold uppercase font-sans block tracking-wider">
               {item.pair}
             </span>
-            <div className="font-serif font-bold text-sm text-[#1A1715]">{item.rate}</div>
-            <span className="text-[10px] font-semibold text-emerald-800 font-sans">Verified FX</span>
-          </div>
-        ))}
-        {rates.slice(2, 4).map((item) => (
-          <div key={item.pair} className="pl-1">
-            <span className="text-[10px] text-[#68635D] uppercase font-sans block">
-              {item.pair}
+            <div className="font-serif font-black text-[15px] text-[#0F172A] mt-0.5">{item.rate}</div>
+            <span className="text-[9.5px] font-bold text-[#16A34A] font-sans inline-flex items-center gap-1">
+              <span>●</span> Verified FX
             </span>
-            <div className="font-serif font-bold text-sm text-[#1A1715]">{item.rate}</div>
-            <span className="text-[10px] font-semibold text-emerald-800 font-sans">Verified FX</span>
           </div>
         ))}
       </div>

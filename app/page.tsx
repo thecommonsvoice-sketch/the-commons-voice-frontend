@@ -87,6 +87,17 @@ function getArticleSummary(article: Article, maxLength = 160): string {
   return "Verified dispatches and field reporting recorded across regional bureaus.";
 }
 
+function getCategoryBadgeStyle(catName?: string, catSlug?: string): string {
+  const q = (catSlug || catName || "").toLowerCase();
+  if (q.includes("politic")) return "bg-[#FEF2F2] text-[#B91C1C] border-[#FECACA] hover:bg-[#FEE2E2]";
+  if (q.includes("defence") || q.includes("defense")) return "bg-[#FEFCE8] text-[#A16207] border-[#FEF08A] hover:bg-[#FEF9C3]";
+  if (q.includes("world") || q.includes("diploma")) return "bg-[#EFF6FF] text-[#1D4ED8] border-[#BFDBFE] hover:bg-[#DBEAFE]";
+  if (q.includes("business") || q.includes("econom")) return "bg-[#ECFDF5] text-[#047857] border-[#A7F3D0] hover:bg-[#D1FAE5]";
+  if (q.includes("tech") || q.includes("science")) return "bg-[#F5F3FF] text-[#6D28D9] border-[#DDD6FE] hover:bg-[#EDE9FE]";
+  if (q.includes("sport") || q.includes("entertain")) return "bg-[#FFF7ED] text-[#EA580C] border-[#FED7AA] hover:bg-[#FFEDD5]";
+  return "bg-[#F8FAFC] text-[#334155] border-[#CBD5E1] hover:bg-[#F1F5F9]";
+}
+
 function getLeadParagraphs(leadArticle: Article | null): { first: string; second: string } {
   if (!leadArticle) {
     return {
@@ -159,18 +170,21 @@ export default async function HomePage() {
       <BreakingNewsTicker />
 
       {/* 2. MAIN BROADSHEET BODY CONTAINER */}
-      <main className="max-w-[1380px] mx-auto px-3 sm:px-6 md:px-8 py-5 sm:py-6">
+      <main className="w-full px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 py-5 sm:py-6">
         {/* TOPIC TAGS BAR (Newspaper Index Ribbon) */}
         <div className="pb-3.5 mb-6 border-b border-[#E2D9CE] flex flex-wrap items-center justify-between gap-y-2.5 font-sans text-xs">
           <div className="flex flex-wrap items-center gap-2">
-            <span className="font-bold uppercase tracking-wider text-[10px] text-[#68635D] mr-1 shrink-0">
+            <span className="font-extrabold uppercase tracking-wider text-[10px] text-[#475569] mr-1 shrink-0">
               Current Dossiers:
             </span>
             {trendingCategories.map((cat) => (
               <Link
                 key={cat.id}
                 href={`/categories/${cat.slug}`}
-                className="px-2.5 py-1 bg-[#F5EFEB] border border-[#E2D9CE] hover:border-[#68635D] hover:bg-[#ECE4DB] transition-colors text-[#1A1715] text-[11px] font-medium"
+                className={`px-2.5 py-1 border transition-colors text-[11px] font-bold uppercase tracking-wider ${getCategoryBadgeStyle(
+                  cat.name,
+                  cat.slug
+                )}`}
               >
                 #{cat.name}
               </Link>
@@ -188,19 +202,26 @@ export default async function HomePage() {
             <article className="col-span-12 lg:col-span-8 flex flex-col justify-between pr-0 lg:pr-8 border-b lg:border-b-0 lg:border-r border-[#E2D9CE] pb-8 lg:pb-0">
               <div>
                 {/* Lead Kicker */}
-                <div className="flex items-center gap-2 font-sans text-[11px] font-bold uppercase tracking-widest text-[#C2410C] mb-2 flex-wrap">
-                  <span>Special Report</span>
+                <div className="flex items-center gap-2 font-sans text-[10px] uppercase font-bold tracking-widest mb-2 flex-wrap">
+                  <span className="px-2 py-0.5 bg-[#FEF2F2] text-[#DC2626] border border-[#FECACA] font-extrabold">
+                    Special Report
+                  </span>
                   <span className="text-[#D1C4B5]">•</span>
-                  <span className="text-[#68635D]">
+                  <span
+                    className={`px-2 py-0.5 border font-extrabold ${getCategoryBadgeStyle(
+                      leadArticle.category?.name,
+                      leadArticle.category?.slug
+                    )}`}
+                  >
                     {leadArticle.category?.name || "Diplomatic Cable"}
                   </span>
                   <span className="text-[#D1C4B5]">•</span>
-                  <span className="text-[#68635D]">Lead Wire</span>
+                  <span className="text-[#68635D] font-medium">Lead Wire</span>
                 </div>
 
                 {/* Main Headline */}
                 <Link href={`/articles/${leadArticle.slug}`} className="group block">
-                  <h2 className="font-headline text-3xl sm:text-4xl lg:text-[44px] font-extrabold text-[#1A1715] leading-[1.12] tracking-tight group-hover:text-[#C2410C] transition-colors">
+                  <h2 className="font-headline text-3xl sm:text-4xl lg:text-[44px] font-extrabold text-[#1A1715] leading-[1.12] tracking-tight group-hover:text-[#DC2626] transition-colors">
                     {leadArticle.title}
                   </h2>
                 </Link>
@@ -212,8 +233,8 @@ export default async function HomePage() {
                   </span>
                   <span className="text-[#D1C4B5]">•</span>
                   <span>Published {leadTimeAgo}</span>
-                  <span className="ml-auto inline-flex items-center gap-1 text-[11px] font-semibold text-[#68635D]">
-                    <span className="w-2 h-2 rounded-full bg-[#C2410C]" /> Verified Wire
+                  <span className="ml-auto inline-flex items-center gap-1.5 text-[11px] font-bold text-[#15803D] bg-[#F0FDF4] px-2 py-0.5 border border-[#BBF7D0]">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#16A34A] animate-pulse" /> Verified Wire
                   </span>
                 </div>
 
@@ -267,19 +288,28 @@ export default async function HomePage() {
               </div>
             </article>
 
-            {/* SECONDARY STORIES (Right 4 Columns) */}
-            <div className="col-span-12 lg:col-span-4 flex flex-col justify-start space-y-6">
+            {/* SECONDARY STORIES (Right 4 Columns - Wrapped in Crisp Warm Panel) */}
+            <div className="col-span-12 lg:col-span-4 flex flex-col justify-start space-y-6 bg-[#FFFDF9] p-5 sm:p-6 border border-[#E8DFC8] shadow-2xs">
+              <div className="border-b border-[#D1C4B5] pb-2 mb-1 flex items-center justify-between">
+                <span className="font-sans text-[10px] font-extrabold uppercase tracking-widest text-[#DC2626]">
+                  Secondary Briefings
+                </span>
+                <span className="font-sans text-[10px] text-[#68635D] uppercase tracking-wider">
+                  Field Desks
+                </span>
+              </div>
               {secondaryArticles.map((article, idx) => {
                 const articleDate = article.publishedAt || article.createdAt;
                 const timeAgo = articleDate
                   ? formatDistanceToNow(new Date(articleDate), { addSuffix: true })
                   : "recently";
+                const badgeClass = getCategoryBadgeStyle(article.category?.name, article.category?.slug);
 
                 return (
                   <article
                     key={article.id}
                     className={`flex flex-col group ${
-                      idx > 0 ? "pt-8 border-t border-[#E2D9CE]" : ""
+                      idx > 0 ? "pt-6 border-t border-[#E2D9CE]" : ""
                     }`}
                   >
                     <div className="aspect-[16/9] w-full overflow-hidden bg-[#F3EDE5] border border-[#E2D9CE] mb-3">
@@ -293,19 +323,21 @@ export default async function HomePage() {
                       </Link>
                     </div>
 
-                    <div className="flex items-center gap-2 font-sans text-[10px] font-bold uppercase tracking-widest text-[#C2410C] mb-1">
-                      <span>{article.category?.name || "General Wire"}</span>
+                    <div className="flex items-center gap-2 font-sans text-[10px] font-bold uppercase tracking-widest mb-1.5 flex-wrap">
+                      <span className={`px-2 py-0.5 border text-[9.5px] font-extrabold ${badgeClass}`}>
+                        {article.category?.name || "General Wire"}
+                      </span>
                       <span className="text-[#D1C4B5]">•</span>
                       <span className="text-[#68635D]">Desk Dispatch</span>
                     </div>
 
                     <Link href={`/articles/${article.slug}`}>
-                      <h3 className="font-headline text-xl sm:text-2xl font-bold text-[#1A1715] leading-snug group-hover:text-[#C2410C] transition-colors">
+                      <h3 className="font-headline text-xl sm:text-2xl font-bold text-[#1A1715] leading-snug group-hover:text-[#DC2626] transition-colors">
                         {article.title}
                       </h3>
                     </Link>
 
-                    <p className="font-serif text-sm text-[#68635D] leading-normal mt-2 line-clamp-2">
+                    <p className="font-serif text-sm text-[#475569] leading-relaxed mt-2 line-clamp-2">
                       {getArticleSummary(article)}
                     </p>
 
@@ -313,7 +345,7 @@ export default async function HomePage() {
                       <span>
                         {timeAgo} • {article.author?.name || "Editorial Desk"}
                       </span>
-                      <Link href={`/articles/${article.slug}`} className="hover:text-[#1A1715]">
+                      <Link href={`/articles/${article.slug}`} className="hover:text-[#DC2626] transition-colors">
                         <Bookmark className="w-3.5 h-3.5" />
                       </Link>
                     </div>
@@ -323,104 +355,112 @@ export default async function HomePage() {
             </div>
           </section>
         )}
+      </main>
 
-        {/* SECTION TWO: CHRONICLE FEED (Full 100% Width) */}
-        <section className="pt-8">
+      {/* SECTION TWO: CHRONICLE FEED (Full Viewport Width Band with Fluid Responsive Grid) */}
+      <section className="w-full bg-[#F6F3EB] border-y-2 border-[#DFD6C9] py-10 my-4">
+        <div className="w-full px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16">
           <DailyChronicleFeed
             initialArticles={chronicleArticles}
             categories={categories}
           />
-        </section>
+        </div>
+      </section>
 
-        {/* SECTION THREE: EDITORIAL INTELLIGENCE TRIO (Most Read + Morning Dispatch + Live Currency Wire) */}
-        <section className="pt-10 pb-6 border-t-[3px] border-[#1A1715] border-double mt-12">
+      {/* SECTION THREE: EDITORIAL INTELLIGENCE TRIO */}
+      <div className="w-full px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 pb-12">
+        <section className="pt-8 pb-6 border-t-[3px] border-[#1A1715] border-double">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {/* 1. THE BROADSHEET INDEX (Top 5 Reads) */}
-            <div className="bg-[#F4EFEA] p-5 sm:p-6 border border-[#DFD6C9]">
-              <div className="flex items-center justify-between border-b border-[#D1C4B5] pb-2 mb-4">
-                <div>
-                  <span className="font-sans text-[10px] uppercase tracking-widest font-extrabold text-[#C2410C] block">
-                    Essential Index
-                  </span>
-                  <h4 className="font-headline text-xl font-bold text-[#1A1715]">
-                    Most Read Dispatches
-                  </h4>
-                </div>
-                <span className="font-serif italic text-xs text-[#68635D]">24 Hours</span>
-              </div>
-
-              <div className="flex flex-col divide-y divide-[#E2D9CE]">
-                {mostReadArticles.map((item, idx) => (
-                  <Link
-                    key={item.id}
-                    href={`/articles/${item.slug}`}
-                    className="py-3 first:pt-0 group flex items-start gap-3"
-                  >
-                    <span className="font-headline text-2xl font-bold text-[#68635D] group-hover:text-[#C2410C] transition-colors leading-none w-6 shrink-0">
-                      {romanNumerals[idx] || `${idx + 1}.`}
+            {/* 1. THE BROADSHEET INDEX (Top 5 Reads - Sunny Amber Cream) */}
+            <div className="bg-[#FFFBEB] p-5 sm:p-6 border-2 border-[#FDE68A] shadow-xs flex flex-col justify-between">
+              <div>
+                <div className="flex items-center justify-between border-b border-[#FCD34D] pb-2 mb-4">
+                  <div>
+                    <span className="font-sans text-[10px] uppercase tracking-widest font-extrabold text-[#B45309] block">
+                      Essential Index
                     </span>
-                    <div className="flex-1 min-w-0">
-                      <span className="font-sans text-[9px] uppercase tracking-wider font-bold text-[#C2410C] block mb-0.5">
-                        {item.category?.name || "Diplomacy"}
+                    <h4 className="font-headline text-xl font-bold text-[#1A1715]">
+                      Most Read Dispatches
+                    </h4>
+                  </div>
+                  <span className="font-sans font-bold text-[10px] text-[#B45309] uppercase tracking-wider bg-[#FEF3C7] px-2 py-0.5 border border-[#FDE68A]">
+                    24 Hours
+                  </span>
+                </div>
+
+                <div className="flex flex-col divide-y divide-[#FDE68A]">
+                  {mostReadArticles.map((item, idx) => (
+                    <Link
+                      key={item.id}
+                      href={`/articles/${item.slug}`}
+                      className="py-3 first:pt-0 group flex items-start gap-3"
+                    >
+                      <span className="font-headline text-2xl font-black text-[#D97706] group-hover:text-[#B45309] transition-colors leading-none w-6 shrink-0">
+                        {romanNumerals[idx] || `${idx + 1}.`}
                       </span>
-                      <h5 className="font-headline text-[14px] sm:text-[15px] font-bold text-[#1A1715] group-hover:text-[#C2410C] transition-colors leading-snug line-clamp-2">
-                        {item.title}
-                      </h5>
-                      <span className="font-sans text-[10px] text-[#68635D] mt-1 block">
-                        {item.publishedAt
-                          ? formatDistanceToNow(new Date(item.publishedAt), { addSuffix: true })
-                          : "Verified Wire"}
-                      </span>
-                    </div>
-                    {item.coverImage && (
-                      <div className="w-16 h-12 aspect-[4/3] overflow-hidden border border-[#E2D9CE] shrink-0 bg-[#F3EDE5]">
-                        <img
-                          src={optimizeImageUrl(item.coverImage, 160)}
-                          alt={item.title}
-                          className="w-full h-full object-cover"
-                          loading="lazy"
-                        />
+                      <div className="flex-1 min-w-0">
+                        <span className="font-sans text-[9px] uppercase tracking-wider font-extrabold text-[#B45309] block mb-0.5">
+                          {item.category?.name || "Diplomacy"}
+                        </span>
+                        <h5 className="font-headline text-[14px] sm:text-[15px] font-bold text-[#1A1715] group-hover:text-[#B45309] transition-colors leading-snug line-clamp-2">
+                          {item.title}
+                        </h5>
+                        <span className="font-sans text-[10px] text-[#78350F] mt-1 block">
+                          {item.publishedAt
+                            ? formatDistanceToNow(new Date(item.publishedAt), { addSuffix: true })
+                            : "Verified Wire"}
+                        </span>
                       </div>
-                    )}
-                  </Link>
-                ))}
+                      {item.coverImage && (
+                        <div className="w-16 h-12 aspect-[4/3] overflow-hidden border border-[#FCD34D] shrink-0 bg-[#FEF3C7]">
+                          <img
+                            src={optimizeImageUrl(item.coverImage, 160)}
+                            alt={item.title}
+                            className="w-full h-full object-cover"
+                            loading="lazy"
+                          />
+                        </div>
+                      )}
+                    </Link>
+                  ))}
+                </div>
               </div>
             </div>
 
-            {/* 2. THE MORNING DISPATCH (TELEGRAM NEWSLETTER BOX) */}
-            <div className="bg-[#F4EFEA] p-6 border border-[#DFD6C9] text-center space-y-4 flex flex-col justify-between">
+            {/* 2. THE MORNING DISPATCH (Royal Midnight Navy Box) */}
+            <div className="bg-[#0B1528] text-white p-6 border-2 border-[#1E293B] text-center space-y-4 flex flex-col justify-between shadow-xs">
               <div className="space-y-3">
                 <div className="space-y-1">
-                  <span className="font-sans text-[10px] uppercase font-bold tracking-widest text-[#C2410C] block">
+                  <span className="font-sans text-[10px] uppercase font-bold tracking-widest text-[#F59E0B] block">
                     Newsroom Telegram
                   </span>
-                  <h4 className="font-headline text-2xl font-bold text-[#1A1715]">
+                  <h4 className="font-headline text-2xl font-bold text-white">
                     The Morning Dispatch
                   </h4>
-                  <p className="font-sans text-[11px] text-[#68635D]">
+                  <p className="font-sans text-[11px] text-[#94A3B8]">
                     Delivered daily at 06:00 GMT
                   </p>
                 </div>
 
-                <p className="font-serif text-xs text-[#3C3835] leading-relaxed">
+                <p className="font-serif text-xs text-[#E2E8F0] leading-relaxed">
                   Essential geopolitical briefings, market intelligence, and verified investigatory scoops directly from foreign correspondents.
                 </p>
 
                 <MorningDispatchForm />
               </div>
 
-              <p className="font-sans text-[10px] text-[#68635D] flex items-center justify-center gap-1 pt-1 border-t border-[#DFD6C9]">
+              <p className="font-sans text-[10px] text-[#94A3B8] flex items-center justify-center gap-1 pt-2 border-t border-slate-800">
                 <span>🔒 Strict editorial confidentiality • No syndication spam</span>
               </p>
             </div>
 
-            {/* 3. REAL-TIME LIVE FX CURRENCY RATES BOX */}
+            {/* 3. REAL-TIME LIVE FX CURRENCY RATES BOX (Fresh Mint Emerald) */}
             <div className="flex flex-col justify-start">
               <LiveCurrencyBox />
             </div>
           </div>
         </section>
-      </main>
+      </div>
     </div>
   );
 }
